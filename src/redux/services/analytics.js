@@ -30,6 +30,7 @@ export function analyzeApplicants(applicants, data) {
         if (applicant.status === "Sent to Recruiter")
             acceptedNum += 1
     }
+    data['numScreened'] = daysSince.length
 
     data['numApplicants'] = applicants.length
     data['numScored'] = numScored

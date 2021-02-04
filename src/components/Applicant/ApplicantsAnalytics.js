@@ -97,6 +97,13 @@ export function ApplicantsAnalytics(props) {
                             value={stats.numApplicants}
                         />
                     </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Assessment}
+                            title={"Screened"}
+                            value={stats.numScreened}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
