@@ -59,10 +59,10 @@ async function getAllApplicants() {
                 return 1
             if (a.created[0] > b.created[0])
                 return -1
-            else if (a.created &&  !b.created) {
-                // if comparing applicant that has used bot to one that has not
-                return -1
-            }
+        }
+        else if (a.created && !b.created) {
+            // if comparing applicant that has used bot to one that has not
+            return -1
         }
         return 0
     })

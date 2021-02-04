@@ -21,7 +21,8 @@ export function ApplicantsAnalytics(props) {
     const [deleteOpen, setDeleteOpen] = useState(false)
 
     // Open delete confirmation
-    const handleDeleteClick = (jid, aid) => {
+    const handleDeleteClick = (ids) => {
+        let [jid, aid] = ids
         setDeleteJID(jid)
         setDeleteAID(aid)
         setDeleteOpen(true)
@@ -40,13 +41,15 @@ export function ApplicantsAnalytics(props) {
             <Grid item xs={6}>
                 <DaysSinceCard
                     // For title
+                    title="New Screened Applicants"
                     type="Applicant"
                     detailsPath="applicant"
                     data={applicants}
                     // database keys
-                    idKey='aid' nameKey='name'
+                    idKey='aid' nameKey='name' nameLabel="Name"
+                    prefKey="recentApplicants"
                     daysSinceMostRecent={Math.min(...stats.daysSince)}
-                    handleDelete={(jid, aid) => handleDeleteClick(jid, aid)}
+                    handleDelete={(ids) => handleDeleteClick(ids)}
                 />
                 <DeleteConfirmation
                     open={deleteOpen}
@@ -95,6 +98,13 @@ export function ApplicantsAnalytics(props) {
                             dashIcon={Assessment}
                             title={"Applicants"}
                             value={stats.numApplicants}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Assessment}
+                            title={"Screened"}
+                            value={stats.numScreened}
                         />
                     </Grid>
                 </Grid>

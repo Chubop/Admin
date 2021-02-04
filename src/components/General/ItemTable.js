@@ -85,14 +85,31 @@ function stableSort(array, comparator) {
 
 const additionalColumns = 3
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props;
+    const { classes, 
+            onSelectAllClick, 
+            order, 
+            orderBy, 
+            numSelected, 
+            rowCount, 
+            onRequestSort, 
+            headCells,
+            noEdit,
+            noDelete,
+    } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
 
     const detailsCol = { id: 'details', numeric: true, disablePadding: false, label: 'Details' }
     const editCol = { id: 'edit', numeric: true, disablePadding: false, label: 'Edit' }
-    let header = headCells.concat([detailsCol]).concat([editCol])
+    const deleteCol = { id: 'delete', numeric: true, disablePadding: false, label: 'Delete' }
+    let header = headCells.concat([detailsCol])
+    if (!noEdit) {
+        header = header.concat([editCol])
+    }
+    if (!noDelete) {
+        header = header.concat([deleteCol])
+    }
 
     return (
         <TableHead>
@@ -245,7 +262,9 @@ export function ItemTable(props) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
 
-    const { data, idString, headCells, path, title } = props
+    // headCells are the columns to display, and include the value key
+    // prefKey is the key to use to store the rowsPerPage preference in localStorage
+    const { data, idString, headCells, path, title, prefKey } = props
 
     // If loading
     if (!data) {
@@ -253,11 +272,27 @@ export function ItemTable(props) {
     }
     // If the data has loaded in and we need to fill the rows
     if (data.length > 0 && rows.length === 0) {
+        // let preferences = JSON.parse(localStorage.getItem('preferences'))
+        // if (preferences) {
+        //     if (preferences.rowsPerPage)
+        //         setRowsPerPage(preferences['rowsPerPage'])
+        // }
         setRows(createRows(data, headCells, idString))
+
         let preferences = JSON.parse(localStorage.getItem('preferences'))
-        if (preferences) {
-            if (preferences.rowsPerPage)
-                setRowsPerPage(preferences['rowsPerPage'])
+        let rowsPref = rowsPerPage
+        if (prefKey) {
+            // Check if preferences are stored and prefKey is given
+            if (preferences && preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
+                // Read stored value
+                rowsPref = preferences.rowsPerPage[prefKey]
+                setRowsPerPage(rowsPref)
+                // preferences = {...preferences, rowPerPage: {...preferences.rowsPerPage, [prefKey]: rowsPref}}
+            }
+            else {
+                preferences['rowsPerPage'][prefKey] = rowsPref
+                localStorage.setItem('preferences', JSON.stringify(preferences))
+            }
         }
     }
 
@@ -306,10 +341,7 @@ export function ItemTable(props) {
         let value = parseInt(event.target.value, 10)
         setRowsPerPage(value);
         let preferences = JSON.parse(localStorage.getItem('preferences'))
-        if (preferences)
-            preferences['rowsPerPage'] = value
-        else
-            preferences = { 'rowsPerPage': value }
+        preferences['rowsPerPage'][prefKey] = value
         localStorage.setItem('preferences', JSON.stringify(preferences))
         setPage(0);
     };
@@ -355,6 +387,7 @@ export function ItemTable(props) {
                         onRequestSort={handleRequestSort}
                         rowCount={rows.length}
                         headCells={headCells}
+                        {...props}
                     />
                     <TableBody>
 
@@ -363,8 +396,15 @@ export function ItemTable(props) {
                             .map((row, index) => {
                                 const isItemSelected = isSelected(row.key);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-                                const detailsLink = props.includeJID ? `/${path}/${row['jid']}/${row.key}` : `/${path}/${row.key}`
+                                // const detailsLink = props.includeJID ? `/${path}/${row['jid']}/${row.key}` : `/${path}/${row.key}`
                                 const editID = props.includeJID ? { [idString]: row.key, 'jid': row['jid'] } : { [idString]: row.key }
+
+                                let detailsPath = `/${path}/${row.key}`
+                                let deleteProps = [row.key]
+                                if ('jid' in row && 'aid' in row) {
+                                    detailsPath = `/${path}/${row['jid']}/${row.key}`
+                                    deleteProps = [row['jid'], row.key]
+                                }
 
                                 return (
                                     <TableRow
@@ -394,19 +434,34 @@ export function ItemTable(props) {
                                             )
                                         })}
                                         <TableCell align="right">
-                                            <Tooltip title="Open details page">
-                                                <Link to={detailsLink}>
+                                            <Tooltip title="Open Details Page">
+                                                <Link to={detailsPath}>
                                                     <IconButton aria-label="zoomIn" color="primary" >
                                                         <ZoomIn />
                                                     </IconButton>
                                                 </Link>
                                             </Tooltip>
                                         </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
-                                                <Edit />
-                                            </IconButton>
-                                        </TableCell>
+                                        {
+                                            !props.noEdit &&
+                                            <TableCell align="right">
+                                                <Tooltip title="Open Edit Modal">
+                                                    <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
+                                                        <Edit />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        }
+                                        {
+                                            !props.noDelete &&
+                                            <TableCell align="right">
+                                                <Tooltip title="Delete">
+                                                    <IconButton aria-label="delete" color="primary" onClick={() => { props.handleDelete(deleteProps) }}>
+                                                        <Delete />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 );
                             })}
