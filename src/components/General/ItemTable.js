@@ -272,11 +272,6 @@ export function ItemTable(props) {
     }
     // If the data has loaded in and we need to fill the rows
     if (data.length > 0 && rows.length === 0) {
-        // let preferences = JSON.parse(localStorage.getItem('preferences'))
-        // if (preferences) {
-        //     if (preferences.rowsPerPage)
-        //         setRowsPerPage(preferences['rowsPerPage'])
-        // }
         setRows(createRows(data, headCells, idString))
 
         let preferences = JSON.parse(localStorage.getItem('preferences'))
@@ -287,9 +282,11 @@ export function ItemTable(props) {
                 // Read stored value
                 rowsPref = preferences.rowsPerPage[prefKey]
                 setRowsPerPage(rowsPref)
-                // preferences = {...preferences, rowPerPage: {...preferences.rowsPerPage, [prefKey]: rowsPref}}
             }
             else {
+                if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
+                    preferences['rowsPerPage'] = {}
+                }
                 preferences['rowsPerPage'][prefKey] = rowsPref
                 localStorage.setItem('preferences', JSON.stringify(preferences))
             }
