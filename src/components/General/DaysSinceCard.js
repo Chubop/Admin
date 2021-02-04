@@ -7,13 +7,15 @@ import { Delete, Edit, ZoomIn } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../functions'
+import { ItemTable } from './ItemTable'
 
 const daysMaxDefault = 5
 export function DaysSinceCard(props) {
     const [daysMax, setDaysMax] = useState(daysMaxDefault)
-    const { type, detailsPath, nameKey, idKey, data, daysSinceMostRecent } = props
+    const { type, detailsPath, nameKey, nameLabel, idKey, data, daysSinceMostRecent } = props
     let headCells = [
-        { id: nameKey, label: 'Title' },
+        { id: 'daysOpen', label: "Time"},
+        { id: nameKey, label: nameLabel },
         { id: idKey, label: type + ' ID' },
     ];
 
@@ -64,112 +66,30 @@ export function DaysSinceCard(props) {
 }
 
 function RecentTable(props) {
-    const { daysMax, detailsPath: path, type, data, headCells, handleDelete, idKey } = props
+    const { daysMax, detailsPath: path, title, data, headCells, handleDelete, idKey, prefKey } = props
+    let filtered = data.filter(item => {
+        // Get time created (may be an array)
+        let time = item.created
+        if (Array.isArray(time))
+            time = time[0]
+        if (daysSince(time) <= daysMax) {
+            item['daysOpen'] = parseDaysOpen(time)
+            return(item)
+        }
+    })
 
     return (
         <>
-            <Toolbar style={{ backgroundColor: '#1769aa', color: 'white' }}>
-                <Grid container>
-                    <Grid item xs={6}>
-                        <Typography variant="h6">
-                            {"New " + type + "s"}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="h6" style={{textAlign: "right"}}>
-                            {"Last " + daysMax + " Days"}
-                            {/* TODO add editable daysMax
-                            <IconButton>
-                                <Edit style={{color:"white"}} fontSize="small"/>
-                            </IconButton> */}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </Toolbar>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell key={'days-open'} >
-                                Days Open
-                            </TableCell>
-                            {
-                                headCells.map((headCell) => {
-                                    return (
-                                        <TableCell key={headCell.id} >
-                                            {headCell.label}
-                                        </TableCell>
-                                    )
-                                })
-                            }
-                            <TableCell key={'details'} >
-                                Details
-                            </TableCell>
-                            {
-                                handleDelete !== undefined &&
-                                <TableCell key={'delete'} >
-                                    Delete
-                                </TableCell>
-                            }
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            data.map((row) => {
-                                // Display items that have been created more recently than daysMax
-                                if (daysSince(row.created) <= daysMax) {
-                                    // Get time created (may be an array)
-                                    let time = row.created
-                                    if (Array.isArray(time))
-                                        time = time[0]
-                                    // Get details path and props to give 'handleDelete' 
-                                    // may include jid as well as aid, if this is applicants
-                                    let detailsPath = `/${path}/${row[idKey]}`
-                                    let deleteProps = [row[idKey]]
-                                    if ('jid' in row && 'aid' in row) {
-                                        detailsPath = `/${path}/${row['jid']}/${row[idKey]}`
-                                        deleteProps = [row['jid'], row[idKey]]
-                                    }
-
-                                    return (
-                                        <TableRow>
-                                            <TableCell>
-                                                <Typography>{parseDaysOpen(time)}</Typography>
-                                            </TableCell>
-                                            {
-                                                headCells.map((cell) => {
-                                                    return (
-                                                        <TableCell key={row[cell.id]} >
-                                                            <Typography>
-                                                                {printFormat(row[cell.id])}
-                                                            </Typography>
-                                                        </TableCell>
-                                                    )
-                                                })
-                                            }
-                                            <TableCell>
-                                                <Link to={detailsPath}>
-                                                    <IconButton aria-label="zoomIn" color="primary" >
-                                                        <ZoomIn />
-                                                    </IconButton>
-                                                </Link>
-                                            </TableCell>
-                                            {
-                                                handleDelete !== undefined &&
-                                                <TableCell>
-                                                    <IconButton aria-label="zoomIn" color="primary" onClick={() => handleDelete(...deleteProps)}>
-                                                        <Delete />
-                                                    </IconButton>
-                                                </TableCell>
-                                            }
-                                        </TableRow>
-                                    )
-                                }
-                            })
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <ItemTable
+                title={title}
+                idString={idKey}
+                path={path}
+                headCells={headCells}
+                data={filtered}
+                handleDelete={handleDelete}
+                prefKey={prefKey}
+                noEdit
+            />
         </>
     )
 }
@@ -200,12 +120,13 @@ const parseDaysOpen = (time) => {
     if (minutes <= 60) {
         return minutes + " minutes ago"
     }
-    let hours = Math.floor(minutes / 60)
+    let hours = hoursSince(time)
     if (hours <= 24) {
         return hours + " hours ago"
     }
     if (hours <= 48) {
         return "Yesterday"
     }
-    return (daysSince(time)) + " days ago"
+    let days = daysSince(time)
+    return days + " days ago"
 }

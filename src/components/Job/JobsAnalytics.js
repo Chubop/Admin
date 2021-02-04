@@ -36,12 +36,15 @@ export function JobsAnalytics(props) {
             <Grid container spacing={2}>
                 <Grid item>
                     <DaysSinceCard
-                        // For title
+                        // For labels
+                        title="New Jobs"
                         type="Job"
                         detailsPath="job"
                         data={jobs}
+                        // For keeping the same rows per page
+                        prefKey="recentJobs"
                         // database keys
-                        idKey='jid' nameKey='titles'
+                        idKey='jid' nameKey='titles' nameLabel="Title"
                         daysSinceMostRecent={Math.min(...stats.daysSince)}
                         handleDelete={(jid) => handleDeleteClick(jid)}
                     />

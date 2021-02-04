@@ -64,7 +64,9 @@ export function HMTable(props) {
 					path={path}
 					headCells={headCells}
 					handleClickEdit={openEditModal}
-                    handleDelete={handleDelete}
+					handleDelete={handleDelete}
+					prefKey={"hmsPage"}
+					noDelete
 					{...props}
 				/>
 			</Paper>

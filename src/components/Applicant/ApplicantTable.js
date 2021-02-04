@@ -67,6 +67,8 @@ export function ApplicantTable(props) {
                     headCells={headCells}
                     handleClickEdit={openEditModal}
                     handleDelete={handleDelete}
+                    prefKey={'applicantsPage'}
+                    noDelete
                     {...props}
                 />
             </Paper>

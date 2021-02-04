@@ -69,6 +69,8 @@ export function JobTable(props) {
                     headCells={headCells}
                     handleClickEdit={openEditModal}
                     handleDelete={handleDelete}
+                    prefKey={"jobsPage"}
+                    noDelete
                     {...props}
                 />
             </Paper>
