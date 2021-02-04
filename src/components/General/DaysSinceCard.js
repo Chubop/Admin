@@ -117,7 +117,7 @@ function RecentTable(props) {
                         {
                             data.map((row) => {
                                 // Display items that have been created more recently than daysMax
-                                if (daysSince(hoursSince(row.created)) <= daysMax) {
+                                if (daysSince(row.created) <= daysMax) {
                                     // Get time created (may be an array)
                                     let time = row.created
                                     if (Array.isArray(time))
@@ -134,7 +134,7 @@ function RecentTable(props) {
                                     return (
                                         <TableRow>
                                             <TableCell>
-                                                <Typography>{parseDaysOpen(hoursSince(time))}</Typography>
+                                                <Typography>{parseDaysOpen(time)}</Typography>
                                             </TableCell>
                                             {
                                                 headCells.map((cell) => {
@@ -174,8 +174,11 @@ function RecentTable(props) {
     )
 }
 
-const daysSince = (hours) => {
-    return (Math.floor(hours / 24))
+const daysSince = (time) => {
+    if (time) {
+        const secondsSince = (Date.now() / 1000) - time
+        return (Math.floor(secondsSince / (60 * 60) /24))
+    }
 }
 
 const hoursSince = (time) => {
@@ -185,12 +188,24 @@ const hoursSince = (time) => {
     }
 }
 
-const parseDaysOpen = (hours) => {
+const minutesSince = (time) => {
+    if (time) {
+        const secondsSince = (Date.now() / 1000) - time
+        return (Math.floor(secondsSince / 60))
+    }
+}
+
+const parseDaysOpen = (time) => {
+    let minutes = minutesSince(time)
+    if (minutes <= 60) {
+        return minutes + " minutes ago"
+    }
+    let hours = Math.floor(minutes / 60)
     if (hours <= 24) {
         return hours + " hours ago"
     }
     if (hours <= 48) {
         return "Yesterday"
     }
-    return (daysSince(hours)) + " days ago"
+    return (daysSince(time)) + " days ago"
 }
