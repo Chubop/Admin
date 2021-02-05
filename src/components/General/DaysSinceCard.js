@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 // MUI
-import { Button, Card, CardContent, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from '@material-ui/core'
-import { Delete, Edit, ZoomIn } from '@material-ui/icons'
+import { Card, CardContent, Paper, Typography } from '@material-ui/core'
 
 // Custom
-import { printFormat } from '../../functions'
 import { ItemTable } from './ItemTable'
 
 const daysMaxDefault = 5

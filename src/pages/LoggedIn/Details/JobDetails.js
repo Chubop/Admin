@@ -13,11 +13,11 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
     Typography,
 } from '@material-ui/core'
+import { Add, Assessment, AssignmentTurnedIn, Extension, Star } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../../functions'
@@ -27,8 +27,8 @@ import {
     Page,
     DeleteConfirmation
 } from '../../../components/General';
-import { ApplicantsAnalytics } from '../../../components/Applicant';
 import { JobModal } from '../../../components/Job';
+import { DashCard } from '../../../components/Dashboard';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -96,7 +96,16 @@ export function JobDetails(props) {
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
                         <Grid item xs={4}>
-                            <DetailsContent job={job} />
+                            <Grid container spacing={spacing}>
+                                <Grid item xs={12}>
+                                    <DetailsContent job={job} />
+                                </Grid>
+                                {job.applicants && job.applicants.length > 0 &&
+                                    <Grid item xs={12}>
+                                        <StatsCards stats={stats} />
+                                    </Grid>
+                                }
+                            </Grid>
                         </Grid>
                         <Grid item xs={8}>
                             <QuestionsContent questions={job.question} />
@@ -174,18 +183,73 @@ function DetailsContent(props) {
     )
 }
 
+function StatsCards(props) {
+    const { stats } = props
+
+    return (
+        <Grid container spacing={spacing}>
+            <Grid item xs={6}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Star}
+                            // TODO change to grade
+                            // TODO grade on backend?
+                            title={"Average Score"}
+                            value={stats.avgTotal.toFixed(0) + "%"}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={AssignmentTurnedIn}
+                            title={"Average Eligibility"}
+                            value={stats.avgEli.toFixed(0) + "%"}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Extension}
+                            title={"Average Fit"}
+                            value={stats.avgFit.toFixed(0) + "%"}
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid item xs={6}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Add}
+                            title={"Accepted"}
+                            value={stats.acceptanceRate.toFixed(0) + "%"}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Assessment}
+                            title={"Applicants"}
+                            value={stats.numApplicants}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DashCard
+                            dashIcon={Assessment}
+                            title={"Screened"}
+                            value={stats.numScored}
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    )
+}
+
 function AnalyticsContent(props) {
     const { stats, job } = props
 
     return (
         <div>
             <Grid container spacing={spacing}>
-                <Grid item xs={12}>
-                    <ApplicantsAnalytics
-                        stats={stats}
-                        applicants={job.applicants}
-                    />
-                </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <ScoreChartCard
                         title={"Scores"}
@@ -217,17 +281,12 @@ function QuestionsContent(props) {
     const { questions } = props
     const classes = useStyles()
 
-    // let questions1 = questions.slice(0, Math.floor(questions.length/2)) 
-    // let questions2 = questions.slice(Math.floor(questions.length/2)) 
-
     return (
         <Card>
             <CardHeader
                 className={classes.detailsHeader}
                 title={"Chatbot Questions and Scoring Preferences"}
             />
-            {/* <CardContent> */}
-            {/* <TableContainer> */}
             <Table>
                 <TableHead>
                     <TableRow>
@@ -268,8 +327,6 @@ function QuestionsContent(props) {
                     }
                 </TableBody>
             </Table>
-            {/* </TableContainer>
-            </CardContent> */}
         </Card>
     )
 }

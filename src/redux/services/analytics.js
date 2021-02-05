@@ -9,16 +9,12 @@ export function analyzeApplicants(applicants, data) {
     for (let i = 0; i < applicants.length; i++) {
         let applicant = applicants[i]
 
-        if (!isNaN(applicant.skill)){
+        if (!isNaN(applicant.total)){
+            numScored += 1
             scores.eli.push(applicant.skill)
             totalEli += applicant.skill
-            numScored += 1
-        }
-        if (!isNaN(applicant.will)){
             scores.fit.push(applicant.will)
             totalFit += applicant.will
-        }
-        if (!isNaN(applicant.total)){
             scores.total.push(applicant.total)
             totalTotal += applicant.total
         }
@@ -30,16 +26,17 @@ export function analyzeApplicants(applicants, data) {
         if (applicant.status === "Sent to Recruiter")
             acceptedNum += 1
     }
-    data['numScreened'] = daysSince.length
 
     data['numApplicants'] = applicants.length
     data['numScored'] = numScored
+
     data['avgEli'] = numScored > 0 ? totalEli/numScored : 0
     data['avgFit'] = numScored > 0 ? totalFit/numScored : 0
     data['avgTotal'] = numScored > 0 ? totalTotal/numScored : 0
 
     data['daysSince'] = daysSince
 
+    // for charts
     data['scores'] = scores
 
     data['acceptanceRate'] = acceptedNum/applicants.length * 100

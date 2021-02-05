@@ -280,10 +280,10 @@ export function ItemTable(props) {
             // Check if preferences are stored and prefKey is given
             if (preferences) {
                 if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
-                // Read stored value
-                rowsPref = preferences.rowsPerPage[prefKey]
-                setRowsPerPage(rowsPref)
-            }
+                    // Read stored value
+                    rowsPref = preferences.rowsPerPage[prefKey]
+                    setRowsPerPage(rowsPref)
+                }
                 if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
                     preferences['rowsPerPage'] = {}
                 }
@@ -294,8 +294,8 @@ export function ItemTable(props) {
                 preferences = {
                     'rowsPerPage': {
                         [prefKey]: rowsPref
-        }
-    }
+                    }
+                }
                 localStorage.setItem('preferences', JSON.stringify(preferences))
             }
         }
@@ -356,15 +356,17 @@ export function ItemTable(props) {
     }
 
     const handleDelete = () => {
-        let items = []
-        for (let s = 0; s < selected.length; s++) {
-            for (let r = 0; r < rows.length; r++) {
-                if (rows[r].key === selected[s]) {
-                    items.push(rows[r])
-                }
-            }
-        }
-        props.handleDelete(items)
+        // TODO
+        console.log("In Progress")
+        // let items = []
+        // for (let s = 0; s < selected.length; s++) {
+        //     for (let r = 0; r < rows.length; r++) {
+        //         if (rows[r].key === selected[s]) {
+        //             items.push(rows[r])
+        //         }
+        //     }
+        // }
+        // props.handleDelete(items)
     }
 
     // Check if key of row is in list of selected rows
@@ -405,6 +407,7 @@ export function ItemTable(props) {
 
                                 let detailsPath = `/${path}/${row.key}`
                                 let deleteProps = [row.key]
+                                let editID = { [idString]: row.key }
                                 if ('jid' in row && 'aid' in row || props.includeJID) {
                                     detailsPath = `/${path}/${row['jid']}/${row.key}`
                                     deleteProps = [row['jid'], row.key]
@@ -434,7 +437,7 @@ export function ItemTable(props) {
                                                     padding={cell.disablePadding ? 'none' : 'default'}
                                                     key={cell.id}
                                                 >
-                                                    {printFormat(row[cell['id']], cell.suffix)}
+                                                    {printFormat(row[cell['id']], cell.suffix, cell.isDate)}
                                                 </TableCell>
                                             )
                                         })}
