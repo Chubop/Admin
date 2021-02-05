@@ -393,14 +393,14 @@ export function ItemTable(props) {
                             .map((row, index) => {
                                 const isItemSelected = isSelected(row.key);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-                                // const detailsLink = props.includeJID ? `/${path}/${row['jid']}/${row.key}` : `/${path}/${row.key}`
-                                const editID = props.includeJID ? { [idString]: row.key, 'jid': row['jid'] } : { [idString]: row.key }
+                                let editID = { [idString]: row.key }
 
                                 let detailsPath = `/${path}/${row.key}`
                                 let deleteProps = [row.key]
-                                if ('jid' in row && 'aid' in row) {
+                                if ('jid' in row && 'aid' in row || props.includeJID) {
                                     detailsPath = `/${path}/${row['jid']}/${row.key}`
                                     deleteProps = [row['jid'], row.key]
+                                    editID = { [idString]: row.key, 'jid': row['jid'] }
                                 }
 
                                 return (
