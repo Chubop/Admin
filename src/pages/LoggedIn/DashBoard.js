@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react'
 import { Grid, makeStyles } from '@material-ui/core'
-import { DoneAll, Face, Grade, People } from '@material-ui/icons'
+import { AssignmentTurnedIn, DoneAll, Face, Grade, People } from '@material-ui/icons'
 
 import { useDispatch, useSelector } from 'react-redux';
 
 import { 
-    AppCard, 
     DashCard, 
-    MultipleStatCard 
 } from '../../components/Dashboard'
 import { applicantActions } from '../../redux/actions';
 import { Page, ScoreChartCard } from '../../components/General';
@@ -47,7 +45,7 @@ export function DashBoard(){
 
     return (
         <Page
-            title="Dashboard"
+            title="Dashboard - All Jobs"
             loading={loading}
             error={error}
         >
@@ -55,24 +53,31 @@ export function DashBoard(){
                 <Grid container spacing={spacing}>
                     <Grid item xs={12}>
                         <Grid container spacing={spacing}>
-                            <Grid item xs={6} sm={6} md={3}>
+                            <Grid item >
                                 <DashCard dashIcon={People} title={"Applicants Today"} value={appsToday()}
                                 />
                             </Grid>
-                            <Grid item xs={6} sm={6} md={3}>
+                            <Grid item >
                                 <DashCard dashIcon={DoneAll} title={"Acceptance Rate"} value={applicantStats.acceptanceRate.toFixed(0) + "%"} />
                             </Grid>
                             {/* <Grid item>
                                 <DashCard dashIcon={Face} title={"Active HM"} value={"5"}/>
                             </Grid> */}
-                            <Grid item xs={6} sm={6} md={3}>
+                            <Grid item >
                                 <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.avgTotal.toFixed(2) + "%"} />
                             </Grid>
-                            <Grid item xs={6} sm={6} md={3}>
+                            <Grid item >
                                 <DashCard
                                     dashIcon={People}
                                     title={"Applicants"}
                                     value={applicantStats.numApplicants}
+                                />
+                            </Grid>
+                            <Grid item >
+                                <DashCard
+                                    dashIcon={AssignmentTurnedIn}
+                                    title={"Screened"}
+                                    value={applicantStats.numScored}
                                 />
                             </Grid>
                         </Grid>
