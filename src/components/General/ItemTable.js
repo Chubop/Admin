@@ -58,11 +58,13 @@ function createRows(data, headCells, idString) {
 }
 
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
+    if (b[orderBy] && a[orderBy]) { // always have '---' rows last when sorting
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
     }
     return 0;
 }
@@ -343,7 +345,12 @@ export function ItemTable(props) {
 
     // Pagination
     const handleChangeRowsPerPage = (event) => {
-        let value = parseInt(event.target.value, 10)
+        let value = event.target.value
+        if (value == 'All') {
+            value = rows.length
+        }
+
+        value = parseInt(value, 10)
         setRowsPerPage(value);
         let preferences = JSON.parse(localStorage.getItem('preferences'))
         preferences['rowsPerPage'][prefKey] = value
@@ -403,7 +410,6 @@ export function ItemTable(props) {
                             .map((row, index) => {
                                 const isItemSelected = isSelected(row.key);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-                                let editID = { [idString]: row.key }
 
                                 let detailsPath = `/${path}/${row.key}`
                                 let deleteProps = [row.key]
@@ -482,7 +488,7 @@ export function ItemTable(props) {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
+                rowsPerPageOptions={[5, 10, 25, 'All']}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
