@@ -9,7 +9,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 
 // Custom Components
 import { ApplicantModal } from './'
-import { ItemTable } from '../General';
+import { DeleteConfirmation, ItemTable } from '../General';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -23,7 +23,14 @@ export function ApplicantTable(props) {
     const dispatch = useDispatch()
 
     // States
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false); // edit modal
+
+    // Deletion states
+    const [deleteAID, setDeleteAID] = React.useState()
+    const [deleteJID, setDeleteJID] = React.useState()
+    // Deletion confirmation modal
+    const [deleteOpen, setDeleteOpen] = React.useState(false)
+
 
     // Open the edit applicant modal
     const openEditModal = (id) => {
@@ -36,16 +43,24 @@ export function ApplicantTable(props) {
         setOpen(false);
     };
 
-    // When delete button in table is pressed
-    const handleDelete = (applicants) => {
-        // TODO
-        console.log(applicants)
+    // Open delete confirmation
+    const handleDeleteClick = (ids) => {
+        let [jid, aid] = ids
+        setDeleteJID(jid)
+        setDeleteAID(aid)
+        setDeleteOpen(true)
+    }
+
+    // Perform delete redux service after confirmation
+    const handleDelete = () => {
+        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID))
     }
 
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+        { id: 'aid', numeric: false, disablePadding: false, label: 'AID' },
         { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
         { id: 'will', numeric: true, disablePadding: false, label: 'Fit', suffix: '%' },
         { id: 'skill', numeric: true, disablePadding: false, label: 'Eligibility', suffix: '%' },
@@ -66,10 +81,14 @@ export function ApplicantTable(props) {
                     includeJID
                     headCells={headCells}
                     handleClickEdit={openEditModal}
-                    handleDelete={handleDelete}
+                    handleDelete={handleDeleteClick}
                     prefKey={'applicantsPage'}
-                    noDelete
                     {...props}
+                />
+                <DeleteConfirmation
+                    open={deleteOpen}
+                    handleDelete={handleDelete}
+                    handleClose={() => setDeleteOpen(false)}
                 />
             </Paper>
             <ApplicantModal open={open} handleClose={handleClose} />
