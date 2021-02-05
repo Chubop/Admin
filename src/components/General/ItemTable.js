@@ -278,16 +278,24 @@ export function ItemTable(props) {
         let rowsPref = rowsPerPage
         if (prefKey) {
             // Check if preferences are stored and prefKey is given
-            if (preferences && preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
+            if (preferences) {
+                if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
                 // Read stored value
                 rowsPref = preferences.rowsPerPage[prefKey]
                 setRowsPerPage(rowsPref)
             }
-            else {
                 if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
                     preferences['rowsPerPage'] = {}
                 }
                 preferences['rowsPerPage'][prefKey] = rowsPref
+                localStorage.setItem('preferences', JSON.stringify(preferences))
+            }
+            else {
+                preferences = {
+                    'rowsPerPage': {
+                        [prefKey]: rowsPref
+        }
+    }
                 localStorage.setItem('preferences', JSON.stringify(preferences))
             }
         }
