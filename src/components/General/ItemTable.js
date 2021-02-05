@@ -207,7 +207,7 @@ const EnhancedTableToolbar = (props) => {
                 )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
+                <Tooltip title="In Progress">
                     <IconButton aria-label="delete" onClick={handleDelete}>
                         <Delete />
                     </IconButton>
