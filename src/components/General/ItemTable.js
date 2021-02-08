@@ -445,7 +445,11 @@ export function ItemTable(props) {
                                                     padding={cell.disablePadding ? 'none' : 'default'}
                                                     key={cell.id}
                                                 >
-                                                    {printFormat(row[cell['id']], cell.suffix, cell.isDate)}
+                                                    {
+                                                        cell.getLength ?
+                                                            row[cell['id']].length
+                                                            : printFormat(row[cell['id']], cell.suffix, cell.isDate)
+                                                    }
                                                 </TableCell>
                                             )
                                         })}

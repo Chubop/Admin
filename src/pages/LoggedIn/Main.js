@@ -154,11 +154,11 @@ function Main() {
           <Route exact path="/hm" component={HiringManager} />
           <Route path="/hm/:hmid" component={HMDetails}/>
 
-          <Route exact path="/application" component={Applicant}/>
-          <Route path="/application/:jid/:aid" component={AppDetails}/>
+          <Route exact path="/applications" component={Applicant}/>
+          <Route path="/applications/:jid/:aid" component={AppDetails}/>
 
           <Route exact path="/candidate" component={Candidate}/>
-          <Route path="/candidate/:email" component={CandidateDetails}/>
+          <Route path="/candidate/:cid" component={CandidateDetails}/>
 
           <Route path="/settings" component={Settings}/>
           <Route component={NotFound}/>

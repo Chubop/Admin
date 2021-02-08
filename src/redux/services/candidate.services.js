@@ -24,10 +24,10 @@ async function createCandidate(candidate) {
     return response.data
 }
 
-async function getCandidate(aid, jid) {
+async function getCandidate(cid) {
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
-        `${API_ROOT}/candidate/${jid}/${aid}`,
+        `${API_ROOT}/candidate/${cid}`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
@@ -56,10 +56,10 @@ async function getAllCandidates() {
     return values
 }
 
-async function deleteCandidate(jid, aid) {
+async function deleteCandidate(cid) {
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
-        `${API_ROOT}/candidate/${jid}/${aid}`,
+        `${API_ROOT}/candidate/${cid}`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
@@ -72,9 +72,9 @@ async function deleteCandidate(jid, aid) {
 
 async function updateCandidate(candidate) {
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
-    if (candidate.email) {
+    if (candidate.cid) {
         let response = await axios.put(
-            `${API_ROOT}/candidate/${candidate.email}`,
+            `${API_ROOT}/candidate/${candidate.cid}`,
             candidate,
             {
                 headers: {

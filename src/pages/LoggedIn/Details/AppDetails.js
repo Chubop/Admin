@@ -115,7 +115,7 @@ export function AppDetails(props) {
                         </DeleteConfirmation>
                         {
                             deleted &&
-                            <Redirect to="/application"/>
+                            <Redirect to="/applications"/>
                         }
                         <ApplicantModal
                             open={editOpen}

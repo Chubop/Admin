@@ -26,14 +26,14 @@ export function CandidateTable(props) {
     const [open, setOpen] = React.useState(false); // edit modal
 
     // Deletion states
-    const [deleteEmail, setDeleteEmail] = React.useState()
+    const [deleteCID, setDeleteCID] = React.useState()
     // Deletion confirmation modal
     const [deleteOpen, setDeleteOpen] = React.useState(false)
 
 
     // Open the edit candidate modal
     const openEditModal = (id) => {
-        dispatch(candidateActions.getCandidate(id.email))
+        dispatch(candidateActions.getCandidate(id.cid))
         setOpen(true);
     };
 
@@ -44,29 +44,26 @@ export function CandidateTable(props) {
 
     // Open delete confirmation
     const handleDeleteClick = (ids) => {
-        let [email] = ids
-        setDeleteEmail(email)
+        let [cid] = ids
+        setDeleteCID(cid)
         setDeleteOpen(true)
     }
 
     // Perform delete redux service after confirmation
     const handleDelete = () => {
-        dispatch(candidateActions.deleteCandidate(deleteEmail))
+        dispatch(candidateActions.deleteCandidate(deleteCID))
     }
 
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
-        { id: 'created', numeric: true, disablePadding: false, label: 'Screened', isDate: true},
-        { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-        { id: 'aid', numeric: false, disablePadding: false, label: 'AID' },
-        { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-        { id: 'will', numeric: true, disablePadding: false, label: 'Fit', suffix: '%' },
-        { id: 'skill', numeric: true, disablePadding: false, label: 'Eligibility', suffix: '%' },
-        { id: 'total', numeric: true, disablePadding: false, label: 'Total Score', suffix: '%' },
+        { id: 'cid', numeric: false, disablePadding: false, label: 'Email' },
+        { id: 'greenhouse_cid', numeric: false, disablePadding: false, label: 'Greenhouse CID' },
+        { id: 'applications', numeric: true, disablePadding: false, label: 'Applications' },
+        { id: 'applications', numeric: true, disablePadding: false, label: '', getLength: true },
     ];
 
-    const idString = 'aid'
+    const idString = 'cid'
     // This path is used to get to the details page
     const path = "candidate"
 
@@ -77,7 +74,6 @@ export function CandidateTable(props) {
                     title="Candidates"
                     idString={idString}
                     path={path}
-                    includeJID
                     headCells={headCells}
                     handleClickEdit={openEditModal}
                     handleDelete={handleDeleteClick}
