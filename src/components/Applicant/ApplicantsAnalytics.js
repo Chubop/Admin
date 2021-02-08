@@ -104,7 +104,7 @@ export function ApplicantsAnalytics(props) {
                         <DashCard
                             dashIcon={Assessment}
                             title={"Screened"}
-                            value={stats.numScreened}
+                            value={stats.numScored}
                         />
                     </Grid>
                 </Grid>

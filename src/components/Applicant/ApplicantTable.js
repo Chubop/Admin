@@ -59,6 +59,7 @@ export function ApplicantTable(props) {
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
+        { id: 'created', numeric: true, disablePadding: false, label: 'Screened', isDate: true},
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
         { id: 'aid', numeric: false, disablePadding: false, label: 'AID' },
         { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
