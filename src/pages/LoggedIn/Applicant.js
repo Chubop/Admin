@@ -25,7 +25,7 @@ export function Applicant() {
 
     return (
         <Page
-            title="Applicants"
+            title="Applications"
             loading={!applicants}
             error={error}
         >

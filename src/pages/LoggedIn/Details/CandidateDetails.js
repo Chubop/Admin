@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { applicantActions } from '../../../redux/actions';
+import { candidateActions } from '../../../redux/actions';
 
 // MUI
 import { 
@@ -28,7 +28,7 @@ import {
 import { printFormat } from '../../../functions'
 import { DeleteConfirmation, Page } from '../../../components/General';
 import { DashCard } from '../../../components/Dashboard';
-import { ApplicantModal } from '../../../components/Applicant';
+import { CandidateModal } from '../../../components/Candidate';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function AppDetails(props) {
+export function CandidateDetails(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     // States
@@ -64,28 +64,27 @@ export function AppDetails(props) {
     const [deleted, setDeleted] = useState(false); // for redirecting
     const [editOpen, setEditOpen] = useState(false);
 
-    // Get jid and aid from url
-    const jid = props.match.params.jid
-    const aid = props.match.params.aid
+    // Get email from url
+    const email = props.match.params.email
 
-    // Load applicant details at start
+    // Load candidate details at start
     useEffect(() => {
-        dispatch(applicantActions.getApplicant(aid, jid))
+        dispatch(candidateActions.getCandidate(email))
     }, [])
-    const appState  = useSelector(state => state.applicant)
-    const { applicant, loading, error } = appState
+    const candidatesState  = useSelector(state => state.candidate)
+    const { candidate, loading, error } = candidatesState
 
     // When delete is confirmed
     const handleDelete = () => { 
-        setDeleted(true) // redirects page to '/applicants'
-        dispatch(applicantActions.deleteApplicant(jid, aid)) 
+        setDeleted(true) // redirects page to '/candidates'
+        dispatch(candidateActions.deleteCandidate(email)) 
     }
 
-    const pageLoading = !applicant || loading
+    const pageLoading = !candidate || loading
     return (
         <div className={classes.root}>
             <Page
-                title="Application Details"
+                title="Candidate Details"
                 loading={pageLoading}
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}
@@ -93,31 +92,31 @@ export function AppDetails(props) {
             >
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
-                        <Grid item xs={applicant.total ? 9 : 12}>
-                            <DetailsCard applicant={applicant} />
+                        <Grid item xs={candidate.total ? 9 : 12}>
+                            <DetailsCard candidate={candidate} />
                         </Grid>
-                        <Grid item xs={3}>
+                        {/* <Grid item xs={3}>
                             {
-                                applicant.total &&
-                                <Scores applicant={applicant} />
+                                candidate.total &&
+                                <Scores candidate={candidate} />
                             }
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={12}>
-                            <QuestionsTable questions={applicant.scoredQuestions} />
+                            <QuestionsTable questions={candidate.scoredQuestions} />
                         </Grid>
                         <DeleteConfirmation
                             open={deleteOpen}
                             handleDelete={handleDelete}
                             handleClose={() => setDeleteOpen(false)}
                         >
-                            <Typography>{applicant.name}</Typography>
-                            <Typography>{applicant.email}</Typography>
+                            <Typography>{candidate.name}</Typography>
+                            <Typography>{candidate.email}</Typography>
                         </DeleteConfirmation>
                         {
                             deleted &&
-                            <Redirect to="/application"/>
+                            <Redirect to="/candidate"/>
                         }
-                        <ApplicantModal
+                        <CandidateModal
                             open={editOpen}
                             handleClose={() => setEditOpen(false)}
                         />
@@ -129,58 +128,58 @@ export function AppDetails(props) {
 }
 
 function DetailsCard(props) {
-    const { applicant } = props
+    const { candidate } = props
     const classes = useStyles()
 
     let date = '---'
-    if (applicant.created){
-        date = new Date(applicant.created[0] * 1000)
+    if (candidate.created){
+        date = new Date(candidate.created[0] * 1000)
     }
 
     return (
         <Card style={{height: '100%'}}>
             <CardHeader
                 className={classes.detailsHeader}
-                title={printFormat(applicant.name)}
+                title={printFormat(candidate.name)}
             />
             <CardContent className={classes.detailsCardContent}>
-                <Typography variant="subtitle1">{"Status: " + printFormat(applicant.status)} </Typography>
-                <Typography variant="body1">{printFormat(applicant.email)} </Typography>
+                <Typography variant="subtitle1">{"Status: " + printFormat(candidate.status)} </Typography>
+                <Typography variant="body1">{printFormat(candidate.email)} </Typography>
                 <Typography variant="body1">{"Created: " + date} </Typography>
-                <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
             </CardContent>
         </Card>
     )
 }
 
-function Scores(props) {
-    const { applicant } = props
-    return (
-        <Grid container spacing={spacing}>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Star}
-                    title={"Score"}
-                    value={applicant.total + "%"}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Check}
-                    title={"Eligibility"}
-                    value={applicant.skill + "%"}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Extension}
-                    title={"Job Fit"}
-                    value={applicant.will + "%"}
-                />
-            </Grid>
-        </Grid>
-    )
-}
+// Average scores?
+// function Scores(props) {
+//     const { candidate } = props
+//     return (
+//         <Grid container spacing={spacing}>
+//             <Grid item xs={12}>
+//                 <DashCard
+//                     dashIcon={Star}
+//                     title={"Score"}
+//                     value={candidate.total + "%"}
+//                 />
+//             </Grid>
+//             <Grid item xs={12}>
+//                 <DashCard
+//                     dashIcon={Check}
+//                     title={"Eligibility"}
+//                     value={candidate.skill + "%"}
+//                 />
+//             </Grid>
+//             <Grid item xs={12}>
+//                 <DashCard
+//                     dashIcon={Extension}
+//                     title={"Job Fit"}
+//                     value={candidate.will + "%"}
+//                 />
+//             </Grid>
+//         </Grid>
+//     )
+// }
 
 const headCells = [
     { id: 'answer', numeric: false, disablePadding: false, label: 'Answer' },

@@ -123,7 +123,7 @@ export function JobDetails(props) {
                                 </Grid>
                             </>
                             :
-                            <h1>No applicants have applied to this job</h1>
+                            <h1>No candidates have applied to this job</h1>
                         }
                         <DeleteConfirmation
                             open={deleteOpen}
@@ -131,7 +131,7 @@ export function JobDetails(props) {
                             handleClose={() => setDeleteOpen(false)}
                         >
                             <Typography>{job.titles}</Typography>
-                            <Typography>{"Number of Applicants: " + stats.numApplicants}</Typography>
+                            <Typography>{"Number of Applications: " + stats.numApplicants}</Typography>
                         </DeleteConfirmation>
                         {
                             deleted &&
@@ -227,7 +227,7 @@ function StatsCards(props) {
                     <Grid item xs={12}>
                         <DashCard
                             dashIcon={Assessment}
-                            title={"Applicants"}
+                            title={"Applications"}
                             value={stats.numApplicants}
                         />
                     </Grid>

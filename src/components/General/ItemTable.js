@@ -48,7 +48,7 @@ function createRow(dataRow, headCells, idString) {
     return row;
 }
 
-// Makes all rows from applicants
+// Makes all rows from items
 function createRows(data, headCells, idString) {
     let rows = []
     for (let i = 0; i < data.length; i++) {

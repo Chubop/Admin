@@ -69,7 +69,7 @@ export function DashBoard(){
                             <Grid item >
                                 <DashCard
                                     dashIcon={People}
-                                    title={"Applicants"}
+                                    title={"Applications"}
                                     value={applicantStats.numApplicants}
                                 />
                             </Grid>
@@ -87,27 +87,27 @@ export function DashBoard(){
                             <Grid item>
                                 <ScoreChartCard
                                     zoom
-                                    title="Applicant Scores"
+                                    title="Application Scores"
                                     data={applicantStats && applicantStats.scores.total}
                                 />
                             </Grid>
                             <Grid item>
                                 <ScoreChartCard
                                     zoom
-                                    title="Applicant Eligibility"
+                                    title="Application Eligibility"
                                     data={applicantStats && applicantStats.scores.eli}
                                 />
                             </Grid>
                             <Grid item>
                                 <ScoreChartCard
                                     zoom
-                                    title="Applicant Fit"
+                                    title="Application Fit"
                                     data={applicantStats && applicantStats.scores.fit}
                                 />
                             </Grid>
                             <Grid item>
                                 <WeekCard
-                                    title="Applicants This Week"
+                                    title="Applications This Week"
                                     data={applicantStats && applicantStats.daysSince}
                                 />
                             </Grid>

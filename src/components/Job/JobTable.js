@@ -38,9 +38,9 @@ export function JobTable(props) {
     };
 
     // When delete button in table is pressed
-    const handleDelete = (applicants) => {
+    const handleDelete = (jobs) => {
         // TODO
-        console.log(applicants)
+        console.log(jobs)
     }
 
     // These id's comes from the database, they must match

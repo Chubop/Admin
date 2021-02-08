@@ -10,6 +10,11 @@ import {
 } from './applicant.reducer'
 
 import { 
+    candidate,
+    candidates
+} from './candidate.reducer'
+
+import { 
     hiringManager,
     hiringManagers
 } from './hiringManager.reducer'
@@ -27,6 +32,8 @@ export default combineReducers({
     authentication,
     applicant,
     applicants,
+    candidate,
+    candidates,
     hiringManager,
     hiringManagers,
     job,

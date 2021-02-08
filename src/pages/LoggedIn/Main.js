@@ -21,9 +21,10 @@ import {
 
 // Importing Pages
 import { Applicant } from './Applicant'
+import { Candidate } from './Candidate'
 import { HiringManager } from './HiringManager'
 import { Job } from './Job'
-import { AppDetails, HMDetails, JobDetails } from './Details'
+import { AppDetails, CandidateDetails, HMDetails, JobDetails } from './Details'
 import { Settings } from './Settings'
 import { DashBoard } from './DashBoard'
 
@@ -153,8 +154,11 @@ function Main() {
           <Route exact path="/hm" component={HiringManager} />
           <Route path="/hm/:hmid" component={HMDetails}/>
 
-          <Route exact path="/applicant" component={Applicant}/>
-          <Route path="/applicant/:jid/:aid" component={AppDetails}/>
+          <Route exact path="/application" component={Applicant}/>
+          <Route path="/application/:jid/:aid" component={AppDetails}/>
+
+          <Route exact path="/candidate" component={Candidate}/>
+          <Route path="/candidate/:email" component={CandidateDetails}/>
 
           <Route path="/settings" component={Settings}/>
           <Route component={NotFound}/>

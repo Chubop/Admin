@@ -1,4 +1,5 @@
 export * from './auth.action'
+export * from './candidate.action'
 export * from './applicant.action'
 export * from './hiringManager.action'
 export * from './job.action'

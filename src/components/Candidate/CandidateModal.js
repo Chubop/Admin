@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { applicantActions } from '../../redux/actions';
+import { candidateActions } from '../../redux/actions';
 
 // MUI
 import {
@@ -16,28 +16,28 @@ import { EditModal } from '../General';
 const useStyles = makeStyles((theme) => ({
 }));
 
-export function ApplicantModal(props) {
+export function CandidateModal(props) {
     const dispatch = useDispatch();
 
-    // Get applicant details and load into initial inputs
-    const applicantState = useSelector(state => state.applicant)
-    const { applicant, loading, error } = applicantState
+    // Get candidate details and load into initial inputs
+    const candidatesState = useSelector(state => state.candidate)
+    const { candidate, loading, error } = candidatesState
     const [inputs, setInputs] = useState({})
     useEffect(() => {
-        if (applicant) {
-            setInputs(applicant)
+        if (candidate) {
+            setInputs(candidate)
         }
-    }, [applicant])
+    }, [candidate])
 
     // Render
     return (
         <EditModal
-            title={'Edit Application'}
+            title={'Edit Candidate'}
             // redux action to dispatch when saving
-            onSave={() => dispatch(applicantActions.updateApplicant(inputs))}
+            onSave={() => dispatch(candidateActions.updateCandidate(inputs))}
 
             // data
-            initial={applicant}
+            initial={candidate}
             edited={inputs}
             loading={loading}
             error={error}
