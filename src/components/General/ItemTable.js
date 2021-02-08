@@ -346,15 +346,17 @@ export function ItemTable(props) {
     // Pagination
     const handleChangeRowsPerPage = (event) => {
         let value = event.target.value
+        // Set stored preferences
+        let preferences = JSON.parse(localStorage.getItem('preferences'))
+        preferences['rowsPerPage'][prefKey] = value == "All" ? 100 : value
+        localStorage.setItem('preferences', JSON.stringify(preferences))
+
+        // Set state
         if (value == 'All') {
             value = rows.length
         }
-
         value = parseInt(value, 10)
         setRowsPerPage(value);
-        let preferences = JSON.parse(localStorage.getItem('preferences'))
-        preferences['rowsPerPage'][prefKey] = value
-        localStorage.setItem('preferences', JSON.stringify(preferences))
         setPage(0);
     };
 
@@ -488,7 +490,7 @@ export function ItemTable(props) {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 'All']}
+                rowsPerPageOptions={[5, 10, 25, 100, 'All']}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
