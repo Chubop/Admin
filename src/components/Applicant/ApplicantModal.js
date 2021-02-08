@@ -55,6 +55,8 @@ function Content(props) {
     const classes = useStyles();
     const { inputs, setInputs } = props;
 
+    console.log(inputs)
+
     const handleChange = (field) => (event) => {
         setInputs({ ...inputs, [field]: event.target.value })
     }
@@ -71,6 +73,8 @@ function Content(props) {
                 onChange={handleChange('name')}
                 fullWidth
             />
+
+
             {/* <TextField
                     autoFocus
                     margin="dense"
