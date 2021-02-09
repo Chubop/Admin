@@ -29,6 +29,7 @@ import { printFormat } from '../../../functions'
 import { DeleteConfirmation, Page } from '../../../components/General';
 import { DashCard } from '../../../components/Dashboard';
 import { ApplicantModal } from '../../../components/Applicant';
+import LinkedItems from '../../../components/Applicant/LinkedItems';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -84,6 +85,10 @@ export function AppDetails(props) {
     const pageLoading = !applicant || loading
     return (
         <div className={classes.root}>
+            {
+                deleted &&
+                <Redirect to="/applications" />
+            }
             <Page
                 title="Application Details"
                 loading={pageLoading}
@@ -113,10 +118,6 @@ export function AppDetails(props) {
                             <Typography>{applicant.name}</Typography>
                             <Typography>{applicant.email}</Typography>
                         </DeleteConfirmation>
-                        {
-                            deleted &&
-                            <Redirect to="/applications"/>
-                        }
                         <ApplicantModal
                             open={editOpen}
                             handleClose={() => setEditOpen(false)}
@@ -132,9 +133,9 @@ function DetailsCard(props) {
     const { applicant } = props
     const classes = useStyles()
 
-    let date = '---'
+    let created = '---'
     if (applicant.created){
-        date = new Date(applicant.created[0] * 1000)
+        created = new Date(applicant.created[0] * 1000)
     }
 
     return (
@@ -143,11 +144,41 @@ function DetailsCard(props) {
                 className={classes.detailsHeader}
                 title={printFormat(applicant.name)}
             />
-            <CardContent className={classes.detailsCardContent}>
-                <Typography variant="subtitle1">{"Status: " + printFormat(applicant.status)} </Typography>
-                <Typography variant="body1">{printFormat(applicant.email)} </Typography>
-                <Typography variant="body1">{"Created: " + date} </Typography>
+            <CardContent>
+                {
+                    applicant.email &&
+                    <>
+                        <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
+                        <Link to={`/candidate/${applicant.email}`}> <Typography variant="body1">Click to see candidate</Typography> </Link>
+                    </>
+                }
+                <Typography variant="body1">{"Screened: " + created} </Typography>
+                <Typography variant="body1">{"Status: " + printFormat(applicant.status)} </Typography>
+                {/* <Chip>{printFormat(applicant.status)} </Chip> */}
+                {
+                    applicant.overqualified &&
+                    <Typography variant="body1">This applicant might be overqualified</Typography>
+                }
                 <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
+                <LinkedItems reference={applicant.reference} />
+                {
+                    applicant.recruiter && 
+                    <Typography variant="body1">
+                        {"Recruiter: " + applicant.recruiter.name} 
+                    </Typography>
+                }
+                {
+                    applicant.greenhouse_aid && 
+                    <Typography variant="body1">
+                        {"Greenhouse AID: " + applicant.greenhouse_aid} 
+                    </Typography>
+                }
+                {
+                    applicant.greenhouse_cid && 
+                    <Typography variant="body1">
+                        {"Greenhouse CID: " + applicant.greenhouse_cid} 
+                    </Typography>
+                }
             </CardContent>
         </Card>
     )
