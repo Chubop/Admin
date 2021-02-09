@@ -70,7 +70,7 @@ export function ApplicantTable(props) {
 
     const idString = 'aid'
     // This path is used to get to the details page
-    const path = "application"
+    const path = "applications"
 
     return (
         <>
