@@ -59,8 +59,8 @@ export function CandidateTable(props) {
     const headCells = [
         { id: 'cid', numeric: false, disablePadding: false, label: 'Email' },
         { id: 'greenhouse_cid', numeric: false, disablePadding: false, label: 'Greenhouse CID' },
-        { id: 'applications', numeric: true, disablePadding: false, label: 'Applications' },
-        { id: 'applications', numeric: true, disablePadding: false, label: '', getLength: true },
+        { id: 'applications', numeric: false, disablePadding: false, label: 'AIDs' },
+        { id: 'numApplications', numeric: false, disablePadding: false, label: 'Applications',},
     ];
 
     const idString = 'cid'

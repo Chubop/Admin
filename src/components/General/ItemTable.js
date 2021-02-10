@@ -41,8 +41,14 @@ function createRow(dataRow, headCells, idString) {
     for (let i = 0; i < headCells.length; i++) {
         let id = headCells[i].id
         let newCell = dataRow[id]
-        if (!newCell)
-            newCell = ""
+        if (!newCell) {
+            if (newCell === 0) {
+                newCell = 0
+            }
+            else {
+                newCell = "" 
+            }
+        }
         row[id] = newCell
     }
     return row;
@@ -58,11 +64,13 @@ function createRows(data, headCells, idString) {
 }
 
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] && a[orderBy]) { // always have '---' rows last when sorting
+    if ((b[orderBy] != null) || (a[orderBy] != null)) { // always have empty values last when sorting
         if (b[orderBy] < a[orderBy]) {
+            console.log(b[orderBy], a[orderBy])
             return -1;
         }
         if (b[orderBy] > a[orderBy]) {
+            console.log(a[orderBy], b[orderBy])
             return 1;
         }
     }
@@ -445,11 +453,7 @@ export function ItemTable(props) {
                                                     padding={cell.disablePadding ? 'none' : 'default'}
                                                     key={cell.id}
                                                 >
-                                                    {
-                                                        cell.getLength ?
-                                                            row[cell['id']].length
-                                                            : printFormat(row[cell['id']], cell.suffix, cell.isDate)
-                                                    }
+                                                    { printFormat(row[cell['id']], cell.suffix, cell.isDate) }
                                                 </TableCell>
                                             )
                                         })}
