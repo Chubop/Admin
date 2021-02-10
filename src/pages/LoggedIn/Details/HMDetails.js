@@ -79,7 +79,7 @@ export function HMDetails(props) {
                                         <AnalyticsContent stats={stats} hiringManager={hiringManager} />
                                     </Grid>
                                     :
-                                    <h1>No applicants have applied to job postings by this Hiring Manager</h1>
+                                    <h1>No candidates have applied to job postings by this Hiring Manager</h1>
                                 }
                                 <Grid item xs={12}>
                                     <JobTable data={hiringManager.jobs} />

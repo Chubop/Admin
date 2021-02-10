@@ -2,13 +2,13 @@ import React from 'react'
 
 // redux
 import { useDispatch } from 'react-redux'
-import { applicantActions } from '../../redux/actions'
+import { candidateActions } from '../../redux/actions'
 
 // MUI
 import { makeStyles, Paper } from '@material-ui/core';
 
 // Custom Components
-import { ApplicantModal } from './'
+import { CandidateModal } from './'
 import { DeleteConfirmation, ItemTable } from '../General';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function ApplicantTable(props) {
+export function CandidateTable(props) {
     const classes = useStyles();
     const dispatch = useDispatch()
 
@@ -26,64 +26,58 @@ export function ApplicantTable(props) {
     const [open, setOpen] = React.useState(false); // edit modal
 
     // Deletion states
-    const [deleteAID, setDeleteAID] = React.useState()
-    const [deleteJID, setDeleteJID] = React.useState()
+    const [deleteCID, setDeleteCID] = React.useState()
     // Deletion confirmation modal
     const [deleteOpen, setDeleteOpen] = React.useState(false)
 
 
-    // Open the edit applicant modal
+    // Open the edit candidate modal
     const openEditModal = (id) => {
-        dispatch(applicantActions.getApplicant(id.aid, id.jid))
+        dispatch(candidateActions.getCandidate(id.cid))
         setOpen(true);
     };
 
-    // Close the edit applicant modal
+    // Close the edit candidate modal
     const handleClose = () => {
         setOpen(false);
     };
 
     // Open delete confirmation
     const handleDeleteClick = (ids) => {
-        let [jid, aid] = ids
-        setDeleteJID(jid)
-        setDeleteAID(aid)
+        let [cid] = ids
+        setDeleteCID(cid)
         setDeleteOpen(true)
     }
 
     // Perform delete redux service after confirmation
     const handleDelete = () => {
-        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID))
+        dispatch(candidateActions.deleteCandidate(deleteCID))
     }
 
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
-        { id: 'created', numeric: true, disablePadding: false, label: 'Screened', isDate: true},
-        { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-        { id: 'aid', numeric: false, disablePadding: false, label: 'AID' },
-        { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-        { id: 'will', numeric: true, disablePadding: false, label: 'Fit', suffix: '%' },
-        { id: 'skill', numeric: true, disablePadding: false, label: 'Eligibility', suffix: '%' },
-        { id: 'total', numeric: true, disablePadding: false, label: 'Total Score', suffix: '%' },
+        { id: 'cid', numeric: false, disablePadding: false, label: 'Email' },
+        { id: 'greenhouse_cid', numeric: false, disablePadding: false, label: 'Greenhouse CID' },
+        { id: 'applications', numeric: false, disablePadding: false, label: 'AIDs' },
+        { id: 'numApplications', numeric: false, disablePadding: false, label: 'Applications',},
     ];
 
-    const idString = 'aid'
+    const idString = 'cid'
     // This path is used to get to the details page
-    const path = "applications"
+    const path = "candidate"
 
     return (
         <>
             <Paper className={classes.paper}>
                 <ItemTable
-                    title="Applications"
+                    title="Candidates"
                     idString={idString}
                     path={path}
-                    includeJID
                     headCells={headCells}
                     handleClickEdit={openEditModal}
                     handleDelete={handleDeleteClick}
-                    prefKey={'applicantsPage'}
+                    prefKey={'candidatesPage'}
                     {...props}
                 />
                 <DeleteConfirmation
@@ -92,7 +86,7 @@ export function ApplicantTable(props) {
                     handleClose={() => setDeleteOpen(false)}
                 />
             </Paper>
-            <ApplicantModal open={open} handleClose={handleClose} />
+            <CandidateModal open={open} handleClose={handleClose} />
         </>
     )
 }

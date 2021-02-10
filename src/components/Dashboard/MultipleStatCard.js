@@ -61,10 +61,10 @@ export function MultipleStatCard(props){
                     </Grid>
                     <Grid item>
                         <Typography variant="h1" className={classes.header}>
-                           2020
+                            2020
                         </Typography>
                         <Typography>
-                            Total Applicants
+                            Total Applications
                         </Typography>
                     </Grid>
                     <Grid item>

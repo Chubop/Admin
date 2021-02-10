@@ -41,9 +41,9 @@ export function ApplicantsAnalytics(props) {
             <Grid item xs={6}>
                 <DaysSinceCard
                     // For title
-                    title="New Screened Applicants"
-                    type="Applicant"
-                    detailsPath="applicant"
+                    title="New Screened Applications"
+                    type="Application"
+                    detailsPath="applications"
                     data={applicants}
                     // database keys
                     idKey='aid' nameKey='name' nameLabel="Name"
@@ -96,7 +96,7 @@ export function ApplicantsAnalytics(props) {
                     <Grid item xs={12}>
                         <DashCard
                             dashIcon={Assessment}
-                            title={"Applicants"}
+                            title={"Applications"}
                             value={stats.numApplicants}
                         />
                     </Grid>
