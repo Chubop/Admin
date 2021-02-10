@@ -50,8 +50,22 @@ async function getAllCandidates() {
         }
     )
     let data = response.data
+    let candidates = data.data
+    for (let i = 0; i < candidates.length; i ++){
+        let candidate = candidates[i]
+        let applications = candidate['applications']
+        candidate['numApplications'] = 0
+        if (Array.isArray(applications)){
+            let nullIndex = applications.indexOf(null)
+            // Remove null from list if exists
+            if (nullIndex !== -1){
+                applications = applications.splice(nullIndex, 1)
+            }
+            candidate['numApplications'] = applications.length
+        }
+    }
     let values = {
-        candidates: response.data.data,
+        candidates: candidates,
     }
     return values
 }
