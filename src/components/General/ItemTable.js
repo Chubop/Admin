@@ -66,11 +66,9 @@ function createRows(data, headCells, idString) {
 function descendingComparator(a, b, orderBy) {
     if ((b[orderBy] || b[orderBy] === 0) && (a[orderBy] || a[orderBy] === 0)) { // always have empty values last when sorting
         if (b[orderBy] < a[orderBy]) {
-            console.log(b[orderBy], a[orderBy])
             return -1;
         }
         if (b[orderBy] > a[orderBy]) {
-            console.log(a[orderBy], b[orderBy])
             return 1;
         }
     }

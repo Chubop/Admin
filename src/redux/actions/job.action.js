@@ -6,7 +6,9 @@ export const jobActions = {
     getJob,
     deleteJob,
     updateJob,
+    rescoreJob,
     getAllJobs,
+    updateQuestions
 }
 
 function createJob(job){
@@ -80,6 +82,7 @@ function updateJob(job){
         jobService.updateJob(job).then(
             data => {
                 dispatch(success(data))
+                dispatch(getJob(job.jid))
                 dispatch(getAllJobs())
             }
         ).catch(
@@ -112,4 +115,46 @@ function getAllJobs(){
     function request() {return {type: jobConstants.GET_ALL_JOBS_REQUEST, }}
     function success(data){return {type: jobConstants.GET_ALL_JOBS_SUCCESS, data}}
     function failure(error){return {type: jobConstants.GET_ALL_JOBS_FAILURE, error}}
+}
+
+function rescoreJob(jid){
+    return dispatch => {
+        dispatch(request())
+
+        jobService.rescoreJob(jid).then(
+            () => {
+                dispatch(success())
+                dispatch(getJob(jid))
+            }
+        ).catch(
+            error => {
+                dispatch(failure(error))
+            }
+        )
+    }
+
+    function request(){return {type: jobConstants.RESCORE_JOB_REQUEST, }}
+    function success(){return {type: jobConstants.RESCORE_JOB_SUCCESS, }}
+    function failure(error){return {type: jobConstants.RESCORE_JOB_FAILURE, error}}
+}
+
+function updateQuestions(questions, jid){
+    return dispatch => {
+        dispatch(request())
+
+        jobService.updateQuestions(questions, jid).then(
+            data => {
+                dispatch(success(data))
+                dispatch(getJob(jid))
+            }
+        ).catch(
+            error => {
+                dispatch(failure(error))
+            }
+        )
+    }
+
+    function request(){return {type: jobConstants.UPDATE_QUESTIONS_REQUEST, }}
+    function success(data){return {type: jobConstants.UPDATE_QUESTIONS_SUCCESS, data}}
+    function failure(error){return {type: jobConstants.UPDATE_QUESTIONS_FAILURE, error}}
 }

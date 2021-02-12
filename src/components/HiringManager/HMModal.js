@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { EditModal } from '../General';
+import { deepCopy, EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -25,7 +25,8 @@ export function HMModal(props) {
     const [inputs, setInputs] = useState({})
     useEffect(() => {
         if (hiringManager) {
-            setInputs(hiringManager)
+            let initial = deepCopy(hiringManager)
+            setInputs(initial)
         }
     }, [hiringManager])
 

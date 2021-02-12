@@ -17,6 +17,7 @@ import {printFormat} from '../../functions'
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        width: '100%'
     },
     backDrop: {
         background: 'rgba(0,0,0,0.2)',
@@ -53,21 +54,9 @@ export function EditModal(props) {
     // Get data and load into initial
     useEffect(() => {
         if (initialData) {
-            // deep copy
-            for (const field in initialData) {
-                if (Array.isArray(initialData[field])) {
-                    let array = []
-                    for (let i = 0; i < initialData[field].length; i++) {
-                        array.push(initialData[field][i])
-                    }
-                    initial[field] = array
-                }
-                else {
-                    initial[field] = initialData[field]
-                }
-            }
+            let init = deepCopy(initialData)
             setChanges([])
-            setInitial(initial)
+            setInitial(init)
         }
     }, [initialData])
 
@@ -80,9 +69,8 @@ export function EditModal(props) {
                 diff.push([field, initial[field], edited[field]])
         }
         // If there are differences, open confirmation popup
-        if (diff.length > 0) {
+        if (diff.length > 0)
             setChanges(diff)
-        }
     }, [edited])
 
     // Open confirm modal that shows changes
@@ -162,33 +150,66 @@ export function EditModal(props) {
 }
 
 const Content = (props) => {
-    const { loading, error, changes, confirmOpen } = props
+    const { loading, error, changes, confirmOpen, changeRender } = props
     const classes = useStyles()
 
     if (error)
         return <p>Network Error</p>
     if (loading)
         return <CircularProgress style={{ textAlign: "center" }} />
+
     // If user has opened the confirm panel
-    if (confirmOpen)
-        return (
-            <>
-                {
-                    changes.map((change) => (
-                        <Typography className={classes.typography}>
-                            {` ${change[0]}: "${printFormat(change[1])}" ==> "${printFormat(change[2])}"`}
-                        </Typography>
-                    ))
-                }
-            </>
-        )
+    if (confirmOpen) {
+        // Print each change found in EditModal's useEffect
+        const printChange = (change) => {
+            let initial = change[1]
+            let final = change[2]
+            if (changeRender != undefined) {
+                return changeRender(change)
+            }
+            return (
+                <Typography className={classes.typography}>
+                    {` ${change[0]}: "${printFormat(initial)}" ==> "${printFormat(final)}"`}
+                </Typography>
+            )
+        }
+        return <> { changes.map((change) => (printChange(change)))} </>
+    }
+
     return <> {props.children} </>
 }
 
 function checkEqual(a, b) {
     if (Array.isArray(a)) {
-        if (printFormat(a) === printFormat(b)) return true;
-        return false
+        return (printFormat(a) === printFormat(b))
+    }
+    if (isObject(a)) {
+        for (const field in a) {
+            if (!checkEqual(a[field], b[field]))
+                return false
+        }
+        return true
     }
     return (a === b)
+}
+
+function isObject(obj) {
+    if (obj === null) {return false;}
+    return ((typeof obj === 'object') && (typeof obj !== 'array'))
+}
+
+export function deepCopy(data) {
+    if (Array.isArray(data)) {
+        let init = []
+        for (let i = 0; i < data.length; i++)
+            init.push(deepCopy(data[i]))
+        return init
+    }
+    if (isObject(data)) {
+        let init = {}
+        for (const field in data)
+            init[field] = deepCopy(data[field])
+        return init
+    }
+    return data
 }

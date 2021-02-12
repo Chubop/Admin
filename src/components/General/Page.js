@@ -1,7 +1,7 @@
 import React from 'react'
 
 // MUI
-import { Grid, IconButton, makeStyles, Typography, } from '@material-ui/core'
+import { Grid, IconButton, makeStyles, Tooltip, Typography, } from '@material-ui/core'
 import { Delete, Edit } from '@material-ui/icons';
 
 // Custom Components
@@ -43,11 +43,13 @@ export function Page(props) {
                     }
                     {
                         (onDeleteClick !== undefined && !error & !loading) ?
-                        <IconButton onClick={onDeleteClick}>
-                            <Delete />
-                        </IconButton>
-                        :
-                        <div/>
+                            <Tooltip title={props.deleteTooltip || "Delete"}>
+                                <IconButton onClick={onDeleteClick}>
+                                    <Delete />
+                                </IconButton>
+                            </Tooltip>
+                            :
+                            <div />
                     }
                 </Grid>
             </Grid>

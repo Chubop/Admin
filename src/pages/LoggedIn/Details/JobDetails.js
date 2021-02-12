@@ -9,15 +9,17 @@ import {
     CardContent,
     CardHeader,
     Grid,
+    IconButton,
     makeStyles,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
+    Tooltip,
     Typography,
 } from '@material-ui/core'
-import { Add, Assessment, AssignmentTurnedIn, Extension, Star } from '@material-ui/icons'
+import { Add, Assessment, AssignmentTurnedIn, Edit, Extension, Refresh, Star } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../../functions'
@@ -28,6 +30,7 @@ import {
     DeleteConfirmation
 } from '../../../components/General';
 import { JobModal } from '../../../components/Job';
+import { QuestionsModal } from '../../../components/Job';
 import { DashCard } from '../../../components/Dashboard';
 
 const tabColor = '#1769aa'
@@ -53,7 +56,6 @@ export function JobDetails(props) {
     // States
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleted, setDeleted] = useState(false); // for redirecting
-    const [editOpen, setEditOpen] = useState(false);
 
     // Get jid from url
     const jid = props.match.params.jid
@@ -64,18 +66,6 @@ export function JobDetails(props) {
     }, [])
     const jobState = useSelector(state => state.job)
     const { job, loading, stats, error } = jobState
-
-    // Check hiring managers state, because jobModal needs a list of hiring managers
-    const hmsState = useSelector(state => state.hiringManagers)
-    const { hiringManagers } = hmsState
-    // Open Edit Modal, and load necessary information 
-    const handleEditClick = () => { 
-        // this job is already loaded in
-        // load in all hiring managers if needed
-        if (!hiringManagers)
-            dispatch(hmActions.getAllHMs())
-        setEditOpen(true) 
-    }
 
     // When delete is confirmed
     const handleDelete = () => { 
@@ -91,7 +81,8 @@ export function JobDetails(props) {
                 loading={pageLoading}
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}
-                onEditClick={handleEditClick}
+                deleteTooltip="Delete Job"
+                // onEditClick={handleEditClick}
             >
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
@@ -108,7 +99,10 @@ export function JobDetails(props) {
                             </Grid>
                         </Grid>
                         <Grid item xs={8}>
-                            <QuestionsContent questions={job.question} />
+                            {
+                                job.question &&
+                                    <QuestionsContent questions={job.question} jid={job.jid}/> 
+                            }
                         </Grid>
                         {job.applicants && job.applicants.length > 0 ?
                             <>
@@ -137,10 +131,6 @@ export function JobDetails(props) {
                             deleted &&
                             <Redirect to="/job"/>
                         }
-                        <JobModal
-                            open={editOpen}
-                            handleClose={() => setEditOpen(false)}
-                        />
                     </Grid>
                 }
             </Page>
@@ -151,12 +141,38 @@ export function JobDetails(props) {
 function DetailsContent(props) {
     const { job } = props
     const classes = useStyles()
+    const dispatch = useDispatch();
+
+    const [editOpen, setEditOpen] = useState(false);
+
+    // Check hiring managers state, because jobModal needs a list of hiring managers
+    const hmsState = useSelector(state => state.hiringManagers)
+    const { hiringManagers } = hmsState
+    // Open Edit Modal, and load necessary information 
+    const handleEditClick = () => {
+        // this job is already loaded in
+        // load in all hiring managers if needed
+        if (!hiringManagers)
+            dispatch(hmActions.getAllHMs())
+        setEditOpen(true)
+    }
 
     return (
         <Card>
             <CardHeader
                 className={classes.detailsHeader}
-                title={job.titles}
+                title={
+                    <Grid container justify='space-between' alignItems='center'>
+                        <Grid item> {job.titles} </Grid>
+                        <Grid item>
+                            <Tooltip title='Edit Job'>
+                                <IconButton onClick={handleEditClick} style={{ color: 'white' }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
+                }
             />
             <CardContent>
                 <Typography variant="h5" gutterBottom>
@@ -179,6 +195,10 @@ function DetailsContent(props) {
                 <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
                 <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
             </CardContent>
+            <JobModal
+                open={editOpen}
+                handleClose={() => setEditOpen(false)}
+            />
         </Card>
     )
 }
@@ -278,14 +298,56 @@ function AnalyticsContent(props) {
 }
 
 function QuestionsContent(props) {
-    const { questions } = props
+    const { questions, jid } = props
     const classes = useStyles()
+    const dispatch = useDispatch()
+
+    const [editOpen, setEditOpen] = useState(false);
+    const [QIDs, setQIDS] = useState([])
+
+    // Get list of QIDs for mapping rows
+    useEffect(() => {
+        let qids = []
+        for (const qid in questions) {
+            qids.push(qid)
+        }
+        setQIDS(qids)
+    }, [questions])
+
+    const handleRescore = () => {
+        dispatch(jobActions.rescoreJob(jid))
+    }
+
+    const handleEditClick = () => {
+        setEditOpen(true)
+    }
+
+    if (!questions || !QIDs) {
+        return <div/>
+    }
 
     return (
         <Card>
             <CardHeader
                 className={classes.detailsHeader}
-                title={"Chatbot Questions and Scoring Preferences"}
+                title={
+                    <Grid container justify='space-between' alignItems='center'>
+                        {/* <Grid item> Chatbot Questions and Scoring Preferences </Grid> */}
+                        <Grid item> Scoring Preferences </Grid>
+                        <Grid item>
+                            <Tooltip title='Edit Questions'>
+                                <IconButton onClick={handleEditClick} style={{ color: 'white' }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title='Rescore Applicants'>
+                                <IconButton onClick={handleRescore} style={{ color: 'white' }}>
+                                    <Refresh />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
+                }
             />
             <Table>
                 <TableHead>
@@ -309,17 +371,18 @@ function QuestionsContent(props) {
                 </TableHead>
                 <TableBody>
                     {
-                        questions.map((row) => {
+                        QIDs.map((qid) => {
+                            let question = questions[qid]
                             return (
                                 <TableRow>
                                     <TableCell>
-                                        {row.question}
+                                        {question.question}
                                     </TableCell>
                                     <TableCell>
-                                        {printFormat(row.pref_ans)}
+                                        {printFormat(question.pref_ans)}
                                     </TableCell>
                                     <TableCell>
-                                        {row.imp}
+                                        {question.imp}
                                     </TableCell>
                                 </TableRow>
                             )
@@ -327,6 +390,12 @@ function QuestionsContent(props) {
                     }
                 </TableBody>
             </Table>
+            <QuestionsModal
+                QIDs={QIDs}
+                questions={questions}
+                open={editOpen}
+                handleClose={() => setEditOpen(false)}
+            />
         </Card>
     )
 }

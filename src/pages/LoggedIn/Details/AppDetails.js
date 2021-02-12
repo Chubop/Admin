@@ -108,7 +108,7 @@ export function AppDetails(props) {
                             }
                         </Grid>
                         <Grid item xs={12}>
-                            <QuestionsTable questions={applicant.scoredQuestions} />
+                            <ScoredAnswersTable questions={applicant.scoredQuestions} />
                         </Grid>
                         <DeleteConfirmation
                             open={deleteOpen}
@@ -222,9 +222,30 @@ const headCells = [
     { id: 'pref_ans', numeric: false, disablePadding: false, label: 'Preferred' },
     { id: 'imp', numeric: false, disablePadding: false, label: 'Weight' },
 ]
-function QuestionsTable(props) {
+function ScoredAnswersTable(props) {
     const { questions } = props
     const classes = useStyles()
+    const [QIDs, setQIDS] = useState([])
+
+    // Get list of QIDs for mapping rows
+    useEffect(() => {
+        let qids = []
+        for (const qid in questions) {
+            qids.push(qid)
+        }
+        qids = qids.sort((a, b) => {
+            a = parseInt(a)
+            b = parseInt(b)
+            if (a > b)
+                return 1
+            if (a < b)
+                return -1
+            return 0
+        })
+        console.log(qids)
+        setQIDS(qids)
+    }, [questions])
+
     return (
         <Card className={classes.paper}>
             <CardHeader className={classes.detailsHeader} title="Scored Answers" />
@@ -234,24 +255,27 @@ function QuestionsTable(props) {
                     aria-labelledby="tableTitle"
                     size={'medium'}
                 >
-                    <QuestionsTableHead questions={questions}/>
+                    <ScoredAnswersTableHead questions={questions}/>
                     <TableBody className={classes.tableBody}>
-                        {questions.map((question) => (
-                            // TODO make row change color based on total grade?
-                            // <TableRow style={question.total || question.total === 0 ? {background: 'lavender'} : {}}>
-                            <TableRow>
-                                {headCells.map((cell) => {
-                                    return (
-                                        <TableCell
-                                            align={cell.numeric ? 'right' : 'left'}
-                                            padding={cell.disablePadding ? 'none' : 'default'}
-                                        >
-                                            {printFormat(question[cell['id']])}
-                                        </TableCell>
-                                    )
-                                })}
-                            </TableRow>
-                    ))}
+                        {QIDs.map((qid) => {
+                            let question = questions[qid]
+                            return (
+                                // TODO make row change color based on total grade?
+                                // <TableRow style={question.total || question.total === 0 ? {background: 'lavender'} : {}}>
+                                <TableRow>
+                                    {headCells.map((cell) => {
+                                        return (
+                                            <TableCell
+                                                align={cell.numeric ? 'right' : 'left'}
+                                                padding={cell.disablePadding ? 'none' : 'default'}
+                                            >
+                                                {printFormat(question[cell['id']])}
+                                            </TableCell>
+                                        )
+                                    })}
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -259,7 +283,7 @@ function QuestionsTable(props) {
     )
 }
 
-function QuestionsTableHead() {
+function ScoredAnswersTableHead() {
     return (
         <TableHead>
             <TableRow>

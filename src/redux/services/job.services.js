@@ -9,6 +9,8 @@ export const jobService = {
     getAllJobs,
     deleteJob,
     updateJob,
+    rescoreJob,
+    updateQuestions,
 }
 
 async function createJob(job){
@@ -132,4 +134,32 @@ async function updateJob(job){
         }
         return data
     }
+}
+
+async function rescoreJob(jid){
+    let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    let response = await axios.post(
+        `${API_ROOT}/rescore/${jid}`,
+        {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+        }
+    )
+    return response.data
+}
+
+async function updateQuestions(questions, jid){
+    let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    console.log("SENDING TO API")
+    let response = await axios.put(
+        `${API_ROOT}/question`,
+        { questions: questions, jid: jid, },
+        {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+        }
+    )
+    return response.data
 }

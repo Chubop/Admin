@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { EditModal } from '../General';
+import { deepCopy, EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -25,7 +25,8 @@ export function ApplicantModal(props) {
     const [inputs, setInputs] = useState({})
     useEffect(() => {
         if (applicant) {
-            setInputs(applicant)
+            let init = deepCopy(applicant)
+            setInputs(init)
         }
     }, [applicant])
 
@@ -54,8 +55,6 @@ export function ApplicantModal(props) {
 function Content(props) {
     const classes = useStyles();
     const { inputs, setInputs } = props;
-
-    console.log(inputs)
 
     const handleChange = (field) => (event) => {
         setInputs({ ...inputs, [field]: event.target.value })

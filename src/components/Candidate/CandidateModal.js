@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { EditModal } from '../General';
+import { deepCopy, EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -25,7 +25,8 @@ export function CandidateModal(props) {
     const [inputs, setInputs] = useState({})
     useEffect(() => {
         if (candidate) {
-            setInputs(candidate)
+            let initial = deepCopy(candidate)
+            setInputs(initial)
         }
     }, [candidate])
 

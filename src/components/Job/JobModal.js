@@ -18,7 +18,7 @@ import {
 
 // Custom components
 import { ChipList } from './';
-import { EditModal } from '../General';
+import { deepCopy, EditModal } from '../General';
 
 const chipUnit = ['GPT', 'GRO', 'G&A']
 const chipLocation = ['NA East', 'NA West', 'NA Central', 'All NA', 'Germany', 'Israel', 'APAC']
@@ -42,7 +42,8 @@ export function JobModal(props) {
     const [inputs, setInputs] = useState({})
     useEffect(() => {
         if (job) {
-            setInputs(job)
+            let initial = deepCopy(job)
+            setInputs(initial)
         }
     }, [job])
 
