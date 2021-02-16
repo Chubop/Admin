@@ -6,6 +6,8 @@ export * from './Page'
 export * from './EditModal'
 export * from './LoadingSymbol'
 export * from './DeleteConfirmation'
+export * from './ChipList'
+
 // Cards
 export * from './DaysSinceCard'
 export * from './ScoreChartCard'

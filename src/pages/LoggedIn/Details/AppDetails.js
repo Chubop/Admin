@@ -160,7 +160,9 @@ function DetailsCard(props) {
                     <Typography variant="body1">This applicant might be overqualified</Typography>
                 }
                 <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
-                <LinkedItems reference={applicant.reference} />
+                {
+                    applicant.reference && <LinkedItems reference={applicant.reference} />
+                }
                 {
                     applicant.recruiter && 
                     <Typography variant="body1">
@@ -242,7 +244,6 @@ function ScoredAnswersTable(props) {
                 return -1
             return 0
         })
-        console.log(qids)
         setQIDS(qids)
     }, [questions])
 

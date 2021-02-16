@@ -151,7 +151,6 @@ async function rescoreJob(jid){
 
 async function updateQuestions(questions, jid){
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
-    console.log("SENDING TO API")
     let response = await axios.put(
         `${API_ROOT}/question`,
         { questions: questions, jid: jid, },

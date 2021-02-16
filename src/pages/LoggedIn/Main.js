@@ -24,7 +24,7 @@ import { Applicant } from './Applicant'
 import { Candidate } from './Candidate'
 import { HiringManager } from './HiringManager'
 import { Job } from './Job'
-import { AppDetails, CandidateDetails, HMDetails, JobDetails } from './Details'
+import { AppDetails, CandidateDetails, HMDetails, JobDetails, ScoringDetails } from './Details'
 import { Settings } from './Settings'
 import { DashBoard } from './DashBoard'
 
@@ -148,7 +148,9 @@ function Main() {
         <Switch>
           <Route exact path="/" component={DashBoard} />
           <Route path="/dashboard" component={DashBoard} />
+
           <Route exact path="/job" component={Job} />
+          <Route path="/job/:jid/questions" component={ScoringDetails} />
           <Route path="/job/:jid" component={JobDetails} />
 
           <Route exact path="/hm" component={HiringManager} />

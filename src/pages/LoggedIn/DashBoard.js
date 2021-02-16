@@ -107,7 +107,7 @@ export function DashBoard(){
                             </Grid>
                             <Grid item>
                                 <WeekCard
-                                    title="Applications This Week"
+                                    title="Screened This Week"
                                     data={applicantStats && applicantStats.daysSince}
                                 />
                             </Grid>

@@ -18,11 +18,10 @@ import {
     TableRow,
     TableCell,
     Typography,
-    TextField,
 } from '@material-ui/core';
 
 // Custom components
-import { ChipList } from './';
+import { ChipList } from '../General';
 import { deepCopy, EditModal } from '../General';
 import { printFormat } from '../../functions';
 import { ArrowForward } from '@material-ui/icons';
@@ -61,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
 
 export function QuestionsModal(props) {
     const dispatch = useDispatch();
-    const { QIDs } = props
 
     // Get job details and load into inputs
     const jobState = useSelector(state => state.job)
@@ -74,6 +72,17 @@ export function QuestionsModal(props) {
             setInputs(initial)
         }
     }, [questions])
+
+    const [QIDs, setQIDS] = useState([])
+    // Get list of QIDs for mapping rows
+    useEffect(() => {
+        let qids = []
+        for (const qid in questions) {
+            qids.push(qid)
+        }
+        setQIDS(qids)
+    }, [questions])
+
 
     // Render
     return (
@@ -135,7 +144,6 @@ export function QuestionsModal(props) {
 }
 
 const Content = (props) => {
-    const classes = useStyles();
     const { inputs, setInputs, QIDs } = props;
 
     const handlePrefChange = (value, qid) => {
@@ -183,7 +191,6 @@ const Content = (props) => {
 
 const EditPrefAns = (props) => {
     const { question, handleChange } = props
-    console.log(question)
 
     let qid = question.qid
     let prefAns = question.pref_ans

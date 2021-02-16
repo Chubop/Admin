@@ -11,15 +11,10 @@ import {
     Grid,
     IconButton,
     makeStyles,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
     Tooltip,
     Typography,
 } from '@material-ui/core'
-import { Add, Assessment, AssignmentTurnedIn, Edit, Extension, Refresh, Star } from '@material-ui/icons'
+import { Add, Assessment, AssignmentTurnedIn, Edit, Extension, Star } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../../functions'
@@ -30,8 +25,8 @@ import {
     DeleteConfirmation
 } from '../../../components/General';
 import { JobModal } from '../../../components/Job';
-import { QuestionsModal } from '../../../components/Job';
 import { DashCard } from '../../../components/Dashboard';
+import { QuestionsCard } from '../../../components/Questions/QuestionsCard';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -101,7 +96,7 @@ export function JobDetails(props) {
                         <Grid item xs={8}>
                             {
                                 job.question &&
-                                    <QuestionsContent questions={job.question} jid={job.jid}/> 
+                                    <QuestionsCard questions={job.question} jid={job.jid} stats={stats}/>
                             }
                         </Grid>
                         {job.applicants && job.applicants.length > 0 ?
@@ -109,7 +104,7 @@ export function JobDetails(props) {
                                 {
                                     stats.numScored > 0 &&
                                     <Grid item xs={12}>
-                                        <AnalyticsContent job={job} stats={stats} />
+                                        <ScoreCharts job={job} stats={stats} />
                                     </Grid>
                                 }
                                 <Grid item xs={12}>
@@ -264,7 +259,7 @@ function StatsCards(props) {
     )
 }
 
-function AnalyticsContent(props) {
+function ScoreCharts(props) {
     const { stats, job } = props
 
     return (
@@ -294,108 +289,5 @@ function AnalyticsContent(props) {
             </Grid>
         </div>
 
-    )
-}
-
-function QuestionsContent(props) {
-    const { questions, jid } = props
-    const classes = useStyles()
-    const dispatch = useDispatch()
-
-    const [editOpen, setEditOpen] = useState(false);
-    const [QIDs, setQIDS] = useState([])
-
-    // Get list of QIDs for mapping rows
-    useEffect(() => {
-        let qids = []
-        for (const qid in questions) {
-            qids.push(qid)
-        }
-        setQIDS(qids)
-    }, [questions])
-
-    const handleRescore = () => {
-        dispatch(jobActions.rescoreJob(jid))
-    }
-
-    const handleEditClick = () => {
-        setEditOpen(true)
-    }
-
-    if (!questions || !QIDs) {
-        return <div/>
-    }
-
-    return (
-        <Card>
-            <CardHeader
-                className={classes.detailsHeader}
-                title={
-                    <Grid container justify='space-between' alignItems='center'>
-                        {/* <Grid item> Chatbot Questions and Scoring Preferences </Grid> */}
-                        <Grid item> Scoring Preferences </Grid>
-                        <Grid item>
-                            <Tooltip title='Edit Questions'>
-                                <IconButton onClick={handleEditClick} style={{ color: 'white' }}>
-                                    <Edit />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title='Rescore Applicants'>
-                                <IconButton onClick={handleRescore} style={{ color: 'white' }}>
-                                    <Refresh />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                    </Grid>
-                }
-            />
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>
-                            <Typography>
-                                Question
-                                </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography>
-                                Preferred Answer
-                                </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography>
-                                Weight
-                                </Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        QIDs.map((qid) => {
-                            let question = questions[qid]
-                            return (
-                                <TableRow>
-                                    <TableCell>
-                                        {question.question}
-                                    </TableCell>
-                                    <TableCell>
-                                        {printFormat(question.pref_ans)}
-                                    </TableCell>
-                                    <TableCell>
-                                        {question.imp}
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })
-                    }
-                </TableBody>
-            </Table>
-            <QuestionsModal
-                QIDs={QIDs}
-                questions={questions}
-                open={editOpen}
-                handleClose={() => setEditOpen(false)}
-            />
-        </Card>
     )
 }
