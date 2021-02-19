@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { Grid, makeStyles } from '@material-ui/core'
-import { AssignmentTurnedIn, DoneAll, Face, Grade, People } from '@material-ui/icons'
-
 import { useDispatch, useSelector } from 'react-redux';
 
-import { 
-    DashCard, 
-} from '../../components/Dashboard'
-import { applicantActions } from '../../redux/actions';
+// MUI
+import { Grid, makeStyles } from '@material-ui/core'
+import { AssignmentTurnedIn, DoneAll, Grade, People } from '@material-ui/icons'
+
+// Custom Components
+import { Alerts, DashCard, } from '../../components/Dashboard'
 import { Page, ScoreChartCard } from '../../components/General';
 import { WeekCard } from '../../components/General';
+import { applicantActions } from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,11 +58,8 @@ export function DashBoard(){
                                 />
                             </Grid>
                             <Grid item >
-                                <DashCard dashIcon={DoneAll} title={"Acceptance Rate"} value={applicantStats.acceptanceRate.toFixed(0) + "%"} />
+                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.accepted} />
                             </Grid>
-                            {/* <Grid item>
-                                <DashCard dashIcon={Face} title={"Active HM"} value={"5"}/>
-                            </Grid> */}
                             <Grid item >
                                 <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.avgTotal.toFixed(2) + "%"} />
                             </Grid>
@@ -82,36 +79,35 @@ export function DashBoard(){
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={spacing}>
-                            <Grid item>
-                                <ScoreChartCard
-                                    zoom
-                                    title="Application Scores"
-                                    data={applicantStats && applicantStats.scores.total}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <ScoreChartCard
-                                    zoom
-                                    title="Application Eligibility"
-                                    data={applicantStats && applicantStats.scores.eli}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <ScoreChartCard
-                                    zoom
-                                    title="Application Fit"
-                                    data={applicantStats && applicantStats.scores.fit}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <WeekCard
-                                    title="Screened This Week"
-                                    data={applicantStats && applicantStats.daysSince}
-                                />
-                            </Grid>
+                    {/* Charts */}
+                    <Grid item xs={12} container spacing={spacing} direction='row'>
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <ScoreChartCard zoom
+                                title="Application Scores"
+                                data={applicantStats && applicantStats.scores.total}
+                            />
                         </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <ScoreChartCard zoom
+                                title="Application Eligibility"
+                                data={applicantStats && applicantStats.scores.eli}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <ScoreChartCard zoom
+                                title="Application Fit"
+                                data={applicantStats && applicantStats.scores.fit}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <WeekCard
+                                title="Screened This Week"
+                                data={applicantStats && applicantStats.daysSince}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        {applicantStats.alerts && <Alerts alerts={applicantStats.alerts} />}
                     </Grid>
                 </Grid>
             }

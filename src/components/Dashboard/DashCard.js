@@ -19,9 +19,7 @@ const useStyles = makeStyles((theme) => ({
         verticalAlign: 'middle'
     },
     iconContent: {
-
         margin: 'auto',
-        // background: ,
         verticalAlign: 'middle',
     },
     icon:{

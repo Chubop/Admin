@@ -17,6 +17,7 @@ import {
     TableRow,
     Typography,
     CardHeader,
+    Button,
 } from '@material-ui/core'
 import { 
     Check, 
@@ -116,6 +117,7 @@ export function AppDetails(props) {
                             handleClose={() => setDeleteOpen(false)}
                         >
                             <Typography>{applicant.name}</Typography>
+                            <Typography>{applicant.first_name + " " + applicant.last_name}</Typography>
                             <Typography>{applicant.email}</Typography>
                         </DeleteConfirmation>
                         <ApplicantModal
@@ -136,6 +138,7 @@ function DetailsCard(props) {
     let created = '---'
     if (applicant.created){
         created = new Date(applicant.created[0] * 1000)
+        created = created.toLocaleTimeString() + " " + created.toLocaleDateString()
     }
 
     return (
@@ -145,44 +148,62 @@ function DetailsCard(props) {
                 title={printFormat(applicant.name)}
             />
             <CardContent>
-                {
-                    applicant.email &&
-                    <>
-                        <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
-                        <Link to={`/candidate/${applicant.email}`}> <Typography variant="body1">Click to see candidate</Typography> </Link>
-                    </>
-                }
-                <Typography variant="body1">{"Screened: " + created} </Typography>
-                <Typography variant="body1">{"Status: " + printFormat(applicant.status)} </Typography>
-                {/* <Chip>{printFormat(applicant.status)} </Chip> */}
-                {
-                    applicant.overqualified &&
-                    <Typography variant="body1">This applicant might be overqualified</Typography>
-                }
-                <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
-                {
-                    applicant.reference && <LinkedItems reference={applicant.reference} />
-                }
-                {
-                    applicant.recruiter && 
-                    <Typography variant="body1">
-                        {"Recruiter: " + applicant.recruiter.name} 
-                    </Typography>
-                }
-                {
-                    applicant.greenhouse_aid && 
-                    <Typography variant="body1">
-                        {"Greenhouse AID: " + applicant.greenhouse_aid} 
-                    </Typography>
-                }
-                {
-                    applicant.greenhouse_cid && 
-                    <Typography variant="body1">
-                        {"Greenhouse CID: " + applicant.greenhouse_cid} 
-                    </Typography>
-                }
+                <Grid container justify='space-between'>
+                    <Grid item>
+                        {/* <Typography variant="body1">{"Status: " + printFormat(applicant.status)} </Typography> */}
+                        < Button disabled style={{ backgroundColor: applicant.status == 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
+                        {
+                            applicant.email &&
+                            <>
+                                <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
+                                <Link to={`/candidate/${applicant.email}`}> <Typography variant="body1">Click to see candidate</Typography> </Link>
+                            </>
+                        }
+                        <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
+                        <Typography variant="body1">{"Screened: " + created + " (" + printFormat(applicant.created, "", true) + ")"} </Typography>
+                        {
+                            applicant.overqualified &&
+                            <Typography variant="body1">This applicant might be overqualified</Typography>
+                        }
+                    </Grid>
+                    <Grid item>
+                        {
+                            applicant.reference && <LinkedItems reference={applicant.reference} />
+                        }
+                        {
+                            applicant.recruiter &&
+                            <Typography variant="body1">
+                                {"Recruiter: " + applicant.recruiter.name}
+                            </Typography>
+                        }
+                        {
+                            applicant.name &&
+                            <Typography variant="body1">
+                                {"Chatbot Name: " + applicant.name}
+                            </Typography>
+                        }
+                        {
+                            <Typography variant="body1">
+                                {"Greenhouse Name: " + ((applicant.first_name && applicant.last_name) ? applicant.first_name + " " + applicant.last_name : 'undefined')}
+                            </Typography>
+                        }
+                        {
+                            applicant.greenhouse_aid &&
+                            <Typography variant="body1">
+                                {"Greenhouse AID: " + applicant.greenhouse_aid}
+                            </Typography>
+                        }
+                        {
+                            applicant.greenhouse_cid &&
+                            <Typography variant="body1">
+                                {"Greenhouse CID: " + applicant.greenhouse_cid}
+                            </Typography>
+                        }
+
+                    </Grid>
+                </Grid>
             </CardContent>
-        </Card>
+        </Card >
     )
 }
 

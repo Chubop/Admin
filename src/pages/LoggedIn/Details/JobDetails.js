@@ -14,7 +14,7 @@ import {
     Tooltip,
     Typography,
 } from '@material-ui/core'
-import { Add, Assessment, AssignmentTurnedIn, Edit, Extension, Star } from '@material-ui/icons'
+import { Assessment, AssignmentTurnedIn, DoneAll, Edit, Extension, FilterList, Star } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../../functions'
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(2),
         padding: theme.spacing(2)
     },
-    detailsHeader: {
+    tabColor: {
         background: tabColor,
         color: 'white'
     },
@@ -155,7 +155,7 @@ function DetailsContent(props) {
     return (
         <Card>
             <CardHeader
-                className={classes.detailsHeader}
+                className={classes.tabColor} 
                 title={
                     <Grid container justify='space-between' alignItems='center'>
                         <Grid item> {job.titles} </Grid>
@@ -202,55 +202,55 @@ function StatsCards(props) {
     const { stats } = props
 
     return (
-        <Grid container spacing={spacing}>
+        <Grid container spacing={spacing} justify='space-between'>
             <Grid item xs={6}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                <Grid container direction='column' spacing={spacing} >
+                    <Grid item >
                         <DashCard
                             dashIcon={Star}
                             // TODO change to grade
                             // TODO grade on backend?
-                            title={"Average Score"}
+                            title={"Avg. Score"}
                             value={stats.avgTotal.toFixed(0) + "%"}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item >
                         <DashCard
                             dashIcon={AssignmentTurnedIn}
-                            title={"Average Eligibility"}
+                            title={"Avg. Eligibility"}
                             value={stats.avgEli.toFixed(0) + "%"}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item >
                         <DashCard
                             dashIcon={Extension}
-                            title={"Average Fit"}
+                            title={"Avg. Fit"}
                             value={stats.avgFit.toFixed(0) + "%"}
                         />
                     </Grid>
                 </Grid>
             </Grid>
             <Grid item xs={6}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <DashCard
-                            dashIcon={Add}
-                            title={"Accepted"}
-                            value={stats.acceptanceRate.toFixed(0) + "%"}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
+                <Grid container spacing={spacing} direction='column'>
+                    <Grid item >
                         <DashCard
                             dashIcon={Assessment}
                             title={"Applications"}
                             value={stats.numApplicants}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item >
                         <DashCard
-                            dashIcon={Assessment}
+                            dashIcon={FilterList}
                             title={"Screened"}
                             value={stats.numScored}
+                        />
+                    </Grid>
+                    <Grid item >
+                        <DashCard
+                            dashIcon={DoneAll}
+                            title={"Accepted"}
+                            value={stats.accepted}
                         />
                     </Grid>
                 </Grid>
@@ -260,10 +260,9 @@ function StatsCards(props) {
 }
 
 function ScoreCharts(props) {
-    const { stats, job } = props
+    const { stats } = props
 
     return (
-        <div>
             <Grid container spacing={spacing}>
                 <Grid item xs={12} sm={6} md={4}>
                     <ScoreChartCard
@@ -287,7 +286,5 @@ function ScoreCharts(props) {
                     />
                 </Grid>
             </Grid>
-        </div>
-
     )
 }

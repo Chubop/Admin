@@ -35,9 +35,13 @@ async function getApplicant(aid, jid) {
             },
         }
     )
+    let applicant = response.data
 
-    let data = response.data
-    return data
+    if (!applicant.name && applicant.first_name && applicant.last_name) {
+        applicant['name'] = applicant.first_name + " " + applicant.last_name
+    }
+
+    return applicant
 }
 
 async function getAllApplicants() {
