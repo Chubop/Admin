@@ -178,6 +178,7 @@ function DetailsContent(props) {
                 <Typography variant="body1">Teams: {printFormat(job.team)} </Typography>
                 <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
                 <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
+                <Typography variant="body1">Job Created: {printFormat(job.created, '', true)} </Typography>
             </CardContent>
             <JobModal
                 open={editOpen}

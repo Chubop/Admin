@@ -123,16 +123,7 @@ async function updateJob(job){
                 },
             }
         )
-        job = response.data
-        let stats = {}
-        if (job.applicants) {
-            stats = analyzeApplicants(job.applicants, stats)
-        }
-        let data = {
-            job: job,
-            stats: stats
-        }
-        return data
+        return getJobStats(response.data)
     }
 }
 
@@ -161,4 +152,15 @@ async function updateQuestions(questions, jid){
         }
     )
     return response.data
+}
+
+function getJobStats(job) {
+    let stats = {}
+    stats['numApplicants'] = 0
+
+    let data = {
+        job: job,
+        stats: analyzeApplicants(job.applicants, stats)
+    }
+    return data
 }

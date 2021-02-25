@@ -150,6 +150,7 @@ export function EditModal(props) {
     return (
         <Dialog
             open={props.open} onClose={props.handleClose}
+            maxWidth="lg"
             aria-labelledby="form-dialog-title"
             scroll={'paper'}
             BackdropProps={{

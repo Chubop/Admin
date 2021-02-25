@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { hmActions } from '../../../redux/actions';
 
@@ -147,7 +147,7 @@ function AnalyticsContent(props) {
                         <Grid item xs={12}>
                             <ApplicantsAnalytics
                                 stats={stats}
-                                applicants={hiringManager.applicants}
+                                applicants={stats.applicants}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>

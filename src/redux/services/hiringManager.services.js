@@ -81,8 +81,7 @@ async function updateHM(hm){
     }
 }
 
-function getHMstats(hm) {
-    let hiringManager = hm
+function getHMstats(hiringManager) {
     let jobs = hiringManager.jobs
     let stats = {}
     // default
@@ -92,9 +91,25 @@ function getHMstats(hm) {
         let applicants = []
         for (let i = 0; i < jobs.length; i++)
             applicants = applicants.concat(jobs[i].applicants)
+
+        // Sort applicants by created
+        applicants = applicants.sort((a, b) => {
+            if (a.created && b.created){
+                if (a.created[0] < b.created[0])
+                    return 1
+                if (a.created[0] > b.created[0])
+                    return -1
+            }
+            else if (a.created && !b.created) {
+                // if comparing applicant that has used bot to one that has not
+                return -1
+            }
+            return 0
+        })
+
         if (applicants.length > 0) {
             stats = analyzeApplicants(applicants, stats)
-            hiringManager['applicants'] = applicants
+            stats['applicants'] = applicants
         }
     }
     let values = {

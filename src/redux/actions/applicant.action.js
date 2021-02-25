@@ -81,6 +81,7 @@ function updateApplicant(applicant){
             data => {
                 dispatch(success(data))
                 dispatch(getAllApplicants())
+                dispatch(getApplicant(applicant.aid))
             }
         ).catch(
             error => {

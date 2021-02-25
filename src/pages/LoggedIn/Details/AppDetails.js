@@ -151,16 +151,24 @@ function DetailsCard(props) {
             <CardContent>
                 <Grid container justify='space-between'>
                     <Grid item>
-                        {/* <Typography variant="body1">{"Status: " + printFormat(applicant.status)} </Typography> */}
                         < Button disabled style={{ backgroundColor: applicant.status == 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
                         {
                             applicant.email &&
                             <>
                                 <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
-                                <Link to={`/candidate/${applicant.email}`}> <Typography variant="body1">Click to see candidate</Typography> </Link>
+                                <Link to={`/candidate/${applicant.email}`}>
+                                    <Typography variant="body1">
+                                        Click to see candidate
+                                    </Typography>
+                                </Link>
                             </>
                         }
-                        <Link to={`/job/${applicant.jid}`}> <Typography variant="body1">Click to see job</Typography> </Link>
+                        <Typography variant="body1">
+                            {'Applied to: '}
+                                <Link to={`/job/${applicant.jid}`}>
+                                    {applicant.job_title}
+                                </Link>
+                        </Typography>
                         <Typography variant="body1">{"Screened: " + created + " (" + printFormat(applicant.created, "", true) + ")"} </Typography>
                         {
                             applicant.overqualified &&

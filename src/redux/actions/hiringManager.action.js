@@ -81,6 +81,7 @@ function updateHM(hm){
             data => {
                 dispatch(success(data))
                 dispatch(getAllHMs())
+                dispatch(getHM(hm.hmid))
             }
         ).catch(
             error => {

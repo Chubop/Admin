@@ -81,6 +81,7 @@ function updateCandidate(candidate){
             data => {
                 dispatch(success(data))
                 dispatch(getAllCandidates())
+                dispatch(getCandidate(candidate.cid))
             }
         ).catch(
             error => {

@@ -6,12 +6,14 @@ import { hmActions, jobActions } from '../../redux/actions';
 
 // MUI
 import {
+    DialogContentText,
     makeStyles,
     TextField,
 } from '@material-ui/core';
 
 // Custom components
 import { EditModal } from '../General';
+import { SearchObjectSelect } from '../General/Modals/SearchObjectSelect';
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -56,20 +58,20 @@ export function HMModal(props) {
             <Content
                 inputs={inputs}
                 setInputs={setInputs}
+                jobs={jobs}
             />
         </EditModal>
     );
 }
 
 function Content(props) {
-    const classes = useStyles();
-    const { inputs, setInputs } = props;
+    const { inputs, setInputs, jobs } = props;
 
     const handleChange = (field) => (event) => {
         setInputs({ ...inputs, [field]: event.target.value })
     }
 
-    if (!inputs)
+    if (!inputs || !jobs)
         return <div />
     // TODO figure out whether we should be able to change the email address, and how that would work with auth
     return (
@@ -110,6 +112,35 @@ function Content(props) {
                 onChange={handleChange('team')}
                 fullWidth
             />
+
+            {
+                inputs.accessibleJobs &&
+                <>
+                    <DialogContentText />
+                    <DialogContentText> Accessible Jobs </DialogContentText>
+                    <SearchObjectSelect
+                        onChange={(newValue) => setInputs({ ...inputs, ['accessibleJobs']: newValue })}
+
+                        // Given an array of keys (JIDs) that are currently chosen
+                        selectedIDs={inputs.accessibleJobs}
+                        idKey='jid'
+                        nameKey='titles'
+
+                        searchList={jobs}
+                        optionColumns={[
+                            { label: 'Title', key: 'titles' },
+                            { label: 'Type', key: 'type' },
+                            { label: 'Hiring Manager', key: 'hm' },
+                            { label: 'Unit', key: 'unit' },
+                            { label: 'JID', key: 'jid' },
+                        ]}
+                        noneAddedMsg='No Jobs Chosen'
+
+                        searchMessage='Search Jobs...'
+                        searchKeys={['titles', 'type', 'hm', 'unit', 'jid']}
+                    />
+                </>
+            }
         </>
     )
 }
