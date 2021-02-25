@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 // redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { jobActions } from '../../redux/actions';
 
 // MUI
@@ -21,8 +21,7 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { ChipList } from '../General';
-import { deepCopy, EditModal } from '../General';
+import { ChipList, EditModal } from '../General';
 import { printFormat } from '../../functions';
 import { ArrowForward } from '@material-ui/icons';
 
@@ -60,29 +59,24 @@ const useStyles = makeStyles((theme) => ({
 
 export function QuestionsModal(props) {
     const dispatch = useDispatch();
+    const { jid } = props;
 
-    // Get job details and load into inputs
-    const jobState = useSelector(state => state.job)
-    const { job, loading, error } = jobState
-    const { question: questions, jid } = job
-    const [inputs, setInputs] = useState({})
-    useEffect(() => {
-        if (questions) {
-            let initial = deepCopy(questions)
-            setInputs(initial)
-        }
-    }, [questions])
+    const [inputs, setInputs] = useState(null)
 
-    const [QIDs, setQIDS] = useState([])
+    const isInRedux = (job) => {
+        return (job && job.question && jid && job.jid === jid)
+    }
+    const processReduxObject = (job) => { return (job.question) }
+
     // Get list of QIDs for mapping rows
+    const [QIDs, setQIDS] = useState([])
     useEffect(() => {
         let qids = []
-        for (const qid in questions) {
+        for (const qid in inputs) {
             qids.push(qid)
         }
         setQIDS(qids)
-    }, [questions])
-
+    }, [inputs])
 
     // Render
     return (
@@ -90,12 +84,18 @@ export function QuestionsModal(props) {
             title={'Edit Question Preferences'}
             // redux action to dispatch when saving
             onSave={() => dispatch(jobActions.updateQuestions(inputs, jid))}
-
+            // redux action to dispatch when loading
+            dispatchGet={() => {dispatch(jobActions.getJob(jid))}}
+            // Redux state of data
+            stateName='job' processReduxObject={processReduxObject}
+            // Function to check if this data is loaded in redux
+            isInRedux={isInRedux}
             // data
-            initial={questions}
-            edited={inputs}
-            loading={loading}
-            error={error}
+            setInputs={(job)=> setInputs(job)} edited={inputs} 
+
+            handleClose={() => {props.handleClose(); setInputs(null)}}
+
+            // Component to render per line of changes
             changeRender={(change) => {
                 const [qid, initial, final] = change
                 let prefChange = initial.pref_ans !== final.pref_ans
@@ -104,16 +104,16 @@ export function QuestionsModal(props) {
                     <>
                         <TableRow>
                             <TableCell>
-                                <Typography variant="body1" > {questions[qid].question} </Typography>
+                                <Typography variant="body1" > {inputs[qid].question} </Typography>
                                 {prefChange &&
-                                    <TableRow>
+                                    <TableRow key='pref-change-qid'>
                                         <TableCell> <Typography variant="body2" > {printFormat(initial.pref_ans)} </Typography> </TableCell>
                                         <TableCell> <ArrowForward /> </TableCell>
                                         <TableCell> <Typography variant="body2" > {printFormat(final.pref_ans)} </Typography> </TableCell>
                                     </TableRow>
                                 }
                                 {impChange &&
-                                    <TableRow>
+                                    <TableRow key='imp-change-qid'>
                                         <TableCell>
                                             <Slider value={initial.imp} style={{ width: '75px' }} aria-labelledby="discrete-slider-custom" min={1} max={5}
                                                 marks={[{ value: initial.imp, label: initial.imp }]}

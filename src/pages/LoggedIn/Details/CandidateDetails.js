@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { candidateActions } from '../../../redux/actions';
 
 // MUI
@@ -9,25 +9,13 @@ import {
     CardContent,
     Grid,
     makeStyles,
-    Table,
-    TableContainer,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableRow,
     Typography,
     CardHeader,
 } from '@material-ui/core'
-import { 
-    Check, 
-    Extension, 
-    Star 
-} from '@material-ui/icons';
 
 // Custom
 import { printFormat } from '../../../functions'
 import { DeleteConfirmation, Page } from '../../../components/General';
-import { DashCard } from '../../../components/Dashboard';
 import { CandidateModal } from '../../../components/Candidate';
 
 const tabColor = '#1769aa'
@@ -68,11 +56,11 @@ export function CandidateDetails(props) {
     const cid = props.match.params.cid
 
     // Load candidate details at start
+    const { candidate, loading, error } = useSelector(state => state.candidate)
     useEffect(() => {
-        dispatch(candidateActions.getCandidate(cid))
+        if (!candidate || (candidate.cid !== cid))
+            dispatch(candidateActions.getCandidate(cid))
     }, [])
-    const candidatesState  = useSelector(state => state.candidate)
-    const { candidate, loading, error } = candidatesState
 
     // When delete is confirmed
     const handleDelete = () => { 
@@ -100,13 +88,14 @@ export function CandidateDetails(props) {
                             handleDelete={handleDelete}
                             handleClose={() => setDeleteOpen(false)}
                         >
-                            <Typography>{"CID: " + candidate.cid}</Typography>
+                            <Typography>{"CID: " + cid}</Typography>
                         </DeleteConfirmation>
                         {
                             deleted &&
                             <Redirect to="/candidate"/>
                         }
                         <CandidateModal
+                            cid={cid}
                             open={editOpen}
                             handleClose={() => setEditOpen(false)}
                         />

@@ -44,12 +44,12 @@ export function HMDetails(props) {
     // Get hmid from url
     const hmid = props.match.params.hmid
 
-    // Load hiring manager details at start
+    // Load hiring manager details at start if needed
+    const { hiringManager, loading, stats, error } = useSelector(state => state.hiringManager)
     useEffect(() => {
-        dispatch(hmActions.getHM(hmid))
+        if (!hiringManager || (hiringManager.hmid !== hmid))
+            dispatch(hmActions.getHM(hmid))
     }, [])
-    const hmState = useSelector(state => state.hiringManager)
-    const { hiringManager, loading, stats, error } = hmState
 
     // When delete is confirmed
     const handleDelete = () => { 
@@ -104,6 +104,7 @@ export function HMDetails(props) {
                             <Redirect to="/HM" />
                         }
                         <HMModal
+                            hmid={hmid}
                             open={editOpen}
                             handleClose={() => setEditOpen(false)}
                         />

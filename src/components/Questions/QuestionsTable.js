@@ -59,7 +59,7 @@ export function QuestionsTable(props) {
                             <Typography> Weight </Typography>
                         </TableCell>
                         {
-                            zeros &&
+                            zeros && 
                             <TableCell align="right">
                                 <Typography> Zeros </Typography>
                             </TableCell>
@@ -94,37 +94,43 @@ export function QuestionsTable(props) {
                                     <TableCell>
                                         <Slider value={question.imp} style={{ width: '75px', padding: '0px' }} aria-labelledby="discrete-slider-custom" min={1} max={5} disabled />
                                     </TableCell>
-                                    { zeros &&
-                                        <TableCell align="right" style={{ padding: '0px' }}>
-                                            {scores.zero.length}
-                                            <IconButton disabled={scores.zero.length == 0}
-                                                onClick={(event) => {
-                                                    setZerosOpen({ ...zeros, [qid]: true })
-                                                    setAnchorEls({ ...anchorEls, [qid]: event.currentTarget })
-                                                }}>
-                                                <ZoomIn />
-                                            </IconButton>
-                                            <ZerosPopover applicants={scores['zero']} qid={qid} jid={jid} open={zerosOpen[qid] || false} anchorEl={anchorEls[qid]}
-                                                handleClose={() => {
-                                                    setZerosOpen({ ...zeros, [qid]: false });
-                                                    setAnchorEls({ ...anchorEls, [qid]: null })
-                                                }}
-                                            />
-                                        </TableCell>
+                                    { scores ?
+                                        zeros && 
+                                            <TableCell align="right" style={{ padding: '0px' }}>
+                                                {scores.zero.length}
+                                                <IconButton disabled={scores.zero.length == 0}
+                                                    onClick={(event) => {
+                                                        setZerosOpen({ ...zeros, [qid]: true })
+                                                        setAnchorEls({ ...anchorEls, [qid]: event.currentTarget })
+                                                    }}>
+                                                    <ZoomIn />
+                                                </IconButton>
+                                                <ZerosPopover applicants={scores['zero']} qid={qid} jid={jid} open={zerosOpen[qid] || false} anchorEl={anchorEls[qid]}
+                                                    handleClose={() => {
+                                                        setZerosOpen({ ...zeros, [qid]: false });
+                                                        setAnchorEls({ ...anchorEls, [qid]: null })
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        :
+                                        <TableCell align='right'>N/A</TableCell>
                                     }
-                                    {distribution &&
+                                    {scores ?
+                                        distribution &&
                                         <TableCell style={{ padding: '0px' }}>
                                             <QuestionScoresChart data={scores.total} zoom />
                                         </TableCell>
+                                        : <TableCell align='center'>N/A</TableCell>
                                     }
-                                    {common &&
+                                    {scores ?
+                                        common &&
                                         <TableCell style={{ padding: '0px' }}>
                                             <Table>
                                                 <TableBody>
                                                     {
                                                         scores.mostCommon.slice(0, 3).map((answer) => {
                                                             return (
-                                                                <TableRow key={answer}> 
+                                                                <TableRow key={answer}>
                                                                     <TableCell> {answer} </TableCell>
                                                                     <TableCell align='right'> {scores.answerFrequency[answer]} </TableCell>
                                                                 </TableRow>
@@ -134,6 +140,7 @@ export function QuestionsTable(props) {
                                                 </TableBody>
                                             </Table>
                                         </TableCell>
+                                        : <TableCell align='center'>N/A</TableCell>
                                     }
                                 </TableRow>
                             )

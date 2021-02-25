@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { applicantActions } from '../../redux/actions';
 
 // MUI
@@ -11,24 +11,19 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { deepCopy, EditModal } from '../General';
+import { EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
 
 export function ApplicantModal(props) {
     const dispatch = useDispatch();
+    const { aid, jid } = props
 
-    // Get applicant details and load into initial inputs
-    const applicantState = useSelector(state => state.applicant)
-    const { applicant, loading, error } = applicantState
     const [inputs, setInputs] = useState({})
-    useEffect(() => {
-        if (applicant) {
-            let init = deepCopy(applicant)
-            setInputs(init)
-        }
-    }, [applicant])
+    const isInRedux = (applicant) => {
+        return (applicant && aid && (applicant.aid === aid) && (applicant.jid === jid))
+    }
 
     // Render
     return (
@@ -36,12 +31,16 @@ export function ApplicantModal(props) {
             title={'Edit Application'}
             // redux action to dispatch when saving
             onSave={() => dispatch(applicantActions.updateApplicant(inputs))}
-
+            // redux action to dispatch when loading
+            dispatchGet={() => {dispatch(applicantActions.getApplicant(aid, jid))}}
+            // Redux state of data
+            stateName='applicant' 
+            // Function to check if this data is loaded in redux
+            isInRedux={isInRedux}
             // data
-            initial={applicant}
-            edited={inputs}
-            loading={loading}
-            error={error}
+            setInputs={setInputs} edited={inputs} 
+
+            handleClose={() => {props.handleClose(); setInputs(null)}}
             {...props}
         >
             <Content

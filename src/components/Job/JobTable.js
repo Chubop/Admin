@@ -1,8 +1,4 @@
-import React from 'react'
-
-// redux
-import { useDispatch } from 'react-redux'
-import { hmActions, jobActions } from '../../redux/actions'
+import React, { useState } from 'react'
 
 // MUI
 import { makeStyles, Paper } from '@material-ui/core';
@@ -20,22 +16,19 @@ const useStyles = makeStyles((theme) => ({
 
 export function JobTable(props) {
     const classes = useStyles();
-    const dispatch = useDispatch()
 
     // States
-    const [open, setOpen] = React.useState(false);
+    const [editOpen, setEditOpen] = useState(false);
+    const [editJID, setEditJID] = useState();
 
     // Open the edit job modal
     const openEditModal = (id) => {
-        dispatch(jobActions.getJob(id.jid))
-        dispatch(hmActions.getAllHMs())
-        setOpen(true);
-    };
+        setEditJID(id.jid)
+        setEditOpen(true)
+    }
 
     // Close the edit job modal
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClose = () => { setEditOpen(false) }
 
     // When delete button in table is pressed
     const handleDelete = (jobs) => {
@@ -74,7 +67,7 @@ export function JobTable(props) {
                     {...props}
                 />
             </Paper>
-            <JobModal open={open} handleClose={handleClose} />
+            <JobModal open={editOpen} handleClose={handleClose} jid={editJID}/>
         </>
     )
 }

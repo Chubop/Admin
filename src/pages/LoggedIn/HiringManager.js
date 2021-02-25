@@ -16,13 +16,11 @@ export function HiringManager() {
     const dispatch = useDispatch()
 
     // Load in all HM's at the beginning
+    const { error, stats, hiringManagers } = useSelector(state => state.hiringManagers)
     useEffect(() => {
-        dispatch(hmActions.getAllHMs())
+        if (!hiringManagers)
+            dispatch(hmActions.getAllHMs())
     }, [])
-
-    // Get the hiring manager states from redux
-    const hiringManagerState = useSelector(state => state.hiringManagers)
-    const { error, stats, hiringManagers } = hiringManagerState
 
     return (
         <Page

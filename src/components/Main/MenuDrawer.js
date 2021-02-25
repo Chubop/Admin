@@ -82,14 +82,14 @@ export function MenuDrawer(props) {
                 <Link className={classes.link} to="/job">
                     <ListItem button href="/job">
                         <ListItemIcon><Work /></ListItemIcon>
-                        <ListItemText primary={"Job"} />
+                        <ListItemText primary={"Jobs"} />
                     </ListItem>
                 </Link>
 
                 <Link className={classes.link} to="/HM">
                     <ListItem button>
                         <ListItemIcon><Face /></ListItemIcon>
-                        <ListItemText primary={"Hiring Manager"} />
+                        <ListItemText primary={"Hiring Managers"} />
                     </ListItem>
                 </Link>
 
@@ -110,7 +110,7 @@ export function MenuDrawer(props) {
                 <Link className={classes.link} to="/settings">
                     <ListItem button href="/settings">
                         <ListItemIcon> <Settings /> </ListItemIcon>
-                        <ListItemText primary={"Setting"} />
+                        <ListItemText primary={"Settings"} />
                     </ListItem>
                 </Link>
 

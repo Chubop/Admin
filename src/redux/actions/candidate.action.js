@@ -31,11 +31,11 @@ function createCandidate(candidate){
     function failure(error){return { type: candidateConstants.CREATE_CANDIDATE_FAILURE, error}}
 }
 
-function getCandidate(aid, jid){
+function getCandidate(cid){
     return dispatch => {
         dispatch(request())
 
-        candidateService.getCandidate(aid, jid).then(
+        candidateService.getCandidate(cid).then(
             candidate => {
                 dispatch(success(candidate))
             }

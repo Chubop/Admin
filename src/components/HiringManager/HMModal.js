@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { hmActions } from '../../redux/actions';
+import { hmActions, jobActions } from '../../redux/actions';
 
 // MUI
 import {
@@ -11,24 +11,27 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { deepCopy, EditModal } from '../General';
+import { EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
 
 export function HMModal(props) {
     const dispatch = useDispatch();
+    const { hmid } = props
 
-    // Get hiring manager details and load into inputs
-    const hmState = useSelector(state => state.hiringManager)
-    const { hiringManager, loading, error } = hmState
     const [inputs, setInputs] = useState({})
+    const isInRedux = (hiringManager) => {
+        return (hiringManager && hmid && (hiringManager.hmid === hmid))
+    }
+
+    // Get all jobs for drop down
+    const { jobs, loading: jobsLoading } = useSelector(state => state.jobs)
     useEffect(() => {
-        if (hiringManager) {
-            let initial = deepCopy(hiringManager)
-            setInputs(initial)
-        }
-    }, [hiringManager])
+        // load in all jobs if needed
+        if (!jobs && props.open)
+            dispatch(jobActions.getAllJobs())
+    }, [props.open])
 
     // Render
     return (
@@ -36,12 +39,18 @@ export function HMModal(props) {
             title={'Edit Hiring Manager'}
             // redux action to dispatch when saving
             onSave={() => dispatch(hmActions.updateHM(inputs))}
-
+            // redux action to dispatch when loading
+            dispatchGet={() => {dispatch(hmActions.getHM(hmid))}}
+            // Redux state of data
+            stateName='hiringManager' 
+            // Function to check if this data is loaded in redux
+            isInRedux={isInRedux}
             // data
-            initial={hiringManager}
-            edited={inputs}
-            loading={loading}
-            error={error}
+            setInputs={setInputs} edited={inputs} 
+            // Make sure edit modal knows to show loading symbol when jobs are loading
+            loading={jobsLoading}
+
+            handleClose={() => {props.handleClose(); setInputs(null)}}
             {...props}
         >
             <Content

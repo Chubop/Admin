@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { jobActions } from '../../../redux/actions';
 
@@ -39,12 +38,12 @@ export function ScoringDetails(props) {
 
     // Get jid from url
     const jid = props.match.params.jid
-    // Load job details at start
+    // Load job details at start if needed
+    const { job, loading, stats, error } = useSelector(state => state.job)
     useEffect(() => {
-        dispatch(jobActions.getJob(jid))
+        if (!job || (job.jid !== jid))
+            dispatch(jobActions.getJob(jid))
     }, [])
-    const jobState = useSelector(state => state.job)
-    const { job, loading, stats, error } = jobState
 
     // Get list of QIDs for mapping rows
     useEffect(() => {
@@ -76,9 +75,10 @@ export function ScoringDetails(props) {
                         {
                             job.question &&
                             <Paper className={classes.paper}>
-                                <QuestionsTable questions={job.question} jid={job.jid} stats={stats} zeros distribution common />
+                                <QuestionsTable questions={job.question} jid={jid} stats={stats} zeros distribution common />
                                 <QuestionsModal
                                     questions={questions}
+                                    jid={jid}
                                     open={editOpen}
                                     handleClose={() => setEditOpen(false)}
                                 />

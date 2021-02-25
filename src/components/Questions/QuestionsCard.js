@@ -80,6 +80,7 @@ export function QuestionsCard(props) {
             <QuestionsTable questions={questions} stats={stats} jid={jid} zeros />
             <QuestionsModal
                 questions={questions}
+                jid={jid}
                 open={editOpen}
                 handleClose={() => setEditOpen(false)}
             />

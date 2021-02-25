@@ -52,13 +52,11 @@ export function HistChartCard(props){
 
     const ref = useRef(null)
     useEffect(() => {
-        console.log('width', ref.current? ref.current.offsetWidth : 0)
         setWidth(ref.current? ref.current.offsetWidth : 0)
     }, [ref.current])
 
     const [width, setWidth] = useState(window.innerWidth)
     const updateWidth = (e) => {
-        console.log('width', ref.current? ref.current.offsetWidth : 0)
         setWidth(ref.current? ref.current.offsetWidth : 0)
     }
 

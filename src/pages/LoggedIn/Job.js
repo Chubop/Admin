@@ -16,13 +16,11 @@ export function Job() {
     const dispatch = useDispatch()
 
     // Load in all jobs at the beginning
+    const { error, jobs, stats } = useSelector(state => state.jobs)
     useEffect(() => {
-        dispatch(jobActions.getAllJobs())
+        if (!jobs)
+            dispatch(jobActions.getAllJobs())
     }, [])
-
-    // Get the job states from redux
-    const jobsState = useSelector(state => state.jobs)
-    const { error, jobs, stats } = jobsState
 
     return (
         <Page

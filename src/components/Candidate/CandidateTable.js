@@ -23,24 +23,22 @@ export function CandidateTable(props) {
     const dispatch = useDispatch()
 
     // States
-    const [open, setOpen] = React.useState(false); // edit modal
+    const [editOpen, setEditOpen] = React.useState(false); // edit modal
+    const [editCID, setEditCID] = React.useState()
 
     // Deletion states
     const [deleteCID, setDeleteCID] = React.useState()
-    // Deletion confirmation modal
     const [deleteOpen, setDeleteOpen] = React.useState(false)
 
 
     // Open the edit candidate modal
     const openEditModal = (id) => {
-        dispatch(candidateActions.getCandidate(id.cid))
-        setOpen(true);
+        setEditCID(id.cid)
+        setEditOpen(true);
     };
 
     // Close the edit candidate modal
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClose = () => { setEditOpen(false); };
 
     // Open delete confirmation
     const handleDeleteClick = (ids) => {
@@ -86,7 +84,7 @@ export function CandidateTable(props) {
                     handleClose={() => setDeleteOpen(false)}
                 />
             </Paper>
-            <CandidateModal open={open} handleClose={handleClose} />
+            <CandidateModal open={editOpen} handleClose={handleClose} cid={editCID}/>
         </>
     )
 }

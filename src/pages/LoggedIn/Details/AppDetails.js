@@ -71,11 +71,11 @@ export function AppDetails(props) {
     const aid = props.match.params.aid
 
     // Load applicant details at start
+    const { applicant, loading, error } = useSelector(state => state.applicant)
     useEffect(() => {
-        dispatch(applicantActions.getApplicant(aid, jid))
+        if (!applicant || (applicant.aid !== aid) || (applicant.jid !== jid))
+            dispatch(applicantActions.getApplicant(aid, jid))
     }, [])
-    const appState  = useSelector(state => state.applicant)
-    const { applicant, loading, error } = appState
 
     // When delete is confirmed
     const handleDelete = () => { 
@@ -123,6 +123,7 @@ export function AppDetails(props) {
                         <ApplicantModal
                             open={editOpen}
                             handleClose={() => setEditOpen(false)}
+                            aid={applicant.aid} jid={applicant.jid}
                         />
                     </Grid>
                 }

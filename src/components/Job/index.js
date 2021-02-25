@@ -1,5 +1,4 @@
 export * from './JobTable'
 export * from './JobModal'
 export * from './JobsAnalytics'
-export * from '../General/ChipList'
 export * from '../General/ActionButton'

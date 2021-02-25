@@ -14,14 +14,14 @@ import { ApplicantTable, ActionButton, ApplicantsAnalytics } from '../../compone
 export function Applicant() {
     const dispatch = useDispatch()
 
+    // Get the applicant states from redux
+    const { error, stats, applicants } = useSelector(state => state.applicants)
+
     // Load in all applicants at the beginning
     useEffect(() => {
-        dispatch(applicantActions.getAllApplicants())
+        if (!applicants)
+            dispatch(applicantActions.getAllApplicants())
     }, [])
-
-    // Get the applicant states from redux
-    const applicantsState = useSelector(state => state.applicants)
-    const { error, stats, applicants } = applicantsState
 
     return (
         <Page

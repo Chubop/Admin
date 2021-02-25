@@ -20,28 +20,29 @@ const useStyles = makeStyles((theme) => ({
 
 export function ApplicantTable(props) {
     const classes = useStyles();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     // States
-    const [open, setOpen] = React.useState(false); // edit modal
+    const [editOpen, setEditOpen] = React.useState(false); 
+    const [editAID, setEditAID] = React.useState();
+    const [editJID, setEditJID] = React.useState();
 
     // Deletion states
-    const [deleteAID, setDeleteAID] = React.useState()
-    const [deleteJID, setDeleteJID] = React.useState()
+    const [deleteAID, setDeleteAID] = React.useState();
+    const [deleteJID, setDeleteJID] = React.useState();
     // Deletion confirmation modal
-    const [deleteOpen, setDeleteOpen] = React.useState(false)
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
 
 
     // Open the edit applicant modal
     const openEditModal = (id) => {
-        dispatch(applicantActions.getApplicant(id.aid, id.jid))
-        setOpen(true);
+        setEditAID(id.aid)
+        setEditJID(id.jid)
+        setEditOpen(true);
     };
 
     // Close the edit applicant modal
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClose = () => { setEditOpen(false); };
 
     // Open delete confirmation
     const handleDeleteClick = (ids) => {
@@ -92,7 +93,7 @@ export function ApplicantTable(props) {
                     handleClose={() => setDeleteOpen(false)}
                 />
             </Paper>
-            <ApplicantModal open={open} handleClose={handleClose} />
+            <ApplicantModal open={editOpen} handleClose={handleClose} aid={editAID} jid={editJID} />
         </>
     )
 }

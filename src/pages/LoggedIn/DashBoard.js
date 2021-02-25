@@ -25,13 +25,12 @@ export function DashBoard(){
     const [spacing, setSpacing] = React.useState(2);
     const dispatch = useDispatch()
 
+    // Get all applicants in the beginning to get applicant analytics
+    const { stats: applicantStats, error } = useSelector(state => state.applicants)
     useEffect(() => {
-        // Used to get analytics about all the applicants
-        dispatch(applicantActions.getAllApplicants())
+        if (!applicantStats)
+            dispatch(applicantActions.getAllApplicants())
     }, [])
-
-    const applicantState = useSelector(state => state.applicants)
-    const { stats: applicantStats, error } = applicantState
     
     function appsToday() {
         return (

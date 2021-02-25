@@ -13,7 +13,8 @@ import {
 } from '@material-ui/core';
 
 // Custom
-import {printFormat} from '../../functions'
+import {printFormat} from '../../../functions'
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,33 +45,48 @@ const useStyles = makeStyles((theme) => ({
 export function EditModal(props) {
     const classes = useStyles();
 
-    const { title, initial: initialData, loading, error, edited } = props
+    const { title, stateName, edited, loading: otherLoading } = props
 
     // States
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [changes, setChanges] = useState([])
     const [initial, setInitial] = useState({})
 
-    // Get data and load into initial
+    // Get initial data and load into state
+    const { [stateName]: reduxObject, loading, error } = useSelector(state => state[stateName])
     useEffect(() => {
-        if (initialData) {
-            let init = deepCopy(initialData)
-            setChanges([])
-            setInitial(init)
+        // If the modal just opened, or new data just loaded into redux
+        if (props.open && !loading) {
+            // Load from redux
+            if (!props.isInRedux(reduxObject)) {
+                props.dispatchGet()
+            }
+            // Initialize/copy data for comparison screen
+            else {
+                let init = reduxObject
+                if (props.processReduxObject !== undefined) {
+                    init = props.processReduxObject(init)
+                }
+                let copy = deepCopy(init)
+                setInitial(init)
+                props.setInputs(copy)
+            }
         }
-    }, [initialData])
+    }, [props.open, loading])
 
     // Check if there are differences
     useEffect(() => {
-        let diff = []
-        // Compare initial data with edited data
-        for (const field in initial) {
-            if (!checkEqual(initial[field], edited[field]))
-                diff.push([field, initial[field], edited[field]])
-        }
-        // If there are differences, open confirmation popup
-        if (diff.length > 0)
+        // If edited and initial are not null
+        if (edited && initial) {
+            let diff = []
+            // Compare initial data with edited data
+            for (const field in edited) {
+                if (!checkEqual(initial[field], edited[field])){
+                    diff.push([field, initial[field], edited[field]])
+                }
+            }
             setChanges(diff)
+        }
     }, [edited])
 
     // Open confirm modal that shows changes
@@ -82,6 +98,8 @@ export function EditModal(props) {
     const handleClose = () => {
         setConfirmOpen(false)
         props.handleClose()
+        setChanges([])
+        setInitial(null)
     }
 
     // Called when user confirms changes
@@ -127,7 +145,7 @@ export function EditModal(props) {
         }
     }
 
-    let isLoading = loading || !initialData
+    let isLoading = loading || otherLoading || !initial
 
     return (
         <Dialog
@@ -142,7 +160,7 @@ export function EditModal(props) {
         >
             <DialogTitle id="form-dialog-title" className={classes.title}>{!confirmOpen ? title : "Save Changes?"}</DialogTitle>
             <DialogContent className={classes.dialogContent && isLoading && classes.loadingContent}>
-                <Content {...props} changes={changes} confirmOpen={confirmOpen} loading={isLoading}/>
+                <Content {...props} changes={changes} confirmOpen={confirmOpen} loading={isLoading} error={error}/>
             </DialogContent>
             <ActionButtons/>
         </Dialog>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { candidateActions } from '../../redux/actions';
 
 // MUI
@@ -11,24 +11,20 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { deepCopy, EditModal } from '../General';
+import { EditModal } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 }));
 
 export function CandidateModal(props) {
     const dispatch = useDispatch();
+    const { cid } = props
 
-    // Get candidate details and load into initial inputs
-    const candidatesState = useSelector(state => state.candidate)
-    const { candidate, loading, error } = candidatesState
     const [inputs, setInputs] = useState({})
-    useEffect(() => {
-        if (candidate) {
-            let initial = deepCopy(candidate)
-            setInputs(initial)
-        }
-    }, [candidate])
+
+    const isInRedux = (candidate) => {
+        return (candidate && cid && (candidate.cid === cid))
+    }
 
     // Render
     return (
@@ -36,12 +32,16 @@ export function CandidateModal(props) {
             title={'Edit Candidate'}
             // redux action to dispatch when saving
             onSave={() => dispatch(candidateActions.updateCandidate(inputs))}
-
+            // redux action to dispatch when loading
+            dispatchGet={() => {dispatch(candidateActions.getCandidate(cid))}}
+            // Redux state of data
+            stateName='candidate' 
+            // Function to check if this data is loaded in redux
+            isInRedux={isInRedux}
             // data
-            initial={candidate}
-            edited={inputs}
-            loading={loading}
-            error={error}
+            setInputs={setInputs} edited={inputs} 
+
+            handleClose={() => {props.handleClose(); setInputs(null)}}
             {...props}
         >
             <Content
@@ -66,22 +66,12 @@ function Content(props) {
             <TextField
                 autoFocus
                 margin="dense"
-                id="name"
-                label="Name"
-                value={inputs.name}
-                onChange={handleChange('name')}
+                id="greenhouse_cid"
+                label="Greenhouse CID"
+                value={inputs.greenhouse_cid}
+                onChange={handleChange('greenhouse_cid')}
                 fullWidth
             />
-            {/* <TextField
-                    autoFocus
-                    margin="dense"
-                    id="email"
-                    label="Email Address"
-                    type="email"
-                    value={inputs.email}
-                    onChange={handleChange('email')}
-                    fullWidth
-                /> */}
         </>
     )
 }

@@ -56,11 +56,11 @@ export function JobDetails(props) {
     const jid = props.match.params.jid
 
     // Load job details at start
+    const { job, loading, stats, error } = useSelector(state => state.job)
     useEffect(() => {
-        dispatch(jobActions.getJob(jid))
+        if (!job || (job.jid !== jid))
+            dispatch(jobActions.getJob(jid))
     }, [])
-    const jobState = useSelector(state => state.job)
-    const { job, loading, stats, error } = jobState
 
     // When delete is confirmed
     const handleDelete = () => { 
@@ -77,7 +77,6 @@ export function JobDetails(props) {
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}
                 deleteTooltip="Delete Job"
-                // onEditClick={handleEditClick}
             >
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
@@ -136,21 +135,11 @@ export function JobDetails(props) {
 function DetailsContent(props) {
     const { job } = props
     const classes = useStyles()
-    const dispatch = useDispatch();
 
     const [editOpen, setEditOpen] = useState(false);
 
-    // Check hiring managers state, because jobModal needs a list of hiring managers
-    const hmsState = useSelector(state => state.hiringManagers)
-    const { hiringManagers } = hmsState
-    // Open Edit Modal, and load necessary information 
-    const handleEditClick = () => {
-        // this job is already loaded in
-        // load in all hiring managers if needed
-        if (!hiringManagers)
-            dispatch(hmActions.getAllHMs())
-        setEditOpen(true)
-    }
+    // Open Edit Modal
+    const handleEditClick = () => { setEditOpen(true) }
 
     return (
         <Card>
@@ -192,6 +181,7 @@ function DetailsContent(props) {
             </CardContent>
             <JobModal
                 open={editOpen}
+                jid={job.jid}
                 handleClose={() => setEditOpen(false)}
             />
         </Card>

@@ -14,14 +14,14 @@ import { CandidateTable, ActionButton } from '../../components/Candidate'
 export function Candidate() {
     const dispatch = useDispatch()
 
+    // Get the candidate states from redux
+    const { error, candidates } = useSelector(state => state.candidates)
+
     // Load in all candidates at the beginning
     useEffect(() => {
-        dispatch(candidateActions.getAllCandidates())
+        if (!candidates)
+            dispatch(candidateActions.getAllCandidates())
     }, [])
-
-    // Get the candidate states from redux
-    const candidatesStates = useSelector(state => state.candidates)
-    const { error, candidates } = candidatesStates
 
     return (
         <Page

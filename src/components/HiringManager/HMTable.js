@@ -1,8 +1,4 @@
-import React from 'react'
-
-// redux
-import { useDispatch } from 'react-redux'
-import { hmActions } from '../../redux/actions'
+import React, { useState } from 'react'
 
 // MUI
 import { makeStyles, Paper } from '@material-ui/core';
@@ -20,21 +16,19 @@ const useStyles = makeStyles((theme) => ({
 
 export function HMTable(props) {
 	const classes = useStyles();
-	const dispatch = useDispatch()
 
 	// States
-	const [open, setOpen] = React.useState(false);
+	const [editOpen, setEditOpen] = useState(false);
+	const [editHMID, setEditHMID] = useState();
 
 	// Open the edit hm modal
 	const openEditModal = (id) => {
-		dispatch(hmActions.getHM(id.hmid))
-		setOpen(true)
+		setEditHMID(id.hmid)
+		setEditOpen(true)
 	};
 
 	// Close the edit hm modal
-	const handleClose = () => {
-		setOpen(false);
-	};
+	const handleClose = () => { setEditOpen(false); };
 
     // When delete button in table is pressed
     const handleDelete = (hiringManagers) => {
@@ -70,7 +64,7 @@ export function HMTable(props) {
 					{...props}
 				/>
 			</Paper>
-			<HMModal open={open} handleClose={handleClose} />
+			<HMModal open={editOpen} handleClose={handleClose} hmid={editHMID}/>
 		</>
 	)
 }

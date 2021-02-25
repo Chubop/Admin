@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { jobActions } from '../../redux/actions';
+import { hmActions, jobActions } from '../../redux/actions';
 
 // MUI
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,8 +17,7 @@ import {
 } from '@material-ui/core';
 
 // Custom components
-import { ChipList } from './';
-import { deepCopy, EditModal } from '../General';
+import { EditModal, ChipList } from '../General';
 
 const chipUnit = ['GPT', 'GRO', 'G&A']
 const chipLocation = ['NA East', 'NA West', 'NA Central', 'All NA', 'Germany', 'Israel', 'APAC']
@@ -35,17 +34,20 @@ const useStyles = makeStyles((theme) => ({
 
 export function JobModal(props) {
     const dispatch = useDispatch();
+    const { jid } = props
 
-    // Get job details and load into inputs
-    const jobState = useSelector(state => state.job)
-    const { job, loading, error } = jobState
     const [inputs, setInputs] = useState({})
+    const isInRedux = (job) => {
+        return (job && jid && job.jid === jid)
+    }
+
+    // Get all hiring managers for drop down
+    const { hiringManagers, loading: hmsLoading } = useSelector(state => state.hiringManagers)
     useEffect(() => {
-        if (job) {
-            let initial = deepCopy(job)
-            setInputs(initial)
-        }
-    }, [job])
+        // load in all hiring managers if needed
+        if (!hiringManagers && props.open)
+            dispatch(hmActions.getAllHMs())
+    }, [props.open])
 
     // Render
     return (
@@ -53,17 +55,24 @@ export function JobModal(props) {
             title={'Edit Job'}
             // redux action to dispatch when saving
             onSave={() => dispatch(jobActions.updateJob(inputs))}
-
+            // redux action to dispatch when loading
+            dispatchGet={() => {dispatch(jobActions.getJob(jid))}}
+            // Redux state of data
+            stateName='job' 
+            // Function to check if this data is loaded in redux
+            isInRedux={isInRedux}
             // data
-            initial={job}
-            edited={inputs}
-            loading={loading}
-            error={error}
+            setInputs={setInputs} edited={inputs} 
+            // Make sure edit modal knows to show loading symbol when HMs are loading
+            loading={hmsLoading}
+
+            handleClose={() => {props.handleClose(); setInputs(null)}}
             {...props}
         >
             <Content
                 inputs={inputs}
                 setInputs={setInputs}
+                hiringManagers={hiringManagers}
             />
         </EditModal>
     );
@@ -71,11 +80,7 @@ export function JobModal(props) {
 
 const Content = (props) => {
     const classes = useStyles();
-    const { inputs, setInputs } = props;
-
-    // Get all hiring managers for drop down
-    const hmState = useSelector(state => state.hiringManagers)
-    const { hiringManagers } = hmState
+    const { inputs, setInputs, hiringManagers } = props;
 
     const HiringMangerDropDown = () => {
         return (
@@ -109,7 +114,7 @@ const Content = (props) => {
         setInputs({ ...inputs, [field]: newSelection })
     }
 
-    if (!inputs)
+    if (!inputs || !hiringManagers)
         return <div/>
     return (
         <>
