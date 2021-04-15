@@ -53,15 +53,15 @@ async function getAllCandidates() {
     let candidates = data.data
     for (let i = 0; i < candidates.length; i ++){
         let candidate = candidates[i]
-        let applications = candidate['applications']
+        let applicants = candidate['applicants']
         candidate['numApplications'] = 0
-        if (Array.isArray(applications)){
-            let nullIndex = applications.indexOf(null)
+        if (Array.isArray(applicants)){
+            let nullIndex = applicants.indexOf(null)
             // Remove null from list if exists
             if (nullIndex !== -1){
-                applications = applications.splice(nullIndex, 1)
+                applicants = applicants.splice(nullIndex, 1)
             }
-            candidate['numApplications'] = applications.length
+            candidate['numApplications'] = applicants.length
         }
     }
     let values = {

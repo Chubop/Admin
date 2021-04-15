@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         margin: 'auto',
-        color: contentColor
         // textAlign: 'center'
     }
 }));
@@ -54,7 +53,9 @@ export function DashCard(props){
                 <Typography className={classes.headerTitle}>
                     {props.title}
                 </Typography>
-                <Typography variant="h4" className={classes.content}>
+                <Typography variant="h4" className={classes.content} 
+                style={{color: (props.color || contentColor) }}
+                >
                     {props.value}
                 </Typography>
             </CardContent>

@@ -20,16 +20,24 @@ import {
     IconButton,
     makeStyles,
     lighten,
+    MenuItem,
+    Select,
 } from '@material-ui/core'
+
 import {
     ZoomIn,
     Delete,
     FilterList,
     Edit,
+    FiberManualRecord
 } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../functions'
+import { useDispatch } from 'react-redux';
+
+import { jobActions } from '../../redux/actions/job.action'
+
 
 const tabColor = '#1769aa'
 
@@ -122,14 +130,14 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
+                {/* <TableCell padding="checkbox">
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
-                </TableCell>
+                </TableCell> */}
                 {header.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -259,6 +267,10 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+    statusButton: {
+        fontSize: '24px',
+        colorPrimary: "red"
+    }
 }));
 
 export function ItemTable(props) {
@@ -269,6 +281,7 @@ export function ItemTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
+    const dispatch = useDispatch()
 
     // headCells are the columns to display, and include the value key
     // prefKey is the key to use to store the rowsPerPage preference in localStorage
@@ -437,21 +450,29 @@ export function ItemTable(props) {
                                         key={row.key}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox">
+                                        {/* <TableCell padding="checkbox">
                                             <Checkbox
                                                 onClick={(event) => handleSelectClick(event, row.key)}
                                                 checked={isItemSelected}
                                                 inputProps={{ 'aria-labelledby': labelId }}
                                             />
-                                        </TableCell>
-                                        {headCells.map((cell,) => {
+                                        </TableCell> */}
+
+                                        {headCells.map((cell) => {
                                             return (
                                                 <TableCell
                                                     align={cell.numeric ? 'right' : 'left'}
                                                     padding={cell.disablePadding ? 'none' : 'default'}
                                                     key={cell.id}
                                                 >
-                                                    { printFormat(row[cell['id']], cell.suffix, cell.isDate) }
+                                                    { 
+                                                        cell.contentFunction === undefined ?
+                                                            printFormat(row[cell['id']], cell.suffix, cell.isDate) 
+                                                        :
+                                                        <>
+                                                            {cell.contentFunction(row[cell['id']], row)}
+                                                        </>
+                                                    }
                                                 </TableCell>
                                             )
                                         })}

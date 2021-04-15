@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 
 // MUI
-import { makeStyles, Paper } from '@material-ui/core';
+import { makeStyles, MenuItem, Paper, Select } from '@material-ui/core';
 
 // Custom components
 import { JobModal } from './'
 import { ItemTable } from '../General';
+import { FiberManualRecord } from '@material-ui/icons';
+import { jobActions } from '../../redux/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -16,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function JobTable(props) {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     // States
     const [editOpen, setEditOpen] = useState(false);
@@ -36,10 +40,59 @@ export function JobTable(props) {
         console.log(jobs)
     }
 
+    const handleStatusChange = (event, job) => {
+        let status = event.target.value
+        let dataIndex = props.data.findIndex((elem) => elem.jid === job.jid)
+
+        job = props.data[dataIndex]
+        job.status = status
+
+        dispatch(jobActions.updateJob(job))
+    }
+
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
         { id: 'titles', numeric: false, disablePadding: false, label: 'Title' },
+        { id: 'status', numeric: false, disablePadding: false, label: 'Status',
+            contentFunction: (status, job) => {
+                return (
+                    <Select
+                        value={job['status']}
+                        onClick={(event) => handleStatusChange(event, job)}
+                    >
+                        <MenuItem value={"open"}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <FiberManualRecord
+                                    style={{ color: "#4caf50" }}
+                                    fontSize={"small"}
+                                />
+                                <div> Open </div>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={"closed"}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <FiberManualRecord
+                                    color={"secondary"}
+                                    fontSize={"small"}
+                                />
+                                <div> Closed </div>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={"draft"}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <FiberManualRecord
+                                    color={"disabled"}
+                                    fontSize={"small"}
+                                />
+                                <div> Draft </div>
+                            </div>
+                        </MenuItem>
+                    </Select>
+                )
+
+            }
+        },
         { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
         { id: 'unit', numeric: false, disablePadding: false, label: 'Unit' },
         { id: 'team', numeric: false, disablePadding: false, label: 'Team' },

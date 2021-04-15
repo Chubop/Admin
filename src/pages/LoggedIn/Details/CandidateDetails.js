@@ -17,6 +17,7 @@ import {
 import { printFormat } from '../../../functions'
 import { DeleteConfirmation, Page } from '../../../components/General';
 import { CandidateModal } from '../../../components/Candidate';
+import { ApplicantTable } from '../../../components/Applicant';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -80,9 +81,15 @@ export function CandidateDetails(props) {
             >
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
-                        <Grid item xs={candidate.total ? 9 : 12}>
+                        <Grid item xs={12}>
                             <DetailsCard candidate={candidate} />
                         </Grid>
+                        {
+                            candidate.applicants && candidate.applicants[0] && candidate.applicants[0].aid &&
+                            <Grid item xs={12}>
+                                <ApplicantTable data={candidate.applicants}/>
+                            </Grid>
+                        }
                         <DeleteConfirmation
                             open={deleteOpen}
                             handleDelete={handleDelete}
@@ -107,23 +114,21 @@ export function CandidateDetails(props) {
 }
 
 function DetailsCard(props) {
-    const { candidate } = props
-    const classes = useStyles()
+    const { candidate } = props;
+    const classes = useStyles();
+
+    if (!candidate.applications)
+        return (<div/>)
 
     return (
         <Card style={{height: '100%'}}>
             <CardHeader
                 className={classes.detailsHeader}
-                title={printFormat(candidate.email)}
+                title={printFormat(candidate.email || candidate.cid)}
             />
             <CardContent className={classes.detailsCardContent}>
-                <Typography variant="body1">{printFormat(candidate.cid)} </Typography>
-                <Typography variant="body1">{"Applications: " + printFormat(candidate.applications)} </Typography>
+                <Typography variant="body1">{"Greenhouse CID: " + printFormat(candidate.greenhouse_cid)} </Typography>
             </CardContent>
-            {/* 
-                // TODO make this page load in details about each application
-                <ApplicantTable data={candidate.applications} />
-            */}
         </Card>
     )
 }

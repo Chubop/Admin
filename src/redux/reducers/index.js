@@ -2,6 +2,7 @@ import {combineReducers} from 'redux'
 
 import { 
     authentication,
+    resetPassword,
 } from './auth.reducers'
 
 import { 
@@ -38,5 +39,6 @@ export default combineReducers({
     hiringManagers,
     job,
     jobs,
-    refresh
+    refresh,
+    resetPassword,
 })

@@ -7,6 +7,7 @@ import {
     CardActions, 
     CardContent, 
     CircularProgress, 
+    Grid, 
     Typography, 
 } from '@material-ui/core';
 
@@ -14,7 +15,7 @@ import {
 import { 
     VictoryAxis, 
     VictoryChart, 
-    VictoryHistogram, 
+    VictoryHistogram,
 } from 'victory';
 
 const tabColor = '#1769aa'
@@ -177,6 +178,7 @@ export function HistChartCard(props){
                                         if (datum.y > 0) {
                                             return (`${datum.y}`)
                                         }
+
                                     }}
                                     events={zoom && [
                                         {
@@ -197,9 +199,21 @@ export function HistChartCard(props){
                 }
             </CardContent>
             <CardActions className={classes.titleContainer}>
-                <Typography variant="h6" className={classes.title}>
-                    {props.title}
-                </Typography>
+                <Grid container justify='space-between'>
+                    <Grid item>
+                        <Typography variant="h6" className={classes.title}>
+                            {props.title}
+                        </Typography>
+                    </Grid>
+                    {
+                        props.average &&
+                        <Grid item>
+                            <Typography variant="h6" className={classes.title}>
+                                {"Average: " + props.average}
+                            </Typography>
+                        </Grid>
+                    }
+                </Grid>
             </CardActions>
         </Card>
     )

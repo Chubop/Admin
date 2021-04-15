@@ -54,7 +54,7 @@ export function QuestionsCard(props) {
                 className={classes.detailsHeader}
                 title={
                     <Grid container justify='space-between' alignItems='center'>
-                        <Grid item> Scoring </Grid>
+                        <Grid item> Screening Questions </Grid>
                         <Grid item>
                             <Tooltip title='More Details'>
                                 <Link to={`/job/${jid}/questions`}>

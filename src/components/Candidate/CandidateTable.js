@@ -10,6 +10,8 @@ import { makeStyles, Paper } from '@material-ui/core';
 // Custom Components
 import { CandidateModal } from './'
 import { DeleteConfirmation, ItemTable } from '../General';
+import { Link } from 'react-router-dom';
+import { printFormat } from '../../functions';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -57,7 +59,25 @@ export function CandidateTable(props) {
     const headCells = [
         { id: 'cid', numeric: false, disablePadding: false, label: 'Email' },
         { id: 'greenhouse_cid', numeric: false, disablePadding: false, label: 'Greenhouse CID' },
-        { id: 'applications', numeric: false, disablePadding: false, label: 'AIDs' },
+        { id: 'applicants', numeric: false, disablePadding: false, label: 'Applications',
+            contentFunction: (applicants, candidate) => {
+                if (applicants && applicants[0] && applicants[0].aid) {
+                    return (
+                        applicants.map((applicant) => 
+                            <>
+                                <Link to={`/applications/${applicant.jid}/${applicant.aid}`}>
+                                    {applicant.job_title}
+                                </Link>
+                                <br />
+                            </>
+                        )
+                    )
+                }
+                else {
+                    return printFormat(applicants)
+                }
+            }
+        },
         { id: 'numApplications', numeric: false, disablePadding: false, label: 'Applications',},
     ];
 

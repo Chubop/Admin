@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux'
-import { authActions } from '../redux/actions'
+import { authActions } from '../../redux/actions'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,12 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-export function SignIn(props){
+export function ForgetPassword(props){
     const classes = useStyles();
     const dispatch = useDispatch()
     const [state, setState] = useState({
-        email: '',
-        password: ''
+        password: '',
+        rePassword: '',
+        errorMsg: '',
     })
     const [error, setError] = useState(false)
 
@@ -49,10 +50,18 @@ export function SignIn(props){
     const loginValidation = () => {
         let error = false
 
-        if(state.email === ''){
+        if(state.password != state.rePassword){
             error = true
+            setState({
+                ...state,
+                errorMsg: 'Password does not match'
+            })
         }else if( state.password === '' || state.password.length < 5){
             error = true
+            setState({
+                ...state,
+                errorMsg: 'Password cannot be empty and needs to be at least 5 characters'
+            })
         }
 
         return error
@@ -64,7 +73,7 @@ export function SignIn(props){
         setError(loginValidation())
 
         if(!error)
-            dispatch(authActions.login(state))
+            dispatch(authActions.resetPassword(state))
     }
 
 
@@ -73,23 +82,24 @@ export function SignIn(props){
             <CssBaseline/>
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    Forget Password
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField 
-                        id="email"
+                        id="password"
                         margin="normal" 
-                        label="Username" 
-                        variant="outlined" 
+                        label="Password" 
+                        variant="outlined"
+                        type="password" 
                         fullWidth 
                         required
                         onChange={handleChange}
                     /> 
 
                     <TextField 
-                        id="password"
+                        id="rePassword"
                         margin="normal" 
-                        label="Password" 
+                        label="Re-Enter Password" 
                         variant="outlined" 
                         type="password" 
                         fullWidth 
@@ -97,20 +107,13 @@ export function SignIn(props){
                         onChange={handleChange}
                     /> 
 
-                    {/* <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    /> */}
-
                     <Button  onClick={loginSubmission} type="button" fullWidth variant="contained" color="primary" className={classes.submit}> 
-                        Login 
+                        Reset Password
                     </Button>
 
                     <div style={{color: 'red', textAlign: 'center'}}>
-                        {error && <span> Something went wrong </span> }
+                        {error && <span> {state.errorMsg} </span> }
                     </div> 
-
-                    <a href="/signup"> Take me to sign up</a>
 
                 </form>
             </div>

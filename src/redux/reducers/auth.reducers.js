@@ -41,3 +41,18 @@ export function authentication(state = initialState, action){
 
     }
 }
+
+export function resetPassword(state = {}, action){
+    switch(action.type){
+        case authConstants.RESET_PASSWORD_REQUEST:
+            return {
+                loading: true
+            }
+        case authConstants.RESET_PASSWORD_SUCCESS:
+            return {}
+        case authConstants.RESET_PASSWORD_FAILURE:
+            return {error: action.error}
+        default:
+            return state 
+    }
+}

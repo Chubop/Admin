@@ -5,6 +5,7 @@ export const authActions = {
     login,
     logout, 
     register,
+    resetPassword,
 }
 
 function login(credentials){
@@ -56,4 +57,27 @@ function register(profile){
     function request(profile){ return { type: authConstants.REGISTER_REQUEST, profile}}
     function success(profile){ return { type: authConstants.REGISTER_SUCCESS, profile}}
     function failure(error){ return { type: authConstants.REGISTER_FAILURE, error}}
+}
+
+function resetPassword(credentials){
+    return dispatch => {
+        dispatch(request())
+
+        authService.resetPassword(credentials).then(
+                profile => {
+                    dispatch(success(profile))
+                    dispatch(loginSuccess())
+                }
+            ).catch(
+                error => {
+                    dispatch(failure(error))
+                }
+            )
+
+    }
+
+    function request(){ return { type: authConstants.RESET_PASSWORD_REQUEST}}
+    function success(profile){ return { type: authConstants.RESET_PASSWORD_SUCCESS, profile}}
+    function loginSuccess(profile){ return {type: authConstants.LOGIN_SUCCESS, profile}}
+    function failure(error){ return { type: authConstants.RESET_PASSWORD_FAILURE, error}}
 }

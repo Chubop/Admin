@@ -6,10 +6,13 @@ import { hmActions, jobActions } from '../../redux/actions';
 
 // MUI
 import {
+    Checkbox,
     DialogContentText,
     makeStyles,
     TextField,
 } from '@material-ui/core';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 // Custom components
 import { EditModal } from '../General';
@@ -67,12 +70,23 @@ export function HMModal(props) {
 function Content(props) {
     const { inputs, setInputs, jobs } = props;
 
-    const handleChange = (field) => (event) => {
-        setInputs({ ...inputs, [field]: event.target.value })
+    const handleCheckChange = (field) => (event) => {
+        setInputs({ ...inputs, [field]: event.target.checked })
     }
 
-    if (!inputs || !jobs)
+    const handleChange = (field) => (event) => {
+
+        if(field === 'resetPassword'){
+            setInputs({ ...inputs, [field]: event.target.checked })
+        }else{
+            setInputs({ ...inputs, [field]: event.target.value })
+        }
+    }
+
+    if (!inputs || !jobs ){
         return <div />
+    }
+        
     // TODO figure out whether we should be able to change the email address, and how that would work with auth
     return (
         <>
@@ -112,6 +126,20 @@ function Content(props) {
                 onChange={handleChange('team')}
                 fullWidth
             />
+            
+            <FormGroup row> 
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={inputs.resetPassword || false}
+                            color="primary"
+                            onChange={handleCheckChange('resetPassword')}
+                        />
+                    }
+                    label="Reset Password"
+                
+                />
+            </FormGroup>
 
             {
                 inputs.accessibleJobs &&

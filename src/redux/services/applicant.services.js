@@ -59,9 +59,16 @@ async function getAllApplicants() {
     // Sort applicants by creation time
     applicants = applicants.sort((a, b) => {
         if (a.created && b.created){
-            if (a.created[0] < b.created[0])
+            let aCreated = a.created
+            let bCreated = b.created
+            if (aCreated[0])
+                aCreated = aCreated[0]
+            if (bCreated[0])
+                bCreated = bCreated[0]
+
+            if (aCreated < bCreated)
                 return 1
-            if (a.created[0] > b.created[0])
+            if (aCreated > bCreated)
                 return -1
         }
         else if (a.created && !b.created) {
@@ -72,7 +79,7 @@ async function getAllApplicants() {
     })
     let values = {
         applicants: applicants,
-        stats: analyzeApplicants(applicants, {})
+        stats: analyzeApplicants(applicants, {}, {getBadNames: true})
     }
     return values
 }

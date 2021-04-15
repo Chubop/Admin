@@ -14,7 +14,14 @@ import {
     MenuItem,
     Input,
     InputLabel,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
 } from '@material-ui/core';
+
+import {
+    FiberManualRecord
+} from '@material-ui/icons'
 
 // Custom components
 import { EditModal, ChipList } from '../General';
@@ -127,6 +134,7 @@ const Content = (props) => {
                 onChange={handleChange('titles')}
                 fullWidth
             />
+
             <TextField
                 autoFocus
                 margin="dense"
@@ -136,6 +144,49 @@ const Content = (props) => {
                 onChange={handleChange('type')}
                 fullWidth
             />
+
+            <TextField
+                autoFocus
+                margin="dense"
+                id="Appointment Link"
+                label="Appointment Link"
+                value={inputs.appointment_link}
+                onChange={handleChange('appointment_link')}
+                fullWidth
+            />
+
+            <Select
+                value={inputs.status || ''}
+                onChange={handleChange('status')}
+            >
+                <MenuItem value={"open"}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <FiberManualRecord
+                            style={{ color: "#4caf50" }}
+                            fontSize={"small"}
+                        />
+                        <div> Open </div>
+                    </div>
+                </MenuItem>
+                <MenuItem value={"closed"}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <FiberManualRecord 
+                            color={"secondary"}
+                            fontSize={"small"} 
+                        />
+                        <div> Closed </div>
+                    </div>
+                </MenuItem>
+                <MenuItem value={"draft"}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <FiberManualRecord 
+                            color={"disabled"}
+                            fontSize={"small"} 
+                        />
+                        <div> Draft </div>
+                    </div>
+                </MenuItem>
+            </Select>
 
             <DialogContentText className={classes.chipTitle}>
                 Units

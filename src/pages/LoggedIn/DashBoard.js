@@ -84,18 +84,21 @@ export function DashBoard(){
                             <ScoreChartCard zoom
                                 title="Application Scores"
                                 data={applicantStats && applicantStats.scores.total}
+                                average={applicantStats && applicantStats.avgTotal.toFixed(2) + "%"}
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
                             <ScoreChartCard zoom
                                 title="Application Eligibility"
                                 data={applicantStats && applicantStats.scores.eli}
+                                average={applicantStats && applicantStats.avgEli.toFixed(2) + "%"}
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
                             <ScoreChartCard zoom
                                 title="Application Fit"
                                 data={applicantStats && applicantStats.scores.fit}
+                                average={applicantStats && applicantStats.avgFit.toFixed(2) + "%"}
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>

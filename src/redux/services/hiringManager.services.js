@@ -108,7 +108,7 @@ function getHMstats(hiringManager) {
         })
 
         if (applicants.length > 0) {
-            stats = analyzeApplicants(applicants, stats)
+            stats = analyzeApplicants(applicants, stats, {})
             stats['applicants'] = applicants
         }
     }

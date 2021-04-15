@@ -4,16 +4,17 @@ import { API_ROOT } from '../../settings/settings'
 export const authService = {
     login,
     logout,
-    register
+    register,
+    resetPassword,
 }
 
 async function login(credentials){
     try{
         let response = await axios.post(`${API_ROOT}/login`, credentials)
-        let profile = response.data
-        localStorage.setItem('profile', JSON.stringify(profile['profile']))
-        localStorage.setItem('accessToken', JSON.stringify(profile['access_token']))
-        return profile
+        let data = response.data
+        localStorage.setItem('profile', JSON.stringify(data['profile']))
+        localStorage.setItem('accessToken', JSON.stringify(data['access_token']))
+        return data['profile']
     }
     catch(error){
         throw error
@@ -22,6 +23,8 @@ async function login(credentials){
 
 function logout(){
     localStorage.removeItem('profile')
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('preferences')
 }
 
 async function register(profile){
@@ -40,11 +43,42 @@ async function register(profile){
         )
         let data = response.data
         profile = data['profile']
-        localStorage.setItem('profile', JSON.stringify(profile['profile']))
-        localStorage.setItem('accessToken', JSON.stringify(profile['access_token']))
+        localStorage.setItem('profile', JSON.stringify(profile))
+        localStorage.setItem('accessToken', JSON.stringify(data['access_token']))
         return profile
     }
     catch(error){
         throw error
     }
 }
+
+
+async function resetPassword(credentials){
+    let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+
+    try{
+        let response = await axios.post(
+            `${API_ROOT}/reset_password`,
+            {
+                password: credentials.password
+            },
+            {   
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                },
+            }
+        ) 
+
+        let data = response.data
+        let profile = data['profile']
+
+        localStorage.setItem('profile', JSON.stringify(profile))
+        localStorage.setItem('accessToken', JSON.stringify(data['access_token']))
+
+        return profile
+
+    }catch(error){
+        throw error 
+    }
+}
+

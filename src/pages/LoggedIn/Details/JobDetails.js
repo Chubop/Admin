@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { hmActions, jobActions } from '../../../redux/actions';
+import { jobActions } from '../../../redux/actions';
 
 // MUI
 import {
@@ -13,8 +13,9 @@ import {
     makeStyles,
     Tooltip,
     Typography,
+    Paper,
 } from '@material-ui/core'
-import { Assessment, AssignmentTurnedIn, DoneAll, Edit, Extension, FilterList, Star } from '@material-ui/icons'
+import { AccessAlarm, AccessTimeRounded, Assessment, Clear, DoneAll, Edit, FilterList } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../../functions'
@@ -27,18 +28,12 @@ import {
 import { JobModal } from '../../../components/Job';
 import { DashCard } from '../../../components/Dashboard';
 import { QuestionsCard } from '../../../components/Questions/QuestionsCard';
+import { JobMilestones } from '../../../components/Job/JobMilestones';
+import { waitingColor } from '../../../functions/waitingColor';
 
 const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    paper: {
-        width: '100%',
-        marginBottom: theme.spacing(2),
-        padding: theme.spacing(2)
-    },
     tabColor: {
         background: tabColor,
         color: 'white'
@@ -46,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function JobDetails(props) {
-    const classes = useStyles();
     const dispatch = useDispatch();
+
     // States
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleted, setDeleted] = useState(false); // for redirecting
@@ -63,72 +58,63 @@ export function JobDetails(props) {
     }, [])
 
     // When delete is confirmed
-    const handleDelete = () => { 
+    const handleDelete = () => {
         setDeleted(true) // redirects page to '/job'
-        dispatch(jobActions.deleteJob(jid)) 
+        dispatch(jobActions.deleteJob(jid))
     }
 
     const pageLoading = !job || loading
     return (
-        <div className={classes.root}>
-            <Page
-                title="Job Details"
-                loading={pageLoading}
-                error={error}
-                onDeleteClick={() => setDeleteOpen(true)}
-                deleteTooltip="Delete Job"
-            >
-                {!pageLoading && !error &&
-                    <Grid container spacing={spacing}>
-                        <Grid item xs={4}>
-                            <Grid container spacing={spacing}>
-                                <Grid item xs={12}>
-                                    <DetailsContent job={job} />
-                                </Grid>
-                                {job.applicants && job.applicants.length > 0 &&
-                                    <Grid item xs={12}>
-                                        <StatsCards stats={stats} />
-                                    </Grid>
-                                }
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={8}>
-                            {
-                                job.question &&
-                                    <QuestionsCard questions={job.question} jid={job.jid} stats={stats}/>
-                            }
-                        </Grid>
-                        {job.applicants && job.applicants.length > 0 ?
-                            <>
-                                {
-                                    stats.numScored > 0 &&
-                                    <Grid item xs={12}>
-                                        <ScoreCharts job={job} stats={stats} />
-                                    </Grid>
-                                }
-                                <Grid item xs={12}>
-                                    <ApplicantTable data={job.applicants} />
-                                </Grid>
-                            </>
-                            :
-                            <h1>No candidates have applied to this job</h1>
-                        }
-                        <DeleteConfirmation
-                            open={deleteOpen}
-                            handleDelete={handleDelete}
-                            handleClose={() => setDeleteOpen(false)}
-                        >
-                            <Typography>{job.titles}</Typography>
-                            <Typography>{"Number of Applications: " + stats.numApplicants}</Typography>
-                        </DeleteConfirmation>
-                        {
-                            deleted &&
-                            <Redirect to="/job"/>
+        <Page
+            title={"Job Details" + (job ? " - " + job.titles : "")}
+            loading={pageLoading}
+            error={error}
+            onDeleteClick={() => setDeleteOpen(true)}
+            deleteTooltip="Delete Job"
+        >
+            {!pageLoading && !error &&
+                <Grid container spacing={spacing}>
+                    <Grid item xs={12} >
+                        {job.applicants && job.applicants.length > 0 &&
+                            <DashCards stats={stats} job={job} />
                         }
                     </Grid>
-                }
-            </Page>
-        </div>
+                    <Grid item xs={3}>
+                        <DetailsContent job={job} />
+                    </Grid>
+                    <Grid container item xs={9}>
+                        <MilestonesCard job={job} stats={stats}/>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <ScoreCharts job={job} stats={stats} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <QuestionsCard questions={job.question} jid={job.jid} stats={stats} />
+                    </Grid>
+                    {job.applicants && job.applicants.length > 0 ?
+                        <Grid item xs={12}>
+                            <ApplicantTable data={job.applicants} />
+                        </Grid>
+                        :
+                        <h1>No candidates have applied to this job</h1>
+                    }
+                    <DeleteConfirmation
+                        open={deleteOpen}
+                        handleDelete={handleDelete}
+                        handleClose={() => setDeleteOpen(false)}
+                    >
+                        <Typography variant="h6">{job.titles}</Typography>
+                        <Typography>{"Hiring Manager: " + job.hm}</Typography>
+                        <Typography>{"Applications: " + stats.numApplicants}</Typography>
+                        <Typography>{"Screened Applications: " + stats.numScored}</Typography>
+                    </DeleteConfirmation>
+                    {
+                        deleted &&
+                        <Redirect to="/job" />
+                    }
+                </Grid>
+            }
+        </Page>
     )
 }
 
@@ -144,10 +130,10 @@ function DetailsContent(props) {
     return (
         <Card>
             <CardHeader
-                className={classes.tabColor} 
+                className={classes.tabColor}
                 title={
                     <Grid container justify='space-between' alignItems='center'>
-                        <Grid item> {job.titles} </Grid>
+                        <Grid item>{job.titles}</Grid>
                         <Grid item>
                             <Tooltip title='Edit Job'>
                                 <IconButton onClick={handleEditClick} style={{ color: 'white' }}>
@@ -172,13 +158,11 @@ function DetailsContent(props) {
                             "No hiring manager is in charge of this job."
                     }
                 </Typography>
-                <Typography variant="body1">ID: {printFormat(job.jid)} </Typography>
-                <Typography variant="body1">Bot ID: {printFormat(job.botID)} </Typography>
                 <Typography variant="body1">Type: {printFormat(job.type)} </Typography>
                 <Typography variant="body1">Teams: {printFormat(job.team)} </Typography>
                 <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
                 <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
-                <Typography variant="body1">Job Created: {printFormat(job.created, '', true)} </Typography>
+                <Typography variant="body1">Bot ID: {printFormat(job.botID)} </Typography>
             </CardContent>
             <JobModal
                 open={editOpen}
@@ -189,40 +173,21 @@ function DetailsContent(props) {
     )
 }
 
-function StatsCards(props) {
-    const { stats } = props
+function DashCards(props) {
+    const { job, stats } = props
+    const classes = useStyles()
 
     return (
-        <Grid container spacing={spacing} justify='space-between'>
-            <Grid item xs={6}>
-                <Grid container direction='column' spacing={spacing} >
-                    <Grid item >
-                        <DashCard
-                            dashIcon={Star}
-                            // TODO change to grade
-                            // TODO grade on backend?
-                            title={"Avg. Score"}
-                            value={stats.avgTotal.toFixed(0) + "%"}
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={AssignmentTurnedIn}
-                            title={"Avg. Eligibility"}
-                            value={stats.avgEli.toFixed(0) + "%"}
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={Extension}
-                            title={"Avg. Fit"}
-                            value={stats.avgFit.toFixed(0) + "%"}
-                        />
-                    </Grid>
-                </Grid>
+        <Grid container spacing={spacing} >
+            <Grid item>
+                <DashCard
+                    dashIcon={AccessTimeRounded}
+                    title={"Last Action"}
+                    value={printFormat(stats.lastAction, '', true)}
+                />
             </Grid>
-            <Grid item xs={6}>
-                <Grid container spacing={spacing} direction='column'>
+            {stats &&
+                <>
                     <Grid item >
                         <DashCard
                             dashIcon={Assessment}
@@ -239,13 +204,28 @@ function StatsCards(props) {
                     </Grid>
                     <Grid item >
                         <DashCard
+                            dashIcon={AccessAlarm}
+                            title={"Waiting"}
+                            value={stats.waiting}
+                            color={ waitingColor(stats.waiting) }
+                        />
+                    </Grid>
+                    <Grid item >
+                        <DashCard
+                            dashIcon={Clear}
+                            title={"Rejected"}
+                            value={stats.rejected}
+                        />
+                    </Grid>
+                    <Grid item >
+                        <DashCard
                             dashIcon={DoneAll}
                             title={"Accepted"}
                             value={stats.accepted}
                         />
                     </Grid>
-                </Grid>
-            </Grid>
+                </>
+            }
         </Grid>
     )
 }
@@ -253,29 +233,66 @@ function StatsCards(props) {
 function ScoreCharts(props) {
     const { stats } = props
 
+    if (stats.numScored == 0)
+        return <div/>
     return (
-            <Grid container spacing={spacing}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ScoreChartCard
-                        title={"Scores"}
-                        data={stats.scores.total}
-                        zoom
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ScoreChartCard
-                        title={"Fit"}
-                        data={stats.scores.fit}
-                        zoom
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ScoreChartCard
-                        title={"Eligibility"}
-                        data={stats.scores.eli}
-                        zoom
-                    />
-                </Grid>
+        <Grid container spacing={spacing}>
+            <Grid item xs={12} sm={6} md={4}>
+                <ScoreChartCard
+                    title={"Scores"}
+                    data={stats.scores.total}
+                    average={stats.avgTotal.toFixed(0) + "%"}
+                    zoom
+                />
             </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+                <ScoreChartCard
+                    title={"Eligibility"}
+                    data={stats.scores.eli}
+                    average={stats.avgEli.toFixed(0) + "%"}
+                    zoom
+                />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+                <ScoreChartCard
+                    title={"Fit"}
+                    data={stats.scores.fit}
+                    average={stats.avgFit.toFixed(0) + "%"}
+                    zoom
+                />
+            </Grid>
+        </Grid>
+    )
+}
+
+const useMilestonesStyles = makeStyles((theme) => ({
+    milestonesPaper: {
+        width: '100%',
+        height: '100%',
+        padding: '3em 0',
+        background: tabColor,
+    },
+    milestonesCard: {
+        height: '100%',
+        // Center vertically within card
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+    }
+}));
+
+function MilestonesCard(props) {
+    const { job, stats } = props
+    const classes = useMilestonesStyles()
+
+    return (
+        <Paper className={classes.milestonesPaper} >
+            <Card elevation={0} square className={classes.milestonesCard} >
+                <JobMilestones
+                    jobOpened={job.created}
+                    firstScreened={stats.firstScreened}
+                    firstRejected={stats.firstRejected}
+                    firstApproved={stats.firstApproved}
+                />
+            </Card>
+        </Paper>
     )
 }

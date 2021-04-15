@@ -154,13 +154,7 @@ function AnalyticsContent(props) {
                             <ScoreChartCard
                                 title={"Scores"}
                                 data={stats.scores.total}
-                                zoom
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                            <ScoreChartCard
-                                title={"Fit"}
-                                data={stats.scores.fit}
+                                average={stats.avgTotal.toFixed(0) + "%"}
                                 zoom
                             />
                         </Grid>
@@ -168,6 +162,15 @@ function AnalyticsContent(props) {
                             <ScoreChartCard
                                 title={"Eligibility"}
                                 data={stats.scores.eli}
+                                average={stats.avgEli.toFixed(0) + "%"}
+                                zoom
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <ScoreChartCard
+                                title={"Fit"}
+                                data={stats.scores.fit}
+                                average={stats.avgFit.toFixed(0) + "%"}
                                 zoom
                             />
                         </Grid>

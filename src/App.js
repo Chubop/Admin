@@ -5,22 +5,31 @@ import {
   Switch,
   Route,
 } from 'react-router-dom'
-import { Button } from '@material-ui/core'
 
-import { SignIn } from './pages'
+import { SignIn, ForgetPassword} from './pages/Authentication'
 import Main from './pages/LoggedIn/Main'
 
-import { authActions } from './redux/actions'
-
 function App() {
+  const profile = useSelector(state => state.authentication.profile)
   const authenticated = useSelector(state => state.authentication.loggedIn)
-  const dispatch = useDispatch()
 
   // Routes that are shown when logged in
   const loggedIn = () => {
     return (
       <Router>
         <Main/>
+      </Router>
+    )
+  }
+
+  const forgetPassword = () => {
+    return(
+      <Router>
+        <Switch>
+          <Route exact path="/" component={ForgetPassword}/>
+          <Route path="/forget" component={ForgetPassword}/>
+          <Route component={ForgetPassword}/>
+        </Switch>
       </Router>
     )
   }
@@ -37,53 +46,23 @@ function App() {
       </Router>
     )
   }
+  
+  if(profile){
+    // Temporary Alt Forced Reset Password Flow
+    // TODO: Change to SSO later
+    let resetPassword = profile['resetPassword']
+    if(resetPassword){
+      return (
+        <div className="App"> 
+          {forgetPassword()}
+        </div>
+      )
+    }
 
-  const testFunction = () => {
-    return(
-      <>
-        <Button 
-          variant="contained" 
-          color="primary"
-          onClick={() => {
-            let profile = {
-              email: "wvuong@liveperson.com",
-              password: "123456"
-            }
-            dispatch(authActions.register(profile))
-          }}  
-        > 
-          Sign Up
-        </Button>
-
-        <Button 
-          variant="contained" 
-          color="primary"
-          onClick={() => {
-            let profile = {
-              email: "wvuong@liveperson.com",
-              password: "123456"
-            }
-            dispatch(authActions.login(profile))
-          }}  
-        > 
-          Login 
-        </Button>
-
-        <Button
-          variant="contained" 
-          color="primary"
-          onClick={() => {dispatch(authActions.logout())}}
-        >
-          Logout  
-        </Button>
-    </>
-    )
   }
 
-  
   return (
     <div className="App">
-      {/* {testFunction()} */}
       {authenticated ? loggedIn() : loggedOut()}
     </div>
   );

@@ -40,30 +40,7 @@ async function getJob(id){
             }
         )
 
-        let job = response.data
-        let stats = {}
-        if (job.applicants){
-            // Sort applicants by creation time
-            job.applicants = job.applicants.sort((a, b) => {
-                if (a.created && b.created){
-                    if (a.created[0] < b.created[0])
-                        return 1
-                    if (a.created[0] > b.created[0])
-                        return -1
-                }
-                else if (a.created &&  !b.created) {
-                    // if comparing applicant that has used bot to one that has not
-                    return -1
-                }
-                return 0
-            })
-            stats = analyzeApplicants(job.applicants, stats)
-        }
-        let data = {
-            job: job,
-            stats: stats
-        }
-        return data
+        return getJobStats(response.data)
 }
 
 async function getAllJobs(){
@@ -158,9 +135,24 @@ function getJobStats(job) {
     let stats = {}
     stats['numApplicants'] = 0
 
+    // Sort applicants by creation time
+    job.applicants = job.applicants.sort((a, b) => {
+        if (a.created && b.created) {
+            if (a.created[0] < b.created[0])
+                return 1
+            if (a.created[0] > b.created[0])
+                return -1
+        }
+        else if (a.created && !b.created) {
+            // if comparing applicant that has used bot to one that has not
+            return -1
+        }
+        return 0
+    })
+
     let data = {
         job: job,
-        stats: analyzeApplicants(job.applicants, stats)
+        stats: analyzeApplicants(job.applicants, stats, {getMilestones: true, analyzeAnswers: true})
     }
     return data
 }

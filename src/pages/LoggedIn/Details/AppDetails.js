@@ -18,11 +18,16 @@ import {
     Typography,
     CardHeader,
     Button,
+    IconButton,
+    Tooltip,
 } from '@material-ui/core'
 import { 
     Check, 
     Extension, 
-    Star 
+    InfoOutlined, 
+    Star, 
+    ToggleOff, 
+    ToggleOn
 } from '@material-ui/icons';
 
 // Custom
@@ -31,6 +36,7 @@ import { DeleteConfirmation, Page } from '../../../components/General';
 import { DashCard } from '../../../components/Dashboard';
 import { ApplicantModal } from '../../../components/Applicant';
 import LinkedItems from '../../../components/Applicant/LinkedItems';
+import { green, lime, orange, red, yellow } from '@material-ui/core/colors';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -55,6 +61,17 @@ const useStyles = makeStyles((theme) => ({
     detailsHeader: {
         background: tabColor,
         color: 'white'
+    },
+    actionLogPaper:{
+        padding: 4,
+        borderRadius:10,
+        width: '100%',
+    },
+    scoreBarCell: {
+        width: `calc(5vw + 30px)`
+    },
+    combinedScoreCell: {
+        width: `calc(5vw + 100px)`
     },
 }));
 
@@ -111,6 +128,10 @@ export function AppDetails(props) {
                         <Grid item xs={12}>
                             <ScoredAnswersTable questions={applicant.scoredQuestions} />
                         </Grid>
+                        {
+                            applicant.actionLog &&
+                            <ActionLog actionLog={applicant.actionLog} />
+                        }
                         <DeleteConfirmation
                             open={deleteOpen}
                             handleDelete={handleDelete}
@@ -136,10 +157,17 @@ function DetailsCard(props) {
     const { applicant } = props
     const classes = useStyles()
 
+    let dateCreated = '---'
     let created = '---'
     if (applicant.created){
-        created = new Date(applicant.created[0] * 1000)
-        created = created.toLocaleTimeString() + " " + created.toLocaleDateString()
+        created = applicant.created
+        dateCreated = new Date(applicant.created * 1000)
+        dateCreated = dateCreated.toLocaleTimeString() + " " + dateCreated.toLocaleDateString()
+    }
+    if (applicant.created[0]){
+        created = applicant.created[0]
+        dateCreated = new Date(applicant.created[0] * 1000)
+        dateCreated = dateCreated.toLocaleTimeString() + " " + dateCreated.toLocaleDateString()
     }
 
     return (
@@ -158,7 +186,7 @@ function DetailsCard(props) {
                                 <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
                                 <Link to={`/candidate/${applicant.email}`}>
                                     <Typography variant="body1">
-                                        Click to see candidate
+                                        Click to see other applications
                                     </Typography>
                                 </Link>
                             </>
@@ -169,7 +197,7 @@ function DetailsCard(props) {
                                     {applicant.job_title}
                                 </Link>
                         </Typography>
-                        <Typography variant="body1">{"Screened: " + created + " (" + printFormat(applicant.created, "", true) + ")"} </Typography>
+                        <Typography variant="body1">{"Screened: " + dateCreated + " (" + printFormat(created, "", true) + ")"} </Typography>
                         {
                             applicant.overqualified &&
                             <Typography variant="body1">This applicant might be overqualified</Typography>
@@ -245,19 +273,22 @@ function Scores(props) {
     )
 }
 
-const headCells = [
-    { id: 'answer', numeric: false, disablePadding: false, label: 'Answer' },
-    { id: 'fit', numeric: true, disablePadding: false, label: 'Fit' },
-    { id: 'eli', numeric: true, disablePadding: false, label: 'Eligibility' },
-    { id: 'total', numeric: true, disablePadding: false, label: 'Total' },
-    { id: 'question', numeric: false, disablePadding: false, label: 'Question' },
-    { id: 'pref_ans', numeric: false, disablePadding: false, label: 'Preferred' },
-    { id: 'imp', numeric: false, disablePadding: false, label: 'Weight' },
-]
 function ScoredAnswersTable(props) {
     const { questions } = props
     const classes = useStyles()
     const [QIDs, setQIDS] = useState([])
+    const [showBars, setShowBars] = useState(true)
+
+    const headCells = [
+        { id: 'answer', numeric: false, disablePadding: false, label: 'Answer' },
+        { id: 'eli', numeric: !showBars, disablePadding: showBars, scoreCell: showBars, label: 'Eligibility' },
+        { id: 'fit', numeric: !showBars, disablePadding: showBars, scoreCell: showBars, label: 'Fit' },
+        { id: 'combined', hidden: !showBars, numeric: !showBars, disablePadding: showBars, combinedScore: showBars, label: 'Eligibility + Fit ', tooltip: 'Total score combines eligibility and fit using a custom ratio.' },
+        { id: 'total', numeric: true, disablePadding: showBars, label: 'Total' },
+        { id: 'imp', numeric: true, disablePadding: true, label: 'Weight' },
+        { id: 'question', numeric: false, disablePadding: false, label: 'Question' },
+        { id: 'pref_ans', numeric: false, disablePadding: false, label: 'Preferred' },
+    ]
 
     // Get list of QIDs for mapping rows
     useEffect(() => {
@@ -274,37 +305,64 @@ function ScoredAnswersTable(props) {
                 return -1
             return 0
         })
+
+        // backwards compatability
+        setShowBars(questions[qids[0]].eli_portion != null)
+
         setQIDS(qids)
     }, [questions])
 
+    if (!questions || QIDs.length == 0 )
+        return <></>
+
     return (
         <Card className={classes.paper}>
-            <CardHeader className={classes.detailsHeader} title="Scored Answers" />
+            <CardHeader className={classes.detailsHeader} 
+            title={
+                <Grid container justify='space-between'>
+                    <Grid item> Scored Answers</Grid>
+                    {
+                        questions[QIDs[0]].eli_portion &&
+                        <Grid item style={{display: 'flex', align: 'center'}} alignItems='center'>
+                            <Typography> Detailed Scores </Typography>
+                            <IconButton onClick={() => setShowBars(!showBars)} style={{padding: 0, paddingLeft: 10}} >
+                                {showBars ? <ToggleOff /> : <ToggleOn />}
+                            </IconButton>
+                        </Grid>
+                    }
+                </Grid>
+            }
+            />
             <TableContainer>
                 <Table
                     className={classes.table}
                     aria-labelledby="tableTitle"
                     size={'medium'}
                 >
-                    <ScoredAnswersTableHead questions={questions}/>
+                    <ScoredAnswersTableHead questions={questions} toggleView={setShowBars} headCells={headCells}/>
                     <TableBody className={classes.tableBody}>
                         {QIDs.map((qid) => {
                             let question = questions[qid]
                             return (
-                                // TODO make row change color based on total grade?
-                                // <TableRow style={question.total || question.total === 0 ? {background: 'lavender'} : {}}>
                                 <TableRow>
-                                    {headCells.map((cell) => {
-                                        return (
-                                            <TableCell
-                                                align={cell.numeric ? 'right' : 'left'}
-                                                padding={cell.disablePadding ? 'none' : 'default'}
-                                            >
-                                                {printFormat(question[cell['id']])}
-                                            </TableCell>
-                                        )
-                                    })}
-                                </TableRow>
+                                {headCells.map((cell) => {
+                                    let cellContent = printFormat(question[cell['id']])
+                                    if (cell['hidden']) {
+                                        return <></>
+                                    }
+                                    if (question['eli_portion'] && showBars) {
+                                        cellContent = getCellContent(question, cell['id'], cellContent)
+                                    }
+                                    return (
+                                        <TableCell
+                                            align={ cell.numeric ? 'right' : 'left' }
+                                            padding={cell.disablePadding ? 'none' : 'default'}
+                                        >
+                                            { cellContent }
+                                        </TableCell>
+                                    )
+                                })}
+                            </TableRow>
                             )
                         })}
                     </TableBody>
@@ -314,20 +372,260 @@ function ScoredAnswersTable(props) {
     )
 }
 
-function ScoredAnswersTableHead() {
+function getCellContent(question, cellID, cellContent) {
+    let weight = question['imp'] * 0.25 + 0.25
+    let percent = 100
+    let eli_portion = question['eli_portion']
+    switch (cellID) {
+        case 'eli':
+            if (question['imp'] > 0)
+                percent = question['eli'] / ((weight) * eli_portion) * 100
+            cellContent = <ScorePercentBar percent={percent} />
+            break;
+        case 'fit':
+            if (question['imp'] > 0)
+                percent = question['fit'] / ((weight) * (10 - eli_portion)) * 100
+            cellContent = <ScorePercentBar percent={percent} />
+            break;
+        case 'combined':
+            let eli_percent = 100
+            let fit_percent = 100
+            if (question['imp'] > 0) {
+                percent = question['total'] / ((weight) * 10) * 100
+                eli_percent = question['eli'] / ((weight) * eli_portion) * 100
+                fit_percent = question['fit'] / ((weight) * (10 - eli_portion)) * 100
+            }
+            cellContent = <TotalScoreBar percent={percent} eli={eli_portion} fit={10 - eli_portion} saturation={5} eli_percent={eli_percent} fit_percent={fit_percent} />
+            break;
+        case 'total':
+            if (question['imp'] > 0) {
+                percent = question['total'] / ((weight) * 10) * 100
+            }
+            cellContent = `${percent.toFixed(0)}%`
+            break;
+        default:
+            break;
+    }
+    return cellContent
+}
+
+function ScoredAnswersTableHead(props) {
+    const { headCells } = props
+    const classes = useStyles();
     return (
         <TableHead>
             <TableRow>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                    >
-                        {headCell.label}
-                    </TableCell>
-                ))}
+                {headCells.map((headCell) => {
+                    if (headCell['hidden'])
+                        return <></>
+                    return (
+                        <TableCell
+                            key={headCell.id}
+                            align={headCell.numeric ? 'right' : 'left'}
+                            padding={headCell.disablePadding ? 'none' : 'default'}
+                            className={(headCell.scoreCell && classes.scoreBarCell) + ' ' + (headCell.combinedScore && classes.combinedScoreCell)}
+                        >
+
+                            {
+                                headCell.tooltip ?
+                                    <Grid container justify={'space-between'} spacing={0}>
+                                        <Grid item>
+                                            {headCell.label}
+                                        </Grid>
+                                        <Grid item>
+                                            <Tooltip title={headCell.tooltip} >
+                                                <InfoOutlined style={{ verticalAlign: 'middle', marginRight: '1em' }} />
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                    :
+                                    <> { headCell.label} </>
+                            }
+                        </TableCell>
+                    )
+                })}
             </TableRow>
         </TableHead>
+    )
+}
+
+function ActionLog(props) {
+    const { actionLog } = props
+    const classes = useStyles();
+
+    function getEntryAction (entry) {
+        let textColor = 'red'
+        let actionText = ''
+
+        if (!(entry && entry.action))
+            return <div/>
+        switch (entry.action) {
+            case 'advanced':
+                textColor = 'green'
+                actionText = 'Advanced'
+                break;
+            case 'rejected':
+                textColor = "red"
+                actionText = 'Rejected'
+                break;
+            case 'unrejected':
+                textColor = "orange"
+                actionText = 'Unrejected'
+                break;
+            default:
+                break;
+        }
+
+        return (
+            <Typography style={{ color: textColor }}>
+                {actionText}
+            </Typography>
+        )
+    }
+
+    function getEntryDate (entry) {
+        if (!(entry && entry.time))
+            return null 
+        let date = new Date(entry.time * 1000)
+        date = date.toLocaleDateString()
+        return <Typography> {date + " (" + printFormat(entry.time, '', true) + ")"} </Typography>
+    }
+
+    function getEntryUser (entry) {
+        if (!(entry && entry.userName))
+            return null
+        return <Typography> {entry.userName} </Typography>
+    }
+
+    if ( actionLog.length == 0)
+        return <div/>
+
+    return (
+        <Card className={classes.paper}>
+            <CardHeader className={classes.detailsHeader} title="Action Log" />
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableCell> Action </TableCell>
+                        <TableCell> User </TableCell>
+                        <TableCell> Time </TableCell>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            actionLog.slice(0).reverse().map((entry) =>
+                                <TableRow key={entry.action}>
+                                    <TableCell>
+                                        {getEntryAction(entry)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {getEntryUser(entry)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {getEntryDate(entry)}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Card>
+    )
+}
+
+const usePercentBarStyles = makeStyles((theme) => ({
+    container: {
+        borderRadius: 50,
+        minWidth: 30,
+        width: '95%',
+        margin: '5%',
+        display: 'flex',
+        background: 'repeating-linear-gradient( -45deg, #E3E3E3, #E3E3E3 3px, #D6D6D6 3px, #D6D6D6 6px)',
+    },
+    filler: {
+        height: '100%',
+        borderRadius: 'inherit',
+        textAlign: 'left'
+    },
+    label: {
+        padding: 5,
+        color: 'white',
+        fontWeight: '500',
+        textShadow: "-1px -1px 0 DarkSlateGray,  1px -1px 0 DarkSlateGray, -1px 1px 0 DarkSlateGray, 1px 1px 0 DarkSlateGray"
+    },
+}));
+
+function percentBarColor(percent, saturation) {
+    if (percent < 25) { // 0 to 25
+        return red[saturation * 100]
+    }
+    if (percent < 50) { // 25 to 50
+        return orange[saturation * 100]
+    }
+    if (percent < 75) { // 50 to 75
+        return yellow[saturation * 100]
+    }
+    if (percent < 95) { // 75 to 95
+        return lime[saturation * 100]
+    }
+    // 95 and above
+    return green[saturation * 100]
+    // return '#1769aa'
+}
+
+function ScorePercentBar(props) {
+    const { percent } = props
+    const classes = usePercentBarStyles()
+    return (
+        <div className={classes.container}>
+            <div className={classes.filler} 
+            style={{ 
+                width: `${percent}%`,
+                backgroundColor: 'SlateGrey' , // light bright blue
+            }}
+                >
+                <span className={classes.label}>
+                    {`${percent.toFixed(0)}%`}
+                </span>
+            </div>
+        </div>
+    )
+}
+
+function TotalScoreBar(props) {
+    const { percent, eli, fit, eli_percent, fit_percent } = props
+    const classes = usePercentBarStyles()
+    // const spaceBetweenEliAndFit = eli * 10 * (1 - (eli_percent / 100))
+    // const spaceBetweenFitAndEnd = fit * 10 * (1 - (fit_percent / 100))
+    const spaceBetweenFitAndEnd = percent < 100
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent:'space-between' }}>
+            <div className={classes.container} >
+                <div className={classes.filler}
+                    style={{
+                        width: `${eli * 10 * (eli_percent / 100)}%`,
+                        backgroundColor: percentBarColor(eli_percent, 4),
+
+                        borderTopRightRadius: 0,
+                        borderBottomRightRadius: 0,
+                    }}
+                >
+                    <span className={classes.label}/>
+                </div>
+                <div className={classes.filler}
+                    style={{
+                        width: `${fit * 10 * (fit_percent / 100)}%`,
+                        backgroundColor: percentBarColor(fit_percent, 6),
+
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+                        borderTopRightRadius: spaceBetweenFitAndEnd > 0 ? 0 : 50,
+                        borderBottomRightRadius: spaceBetweenFitAndEnd > 0 ? 0 : 50,
+                    }}
+                >
+                    <span className={classes.label}/>
+                </div>
+            </div>
+        </div>
     )
 }
