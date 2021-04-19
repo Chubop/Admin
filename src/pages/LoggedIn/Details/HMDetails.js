@@ -128,7 +128,6 @@ function DetailsContent(props) {
                 />
                 <CardContent>
                     <Typography variant="body1">Department: {hiringManager['department']}</Typography>
-                    <Typography variant="body1">Team: {hiringManager['team']}</Typography>
                 </CardContent>
             </Card>
         </div>

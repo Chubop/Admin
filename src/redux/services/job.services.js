@@ -152,7 +152,7 @@ function getJobStats(job) {
 
     let data = {
         job: job,
-        stats: analyzeApplicants(job.applicants, stats, {getMilestones: true, analyzeAnswers: true})
+        stats: analyzeApplicants(job.applicants, stats, {getMilestones: true, analyzeAnswers: true, getAutoDecisionStats: true})
     }
     return data
 }

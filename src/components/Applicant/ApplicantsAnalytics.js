@@ -90,7 +90,7 @@ export function ApplicantsAnalytics(props) {
                         <DashCard
                             dashIcon={Add}
                             title={"Accepted"}
-                            value={stats.accepted}
+                            value={stats.status.accepted}
                         />
                     </Grid>
                     <Grid item xs={12}>

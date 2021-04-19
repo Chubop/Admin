@@ -42,7 +42,6 @@ export function HMTable(props) {
 		{ id: 'firstName', numeric: false, disablePadding: false, label: 'First Name' },
 		{ id: 'lastName', numeric: false, disablePadding: false, label: 'Last Name' },
 		{ id: 'department', numeric: false, disablePadding: false, label: 'Department' },
-		{ id: 'team', numeric: false, disablePadding: false, label: 'Team' },
 	];
 
 	const idString = 'hmid'

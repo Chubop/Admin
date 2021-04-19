@@ -98,7 +98,7 @@ export function QuestionsTable(props) {
                                         zeros && 
                                             <TableCell align="right" style={{ padding: '0px' }}>
                                                 {scores.zero.length}
-                                                <IconButton disabled={scores.zero.length == 0}
+                                                <IconButton disabled={scores.zero.length === 0}
                                                     onClick={(event) => {
                                                         setZerosOpen({ ...zeros, [qid]: true })
                                                         setAnchorEls({ ...anchorEls, [qid]: event.currentTarget })
