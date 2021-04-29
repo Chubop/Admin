@@ -52,11 +52,11 @@ function getCandidate(cid){
     function failure(error){return {type: candidateConstants.GET_CANDIDATE_FAILURE, error}}
 }
 
-function deleteCandidate(jid, aid){
+function deleteCandidate(cid){
     return dispatch => {
         dispatch(request())
 
-        candidateService.deleteCandidate(jid, aid).then(
+        candidateService.deleteCandidate(cid).then(
             data => {
                 dispatch(success(data))
                 dispatch(getAllCandidates())
