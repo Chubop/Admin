@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, Paper, Typography } from '@material-ui/core'
 
 // Custom
-import { ItemTable } from './ItemTable'
+import { ItemTable } from '../ItemTable'
 
 const daysMaxDefault = 5
 export function DaysSinceCard(props) {

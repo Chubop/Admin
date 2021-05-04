@@ -10,7 +10,7 @@ import { Alerts, DashCard, } from '../../components/Dashboard'
 import { Page, ScoreChartCard } from '../../components/General';
 import { WeekCard } from '../../components/General';
 import { applicantActions } from '../../redux/actions';
-import { AutoDecisionBarCard } from '../../components/General/AutoDecisionBarCard';
+import { AutoDecisionBarCard } from '../../components/General/Charts';
 
 const useStyles = makeStyles((theme) => ({
     root: {

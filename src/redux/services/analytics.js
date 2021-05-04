@@ -212,6 +212,53 @@ export function analyzeJobs(jobs, data) {
     return data
 }
 
+export function analyzeBotLogs(botLogs, data) {
+    let applicants = {}
+    let numApplicantsThatAsked = 0
+    let totalNumberOfQuestionsAsked = 0
+    let numEachQuestionAsked = {}
+
+    // On average how many questions did each applicant ask
+    // How many times was each question asked
+    for (let questionID in botLogs) {
+        let question = botLogs[questionID]
+        let logs = question.log
+        totalNumberOfQuestionsAsked += logs.length
+        numEachQuestionAsked[questionID] = logs.length
+
+        for (let i = 0; i < logs.length; i++) {
+            let event = logs[i]
+            let aid = event.aid
+            if (!applicants[aid]) {
+                applicants[aid] = {
+                    log: []
+                }
+                numApplicantsThatAsked += 1
+            }
+            applicants[aid].log.push({question: questionID, time: event.time})
+        }
+    }
+
+    // for (let aid in applicants) {
+    //     // numQuestionsPerAppList.push()
+    // }
+
+    // How many applicants used the two way questions
+    data['numApplicantsThatAsked'] = numApplicantsThatAsked
+
+    // Sum total of number of questions asked
+    data['totalNumberOfQuestionsAsked'] = totalNumberOfQuestionsAsked
+
+    // An object with questionID's as keys and lengths of logs as values
+    // Useful for a bar chart
+    data['numEachQuestionAsked'] = numEachQuestionAsked
+
+    // Average number of questions asked per applicant
+    data['averageNumberOfQuestions'] = (totalNumberOfQuestionsAsked / numApplicantsThatAsked).toFixed(0)
+
+    return data
+}
+
 function mostCommon(arr) {
     if (arr.length === 0)
         return null

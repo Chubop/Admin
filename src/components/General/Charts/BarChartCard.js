@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardActions, CardContent, CircularProgress, Grid, makeStyles, Typography } from '@material-ui/core';
 
 // Victory Charts imports
-import { VictoryBar, VictoryContainer, VictoryLabel, VictoryLegend, VictoryPie } from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, } from 'victory';
 
 
 const tabColor = '#1769aa'
@@ -28,8 +28,6 @@ export function BarChartCard(props) {
     const { data, colorScale } = props;
     const classes = useStyles();
 
-    const [legendData, setLegendData] = useState()
-
     const ref = useRef(null)
     useEffect(() => {
         setWidth(ref.current ? ref.current.offsetWidth : 0)
@@ -48,19 +46,6 @@ export function BarChartCard(props) {
         }
     }, [])
 
-    // When the data changes/loads, get the legend labels and colors
-    useEffect(() => {
-        if (data) {
-            let newLegendData = []
-            for (let i = 0; i < data.length; i++) {
-                newLegendData.push({ name: data[i].x, sybmol: { fill: colorScale[i] } })
-            }
-            setLegendData(newLegendData)
-        }
-    }, [data])
-
-
-
     return (
         <Card className={classes.root} ref={ref}>
             <CardContent className={classes.cardContent} style={{ parent: { overflow: "visible" } }}>
@@ -68,25 +53,13 @@ export function BarChartCard(props) {
                     data === [] ?
                         <CircularProgress />
                         :
-                        <VictoryContainer
+                        <VictoryChart
                             height={height}
                             width={width}
                         >
-                            <VictoryLegend
-                                orientation="vertical"
-                                gutter={20}
-                                // style={{ border: { stroke: "black" }, title: { fontSize: 20 } }}
-                                data={legendData}
-                                centerTitle
-                                colorScale={colorScale}
-                                x={20}
-                                y={20}
-                                standalone={false}
-                            />
-
                             <VictoryBar
                                 colorScale={colorScale}
-                                style={{data: {fill: ({index}) => colorScale[index], stroke: 'black', strokeWidth: 2 }}}
+                                style={{ data: { fill: ({ index }) => colorScale[index], stroke: 'black', strokeWidth: 2 } }}
                                 data={data}
                                 height={height}
                                 width={width}
@@ -97,7 +70,10 @@ export function BarChartCard(props) {
                                     <VictoryLabel style={[{ fill: 'black', fontWeight: 'bold' }]} />
                                 }
                             />
-                        </VictoryContainer>
+                            <VictoryAxis
+                                style={{ axis: { stroke: 'transparent' } }}
+                            />
+                        </VictoryChart>
                 }
             </CardContent>
             <CardActions className={classes.titleContainer}>

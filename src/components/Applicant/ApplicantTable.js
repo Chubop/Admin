@@ -30,6 +30,7 @@ export function ApplicantTable(props) {
     // Deletion states
     const [deleteAID, setDeleteAID] = React.useState();
     const [deleteJID, setDeleteJID] = React.useState();
+
     // Deletion confirmation modal
     const [deleteOpen, setDeleteOpen] = React.useState(false);
 
@@ -54,7 +55,7 @@ export function ApplicantTable(props) {
 
     // Perform delete redux service after confirmation
     const handleDelete = () => {
-        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID))
+        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID, props.refreshPageAction))
     }
 
     // These id's comes from the database, they must match

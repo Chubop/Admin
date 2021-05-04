@@ -8,6 +8,7 @@ export function job(state = initialState, action){
         case jobConstants.CREATE_JOB_REQUEST:
         case jobConstants.DELETE_JOB_REQUEST:
         case jobConstants.GET_JOB_REQUEST:
+        case jobConstants.GET_JOB_BOT_LOGS_REQUEST:
         case jobConstants.RESCORE_JOB_REQUEST:
         case jobConstants.UPDATE_JOB_REQUEST:
         case jobConstants.UPDATE_QUESTIONS_REQUEST:
@@ -26,6 +27,13 @@ export function job(state = initialState, action){
                 stats: action.data.stats,
                 loading: false
             }
+        case jobConstants.GET_JOB_BOT_LOGS_SUCCESS:
+            return{
+                ...state,
+                botLogs: action.data.botLogs,
+                botStats: action.data.stats,
+                loading: false
+            }
         case jobConstants.UPDATE_QUESTIONS_SUCCESS:
         case jobConstants.RESCORE_JOB_SUCCESS:
         case jobConstants.DELETE_JOB_SUCCESS:
@@ -40,6 +48,7 @@ export function job(state = initialState, action){
         case jobConstants.UPDATE_JOB_FAILURE:
         case jobConstants.UPDATE_QUESTIONS_FAILURE:
         case jobConstants.DELETE_JOB_FAILURE:
+        case jobConstants.GET_JOB_BOT_LOGS_FAILURE:
             return {
                 ...state,
                 error: action.error.message,
