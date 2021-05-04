@@ -79,7 +79,7 @@ async function getAllApplicants() {
     })
     let values = {
         applicants: applicants,
-        stats: analyzeApplicants(applicants, {}, {getBadNames: true})
+        stats: analyzeApplicants(applicants, {}, {getBadNames: true, getAutoDecisionStats: true})
     }
     return values
 }

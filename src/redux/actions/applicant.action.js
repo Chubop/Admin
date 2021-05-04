@@ -52,14 +52,14 @@ function getApplicant(aid, jid){
     function failure(error){return {type: applicantConstants.GET_APPLICANT_FAILURE, error}}
 }
 
-function deleteApplicant(jid, aid){
+function deleteApplicant(jid, aid, refreshPage){
     return dispatch => {
         dispatch(request())
 
         applicantService.deleteApplicant(jid, aid).then(
             data => {
                 dispatch(success(data))
-                dispatch(getAllApplicants())
+                refreshPage()
             }
         ).catch(
             error => {

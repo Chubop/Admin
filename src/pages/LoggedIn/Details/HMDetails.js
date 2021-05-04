@@ -128,7 +128,6 @@ function DetailsContent(props) {
                 />
                 <CardContent>
                     <Typography variant="body1">Department: {hiringManager['department']}</Typography>
-                    <Typography variant="body1">Team: {hiringManager['team']}</Typography>
                 </CardContent>
             </Card>
         </div>
@@ -136,7 +135,8 @@ function DetailsContent(props) {
 }
 
 function AnalyticsContent(props) {
-    const { stats, hiringManager } = props
+    const { stats, hiringManager } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -148,6 +148,7 @@ function AnalyticsContent(props) {
                             <ApplicantsAnalytics
                                 stats={stats}
                                 applicants={stats.applicants}
+                                refreshPageAction={() => dispatch(hmActions.getHM(hiringManager.hmid))}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>

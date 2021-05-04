@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_ROOT } from '../../settings/settings'
+import { analyzeBotLogs } from './analytics'
 
 import { analyzeApplicants, analyzeJobs } from './index'
 
@@ -11,6 +12,7 @@ export const jobService = {
     updateJob,
     rescoreJob,
     updateQuestions,
+    getJobBotLogs,
 }
 
 async function createJob(job){
@@ -131,6 +133,27 @@ async function updateQuestions(questions, jid){
     return response.data
 }
 
+async function getJobBotLogs(jid){
+    let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    let response = await axios.get(
+        `${API_ROOT}/botLogs/${jid}`,
+        {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+        }
+    )
+    let botLogs = response.data.data
+    let stats = {}
+
+    let data = {
+        botLogs: botLogs,
+        stats: analyzeBotLogs(botLogs, stats)
+    }
+
+    return data
+}
+
 function getJobStats(job) {
     let stats = {}
     stats['numApplicants'] = 0
@@ -152,7 +175,7 @@ function getJobStats(job) {
 
     let data = {
         job: job,
-        stats: analyzeApplicants(job.applicants, stats, {getMilestones: true, analyzeAnswers: true})
+        stats: analyzeApplicants(job.applicants, stats, {getMilestones: true, analyzeAnswers: true, getAutoDecisionStats: true})
     }
     return data
 }

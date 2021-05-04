@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Grid } from '@material-ui/core'
 
 // Custom Imports
-import { DaysSinceCard } from '../General/DaysSinceCard'
+import { DaysSinceCard } from '../General'
 import { useDispatch } from 'react-redux'
 import { jobActions } from '../../redux/actions'
 import { DeleteConfirmation } from '../General'

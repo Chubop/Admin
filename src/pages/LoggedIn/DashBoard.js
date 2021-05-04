@@ -10,6 +10,7 @@ import { Alerts, DashCard, } from '../../components/Dashboard'
 import { Page, ScoreChartCard } from '../../components/General';
 import { WeekCard } from '../../components/General';
 import { applicantActions } from '../../redux/actions';
+import { AutoDecisionBarCard } from '../../components/General/Charts';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,7 +58,7 @@ export function DashBoard(){
                                 />
                             </Grid>
                             <Grid item >
-                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.accepted} />
+                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.status.accepted} />
                             </Grid>
                             <Grid item >
                                 <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.avgTotal.toFixed(2) + "%"} />
@@ -105,6 +106,12 @@ export function DashBoard(){
                             <WeekCard
                                 title="Screened This Week"
                                 data={applicantStats && applicantStats.daysSince}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <AutoDecisionBarCard
+                                title={"Automated Screening"}
+                                data={applicantStats && applicantStats.status}
                             />
                         </Grid>
                     </Grid>

@@ -8,7 +8,8 @@ export const jobActions = {
     updateJob,
     rescoreJob,
     getAllJobs,
-    updateQuestions
+    updateQuestions,
+    getJobBotLogs,
 }
 
 function createJob(job){
@@ -157,4 +158,25 @@ function updateQuestions(questions, jid){
     function request(){return {type: jobConstants.UPDATE_QUESTIONS_REQUEST, }}
     function success(data){return {type: jobConstants.UPDATE_QUESTIONS_SUCCESS, data}}
     function failure(error){return {type: jobConstants.UPDATE_QUESTIONS_FAILURE, error}}
+}
+
+function getJobBotLogs(jid){
+    return dispatch => {
+        dispatch(request())
+
+        jobService.getJobBotLogs(jid).then(
+            data => {
+                dispatch(success(data))
+            }
+        ).catch(
+            error => {
+                dispatch(failure(error))
+            }
+            
+        )
+    }
+    
+    function request(){return {type: jobConstants.GET_JOB_BOT_LOGS_REQUEST, }}
+    function success(data){return {type: jobConstants.GET_JOB_BOT_LOGS_SUCCESS, data}}
+    function failure(error){return {type: jobConstants.GET_JOB_BOT_LOGS_FAILURE, error}}
 }

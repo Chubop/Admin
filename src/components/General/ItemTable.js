@@ -367,11 +367,11 @@ export function ItemTable(props) {
         let value = event.target.value
         // Set stored preferences
         let preferences = JSON.parse(localStorage.getItem('preferences'))
-        preferences['rowsPerPage'][prefKey] = value == "All" ? 100 : value
+        preferences['rowsPerPage'][prefKey] = value === "All" ? 100 : value
         localStorage.setItem('preferences', JSON.stringify(preferences))
 
         // Set state
-        if (value == 'All') {
+        if (value === 'All') {
             value = rows.length
         }
         value = parseInt(value, 10)

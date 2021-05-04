@@ -179,7 +179,7 @@ function DetailsCard(props) {
             <CardContent>
                 <Grid container justify='space-between'>
                     <Grid item>
-                        < Button disabled style={{ backgroundColor: applicant.status == 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
+                        < Button disabled style={{ backgroundColor: applicant.status === 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
                         {
                             applicant.email &&
                             <>
@@ -312,7 +312,7 @@ function ScoredAnswersTable(props) {
         setQIDS(qids)
     }, [questions])
 
-    if (!questions || QIDs.length == 0 )
+    if (!questions || QIDs.length === 0 )
         return <></>
 
     return (
@@ -497,7 +497,7 @@ function ActionLog(props) {
         return <Typography> {entry.userName} </Typography>
     }
 
-    if ( actionLog.length == 0)
+    if ( actionLog.length === 0)
         return <div/>
 
     return (

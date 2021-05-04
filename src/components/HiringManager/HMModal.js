@@ -117,15 +117,6 @@ function Content(props) {
                 onChange={handleChange('department')}
                 fullWidth
             />
-            <TextField
-                autoFocus
-                margin="dense"
-                id="team"
-                label="Team"
-                value={inputs.team}
-                onChange={handleChange('team')}
-                fullWidth
-            />
             
             <FormGroup row> 
                 <FormControlLabel

@@ -31,10 +31,10 @@ export function Applicant() {
         >
             <Grid container spacing={2}>
                 <Grid item>
-                    <ApplicantsAnalytics stats={stats} applicants={applicants} />
+                    <ApplicantsAnalytics stats={stats} applicants={applicants} refreshPageAction={() => applicantActions.getAllApplicants()} />
                 </Grid>
                 <Grid item xs={12}>
-                    <ApplicantTable data={applicants} />
+                    <ApplicantTable data={applicants} refreshPageAction={() => dispatch(applicantActions.getAllApplicants())}/>
                 </Grid>
             </Grid>
             <ActionButton />

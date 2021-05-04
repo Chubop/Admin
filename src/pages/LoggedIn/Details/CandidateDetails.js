@@ -87,7 +87,7 @@ export function CandidateDetails(props) {
                         {
                             candidate.applicants && candidate.applicants[0] && candidate.applicants[0].aid &&
                             <Grid item xs={12}>
-                                <ApplicantTable data={candidate.applicants}/>
+                                <ApplicantTable data={candidate.applicants} refreshPageAction={() => dispatch(candidateActions.getCandidate(cid))}/>
                             </Grid>
                         }
                         <DeleteConfirmation

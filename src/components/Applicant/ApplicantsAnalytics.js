@@ -30,7 +30,7 @@ export function ApplicantsAnalytics(props) {
 
     // Perform delete redux service after confirmation
     const handleDelete = () => {
-        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID))
+        dispatch(applicantActions.deleteApplicant(deleteJID, deleteAID, props.refreshPageAction))
     }
 
     // If stats are not loaded in, do not render
@@ -90,7 +90,7 @@ export function ApplicantsAnalytics(props) {
                         <DashCard
                             dashIcon={Add}
                             title={"Accepted"}
-                            value={stats.accepted}
+                            value={stats.status.accepted}
                         />
                     </Grid>
                     <Grid item xs={12}>

@@ -30,6 +30,7 @@ import { DashCard } from '../../../components/Dashboard';
 import { QuestionsCard } from '../../../components/Questions/QuestionsCard';
 import { JobMilestones } from '../../../components/Job/JobMilestones';
 import { waitingColor } from '../../../functions/waitingColor';
+import { AutoDecisionBarCard } from '../../../components/General/Charts';
 
 const tabColor = '#1769aa'
 const spacing = 2
@@ -93,7 +94,7 @@ export function JobDetails(props) {
                     </Grid>
                     {job.applicants && job.applicants.length > 0 ?
                         <Grid item xs={12}>
-                            <ApplicantTable data={job.applicants} />
+                            <ApplicantTable data={job.applicants} refreshPageAction={() => dispatch(jobActions.getJob(jid))} />
                         </Grid>
                         :
                         <h1>No candidates have applied to this job</h1>
@@ -163,6 +164,8 @@ function DetailsContent(props) {
                 <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
                 <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
                 <Typography variant="body1">Bot ID: {printFormat(job.botID)} </Typography>
+                <Typography variant="body1"> 
+                <Link to= {`/job/${job.jid}/bot`} > Two Way Bot Details </Link> </Typography>
             </CardContent>
             <JobModal
                 open={editOpen}
@@ -221,7 +224,7 @@ function DashCards(props) {
                         <DashCard
                             dashIcon={DoneAll}
                             title={"Accepted"}
-                            value={stats.accepted}
+                            value={stats.status.accepted}
                         />
                     </Grid>
                 </>
@@ -233,11 +236,11 @@ function DashCards(props) {
 function ScoreCharts(props) {
     const { stats } = props
 
-    if (stats.numScored == 0)
+    if (stats.numScored === 0)
         return <div/>
     return (
         <Grid container spacing={spacing}>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} xl={3}>
                 <ScoreChartCard
                     title={"Scores"}
                     data={stats.scores.total}
@@ -245,7 +248,7 @@ function ScoreCharts(props) {
                     zoom
                 />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} xl={3}>
                 <ScoreChartCard
                     title={"Eligibility"}
                     data={stats.scores.eli}
@@ -253,12 +256,18 @@ function ScoreCharts(props) {
                     zoom
                 />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} xl={3}>
                 <ScoreChartCard
                     title={"Fit"}
                     data={stats.scores.fit}
                     average={stats.avgFit.toFixed(0) + "%"}
                     zoom
+                />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} xl={3}>
+                <AutoDecisionBarCard
+                    title={"Automated Screening"}
+                    data={stats && stats.status}
                 />
             </Grid>
         </Grid>

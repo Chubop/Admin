@@ -6,6 +6,8 @@ import { IconButton, Table, TableHead, TableBody, TableCell, TableRow, TableCont
 import { Flag, ZoomIn } from '@material-ui/icons';
 import { printFormat } from '../../functions';
 import { ApplicantTable } from '../Applicant';
+import { useDispatch } from 'react-redux';
+import { applicantActions } from '../../redux/actions';
 
 const tabColor = '#1769aa'
 const useStyles = makeStyles((theme) => ({
@@ -16,8 +18,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function Alerts(props) {
-    const { alerts } = props
-    const classes = useStyles()
+    const { alerts } = props;
+    const classes = useStyles();
+    const dispatch = useDispatch();
 
     if (!alerts)
         return <div/>
@@ -26,13 +29,13 @@ export function Alerts(props) {
             {alerts.badNames &&
                 <Grid item xs={12}>
                     <CardHeader className={classes.cardHeader} title={<>Invalid Names <Flag style={{ color: 'red' }} /></>} />
-                    <ApplicantTable data={alerts.badNames} />
+                    <ApplicantTable data={alerts.badNames} refreshPageAction={() => dispatch(applicantActions.getAllApplicants()) }/>
                 </Grid>
             }
             {alerts.noGreenhouse &&
                 <Grid item xs={12}>
                     <CardHeader className={classes.cardHeader} title={<>Not in Greenhouse <Flag style={{ color: 'red' }} /></>} />
-                    <ApplicantTable data={alerts.noGreenhouse} />
+                    <ApplicantTable data={alerts.noGreenhouse} refreshPageAction={() => dispatch(applicantActions.getAllApplicants()) }/>
                 </Grid>
             }
         </Grid>
