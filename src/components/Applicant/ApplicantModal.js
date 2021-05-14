@@ -61,18 +61,63 @@ function Content(props) {
 
     // TODO figure out whether we should be able to change the email address, and how that would work with candidates
     return (
-        <>
+        <> 
+            {/* First Name */}
             <TextField
                 autoFocus
                 margin="dense"
-                id="name"
-                label="Name"
-                value={inputs.name}
-                onChange={handleChange('name')}
+                id="first_name"
+                label="First Name"
+                value={inputs.first_name}
+                onChange={handleChange('first_name')}
                 fullWidth
             />
 
+            {/* Last Name */}
+            <TextField
+                autoFocus
+                margin="dense"
+                id="last_name"
+                label="Last Name"
+                value={inputs.last_name}
+                onChange={handleChange('last_name')}
+                fullWidth
+            />
 
+            {/* Current Stage */}
+            {/* <TextField
+                autoFocus
+                margin="dense"
+                id="lastName"
+                label="Last Name"
+                value={inputs.last_name}
+                onChange={handleChange('lastName')}
+                fullWidth
+            /> */}
+
+            {/* Status */}
+            {/* <TextField
+                autoFocus
+                margin="dense"
+                id="lastName"
+                label="Last Name"
+                value={inputs.last_name}
+                onChange={handleChange('lastName')}
+                fullWidth
+            /> */}
+
+            {/* Green House Integration ID */}
+            {/* <TextField
+                autoFocus
+                margin="dense"
+                id="lastName"
+                label="Last Name"
+                value={inputs.last_name}
+                onChange={handleChange('lastName')}
+                fullWidth
+            /> */}
+
+            
             {/* <TextField
                     autoFocus
                     margin="dense"
@@ -82,7 +127,9 @@ function Content(props) {
                     value={inputs.email}
                     onChange={handleChange('email')}
                     fullWidth
-                /> */}
+            /> */}
+
+            
         </>
     )
 }

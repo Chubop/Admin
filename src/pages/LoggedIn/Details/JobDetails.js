@@ -163,6 +163,8 @@ function DetailsContent(props) {
                 <Typography variant="body1">Teams: {printFormat(job.team)} </Typography>
                 <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
                 <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
+                <Typography variant="body1">Appointment Link: {printFormat(job.appointment_link)} </Typography>
+                <Typography variant="body1">Greenhouse JID: {printFormat(job.greenhouse_jid)} </Typography>
                 <Typography variant="body1">Bot ID: {printFormat(job.botID)} </Typography>
                 <Typography variant="body1"> 
                 <Link to= {`/job/${job.jid}/bot`} > Two Way Bot Details </Link> </Typography>

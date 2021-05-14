@@ -148,6 +148,16 @@ const Content = (props) => {
             <TextField
                 autoFocus
                 margin="dense"
+                id="greenhouse_jid"
+                label="Greenhouse Job ID"
+                value={inputs.greenhouse_jid}
+                onChange={handleChange('greenhouse_jid')}
+                fullWidth
+            />
+
+            <TextField
+                autoFocus
+                margin="dense"
                 id="Appointment Link"
                 label="Appointment Link"
                 value={inputs.appointment_link}

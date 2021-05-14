@@ -56,21 +56,30 @@ export class LinkedItems extends Component
     }
     render() {
         const {classes} = this.props;
-        const ref = this.props.reference
-        const keys = Object.keys(this.props.reference)
+        const applicant = this.props.applicant
+        let linkedIn = null
+        let resume = null
+        if(applicant){
+            linkedIn = applicant['linkedin']
+            resume = applicant['resume_url']
+        }
         return (
             <Grid container
                 direction="row"
                 // justify="center"
                 alignItems="flex-start"
             >
-                {keys.map((key,index) => (
-                    <div className={classes.container} key={index}>
-                        <a href={ref[key]} target="_blank"> 
-                            {this.iconDisplay(key, ref[key])}
-                        </a>
-                    </div>
-                ))}
+                <div className={classes.container}>
+                    <a href={linkedIn} target="_blank">
+                        {linkedIn && this.iconDisplay("linkedIn", linkedIn)}
+                    </a>
+                </div>
+
+                <div className={classes.container}> 
+                    <a href={resume} target="_blank">
+                        {resume && this.iconDisplay("resume", resume)}
+                    </a>
+                </div>
             </Grid>
         )
     }

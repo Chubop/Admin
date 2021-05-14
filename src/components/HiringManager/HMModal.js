@@ -132,6 +132,21 @@ function Content(props) {
                 />
             </FormGroup>
 
+            <FormGroup row> 
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={inputs.superuser || false}
+                            color="primary"
+                            onChange={handleCheckChange('superuser')}
+                        />
+                    }
+                    label="Super User"
+                
+                />
+            </FormGroup>
+            
+
             {
                 inputs.accessibleJobs &&
                 <>

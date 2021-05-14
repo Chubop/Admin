@@ -46,7 +46,11 @@ export function ApplicantsAnalytics(props) {
                     detailsPath="applications"
                     data={applicants}
                     // database keys
-                    idKey='aid' nameKey='name' nameLabel="Name"
+                    idKey='aid'
+                    nameKey='first_name' 
+                    nameLabel="First Name"
+                    lastNameKey='last_name'
+                    lastNameLabel='Last Name'
                     prefKey="recentApplicants"
                     daysSinceMostRecent={Math.min(...stats.daysSince)}
                     handleDelete={(ids) => handleDeleteClick(ids)}

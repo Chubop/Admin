@@ -204,9 +204,7 @@ function DetailsCard(props) {
                         }
                     </Grid>
                     <Grid item>
-                        {
-                            applicant.reference && <LinkedItems reference={applicant.reference} />
-                        }
+                        <LinkedItems applicant={applicant} />
                         {
                             applicant.recruiter &&
                             <Typography variant="body1">

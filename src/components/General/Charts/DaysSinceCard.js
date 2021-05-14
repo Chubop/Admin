@@ -9,10 +9,11 @@ import { ItemTable } from '../ItemTable'
 const daysMaxDefault = 5
 export function DaysSinceCard(props) {
     const [daysMax, setDaysMax] = useState(daysMaxDefault)
-    const { type, detailsPath, nameKey, nameLabel, idKey, data, daysSinceMostRecent } = props
+    const { type, detailsPath, nameKey, nameLabel, lastNameKey, lastNameLabel, idKey, data, daysSinceMostRecent } = props
     let headCells = [
         { id: 'daysOpen', label: "Time"},
         { id: nameKey, label: nameLabel },
+        { id: lastNameKey, label: lastNameLabel },
         { id: idKey, label: type + ' ID' },
     ];
 

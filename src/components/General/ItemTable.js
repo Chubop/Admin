@@ -116,10 +116,9 @@ function EnhancedTableHead(props) {
         onRequestSort(event, property);
     };
 
-    const detailsCol = { id: 'details', numeric: true, disablePadding: false, label: 'Details' }
     const editCol = { id: 'edit', numeric: true, disablePadding: false, label: 'Edit' }
     const deleteCol = { id: 'delete', numeric: true, disablePadding: false, label: 'Delete' }
-    let header = headCells.concat([detailsCol])
+    let header = headCells
     if (!noEdit) {
         header = header.concat([editCol])
     }
@@ -248,6 +247,9 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
+    },
+    tableRow: {
+        textDecoration: "none"
     },
     paper: {
         width: '100%',
@@ -443,12 +445,15 @@ export function ItemTable(props) {
 
                                 return (
                                     <TableRow
+                                        className={classes.tableRow}
                                         hover
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={row.key}
                                         selected={isItemSelected}
+                                        component={Link}
+                                        to={detailsPath}
                                     >
                                         {/* <TableCell padding="checkbox">
                                             <Checkbox
@@ -476,18 +481,16 @@ export function ItemTable(props) {
                                                 </TableCell>
                                             )
                                         })}
-                                        <TableCell align="right">
-                                            <Tooltip title="Open Details Page">
-                                                <Link to={detailsPath}>
-                                                    <IconButton aria-label="zoomIn" color="primary" >
-                                                        <ZoomIn />
-                                                    </IconButton>
-                                                </Link>
-                                            </Tooltip>
-                                        </TableCell>
                                         {
                                             !props.noEdit &&
-                                            <TableCell align="right">
+                                            <TableCell 
+                                                align="right"
+                                                onClick={(event) => {
+                                                    // Stopping link and preserving action 
+                                                     event.preventDefault()
+                                                     event.stopPropagation()    
+                                                 }}
+                                            >
                                                 <Tooltip title="Open Edit Modal">
                                                     <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
                                                         <Edit />
@@ -497,7 +500,14 @@ export function ItemTable(props) {
                                         }
                                         {
                                             !props.noDelete &&
-                                            <TableCell align="right">
+                                            <TableCell 
+                                                align="right"
+                                                onClick={(event) => {
+                                                    // Stopping link and preserving action 
+                                                    event.preventDefault()
+                                                    event.stopPropagation()    
+                                                }}    
+                                            >
                                                 <Tooltip title="Delete">
                                                     <IconButton aria-label="delete" color="primary" onClick={() => { props.handleDelete(deleteProps) }}>
                                                         <Delete />
