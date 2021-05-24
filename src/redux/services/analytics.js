@@ -29,8 +29,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
     let firstApprovalTime = null
 
     // Loop through all applicants
-    for (let i = 0; i < applicants.length; i++) {
-        let applicant = applicants[i]
+    for (let applicant of applicants){
 
         if (getBadNames) {
             // Check applicant name for alerts
@@ -85,8 +84,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
         if (getAutoDecisionStats) {
             if (applicant.actionLog && applicant.actionLog.length > 0) {
                 const { actionLog } = applicant
-                for (let j = 0; j < actionLog.length; j++) {
-                    let entry = actionLog[j]
+                for (let entry of actionLog){
                     if (entry.uid === 'auto') {
                         if (entry.action === 'advanced') {
                             autoAccepted += 1
@@ -104,8 +102,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
             // Check applicant logs for milestones
             if (applicant.actionLog && applicant.actionLog.length > 0) {
                 const { actionLog } = applicant
-                for (let j = 0; j < actionLog.length; j++) {
-                    let entry = actionLog[j]
+                for (let entry of actionLog) {
                     if (entry.action === 'advanced') {
                         if (!firstApprovalTime || entry.time < firstApprovalTime)
                             firstApprovalTime = entry.time
@@ -146,7 +143,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
             numRejected += 1
         else if (applicant.status === 'Applied')
             numWaiting += 1
-        if (applicant.stage === "Hiring Manager Review")
+        if (applicant.stage === "Hiring Manager Review" && applicant.status !== 'rejected')
             numWaiting += 1
     }
 
@@ -199,8 +196,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
 
 export function analyzeJobs(jobs, data) {
     let daysSince = []
-    for (let i = 0; i < jobs.length; i++) {
-        let job = jobs[i]
+    for (let job of jobs) {
         if (job.created) {
             let secondsSince = (Date.now() / 1000) - job.created
             daysSince.push(Math.floor(secondsSince/(60*60*24)))
@@ -226,8 +222,7 @@ export function analyzeBotLogs(botLogs, data) {
         totalNumberOfQuestionsAsked += logs.length
         numEachQuestionAsked[questionID] = logs.length
 
-        for (let i = 0; i < logs.length; i++) {
-            let event = logs[i]
+        for (let event of logs) {
             let aid = event.aid
             if (!applicants[aid]) {
                 applicants[aid] = {
@@ -263,8 +258,8 @@ function mostCommon(arr) {
     if (arr.length === 0)
         return null
     let numEach = {}
-    for (let i = 0; i < arr.length; i++) {
-        let value = arr[i]
+    for (let value of arr) {
+
         if (typeof numEach[value] === 'undefined') 
             numEach[value] = 0
         numEach[value]++
