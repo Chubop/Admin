@@ -8,6 +8,7 @@ import {
     AccordionDetails,
     AccordionSummary,
     Card,
+    CardContent,
     CardHeader,
     Grid,
     makeStyles,
@@ -89,21 +90,28 @@ export function BotDetails(props) {
             >
                 {!pageLoading && !error &&
                     <>
-                        {/* <Typography>
-                            Number of applicants that have asked questions: {stats.numApplicantsThatAsked}
-                        </Typography>
-                        <Typography>
-                            Total number of questions asked by applicants: {stats.totalNumberOfQuestionsAsked}
-                        </Typography>
-                        <Typography>
-                            Average number of questions asked by applicants: {stats.averageNumberOfQuestions}
-                        </Typography> */}
                         <Grid container spacing={spacing}>
                             <Grid item style={{ width: '100%' }}>
                                 <BubbleChartCard
                                     data={stats.numEachQuestionAsked}
                                     title={"Amount Asked per Question"}
                                 />
+                            </Grid>
+                            <Grid item style={{ width: '100%' }}>
+                                <Card>
+                                    <CardHeader title={"Bot Overview"} className={classes.cardHeader} />
+                                    <CardContent>
+                                        <Typography>
+                                            Number of applicants that have asked questions: {stats.numApplicantsThatAsked}
+                                        </Typography>
+                                        <Typography>
+                                            Total number of questions asked by applicants: {stats.totalNumberOfQuestionsAsked}
+                                        </Typography>
+                                        {/* <Typography>
+                                            Average number of questions asked by applicants: {stats.averageNumberOfQuestions}
+                                        </Typography> */}
+                                    </CardContent>
+                                </Card>
                             </Grid>
                             <Grid item container spacing={spacing} >
                                 {
