@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ROOT } from '../../settings/settings'
+import { UseBackendRoot } from '../../settings/settings'
 
 export const authService = {
     login,
@@ -9,6 +9,7 @@ export const authService = {
 }
 
 async function login(credentials){
+    const API_ROOT = UseBackendRoot()
     try{
         let response = await axios.post(`${API_ROOT}/login`, credentials)
         let data = response.data
@@ -28,6 +29,7 @@ function logout(){
 }
 
 async function register(profile){
+    const API_ROOT = UseBackendRoot()
     try{
         let response = await axios.post(
             `${API_ROOT}/signup`,
@@ -54,6 +56,7 @@ async function register(profile){
 
 
 async function resetPassword(credentials){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
 
     try{

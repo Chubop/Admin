@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ROOT } from '../../settings/settings'
+import { UseBackendRoot } from '../../settings/settings'
 import { analyzeBotLogs } from './analytics'
 
 import { analyzeApplicants, analyzeJobs } from './index'
@@ -16,6 +16,7 @@ export const jobService = {
 }
 
 async function createJob(job){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
         `${API_ROOT}/job`,
@@ -31,6 +32,7 @@ async function createJob(job){
 }
 
 async function getJob(id){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
         // Query for a single job
         let response = await axios.get(
@@ -46,6 +48,7 @@ async function getJob(id){
 }
 
 async function getAllJobs(){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     // Query for all jobs
     let response = await axios.get(
@@ -78,6 +81,7 @@ async function getAllJobs(){
 }
 
 async function deleteJob(jid){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
         `${API_ROOT}/job/${jid}`,
@@ -91,6 +95,7 @@ async function deleteJob(jid){
 }
 
 async function updateJob(job){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     if (job.jid) {
         let response = await axios.put(
@@ -107,6 +112,7 @@ async function updateJob(job){
 }
 
 async function rescoreJob(jid){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
         `${API_ROOT}/rescore/${jid}`,
@@ -120,6 +126,7 @@ async function rescoreJob(jid){
 }
 
 async function updateQuestions(questions, jid){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.put(
         `${API_ROOT}/question`,
@@ -134,6 +141,7 @@ async function updateQuestions(questions, jid){
 }
 
 async function getJobBotLogs(jid){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
         `${API_ROOT}/botLogs/${jid}`,
