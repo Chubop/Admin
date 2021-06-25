@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ROOT } from '../../settings/settings'
+import { UseBackendRoot } from '../../settings/settings'
 import { analyzeApplicants } from './analytics'
 
 export const applicantService = {
@@ -11,6 +11,7 @@ export const applicantService = {
 }
 
 async function createApplicant(applicant) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
         `${API_ROOT}/applicant`,
@@ -26,6 +27,7 @@ async function createApplicant(applicant) {
 }
 
 async function getApplicant(aid, jid) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
         `${API_ROOT}/applicant/${jid}/${aid}`,
@@ -45,6 +47,7 @@ async function getApplicant(aid, jid) {
 }
 
 async function getAllApplicants() {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
         `${API_ROOT}/applicant`,
@@ -85,6 +88,7 @@ async function getAllApplicants() {
 }
 
 async function deleteApplicant(jid, aid) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
         `${API_ROOT}/applicant/${jid}/${aid}`,
@@ -99,6 +103,7 @@ async function deleteApplicant(jid, aid) {
 }
 
 async function updateApplicant(applicant) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     if (applicant.jid && applicant.aid) {
         let response = await axios.put(

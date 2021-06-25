@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ROOT } from '../../settings/settings'
+import { UseBackendRoot } from '../../settings/settings'
 
 export const candidateService = {
     createCandidate,
@@ -10,6 +10,7 @@ export const candidateService = {
 }
 
 async function createCandidate(candidate) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
         `${API_ROOT}/candidate`,
@@ -25,6 +26,7 @@ async function createCandidate(candidate) {
 }
 
 async function getCandidate(cid) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
         `${API_ROOT}/candidate/${cid}`,
@@ -40,6 +42,7 @@ async function getCandidate(cid) {
 }
 
 async function getAllCandidates() {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
         `${API_ROOT}/candidate`,
@@ -71,6 +74,7 @@ async function getAllCandidates() {
 }
 
 async function deleteCandidate(cid) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
         `${API_ROOT}/candidate/${cid}`,
@@ -85,6 +89,7 @@ async function deleteCandidate(cid) {
 }
 
 async function updateCandidate(candidate) {
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     if (candidate.cid) {
         let response = await axios.put(

@@ -117,6 +117,17 @@ function Content(props) {
                 fullWidth
             /> */}
 
+            {/* Linkedin */}
+            <TextField
+                autoFocus
+                margin="dense"
+                id="linkedin"
+                label="Linkedin"
+                value={inputs.linkedin}
+                onChange={handleChange('linkedin')}
+                fullWidth
+            />
+
             
             {/* <TextField
                     autoFocus

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {
     FormControlLabel,
     CssBaseline,
-    Checkbox,
+    Switch,
     Container,
     TextField, 
     Typography,
@@ -36,6 +36,8 @@ export function SignIn(props){
         password: ''
     })
     const [error, setError] = useState(false)
+
+    const [mongoSelect, setMongoSelect] = useState(JSON.parse(localStorage.getItem('useMongo')) ? true : false)
 
     const handleChange = (event) => {
         let newValue = event.target.value
@@ -102,6 +104,24 @@ export function SignIn(props){
                         label="Remember me"
                     /> */}
 
+                    <div>
+                        <FormControlLabel
+                            control={
+                                <Switch 
+                                    checked={mongoSelect}
+                                    onChange={() => {
+                                        let useMongo = mongoSelect
+                                        localStorage.setItem('useMongo', JSON.stringify(!useMongo))
+                                        setMongoSelect(!useMongo)
+                                    }}
+                                    color="primary"
+                                />
+                            }
+                            label="Use Mongo"
+                        />
+                    </div>
+
+
                     <Button  onClick={loginSubmission} type="button" fullWidth variant="contained" color="primary" className={classes.submit}> 
                         Login 
                     </Button>
@@ -110,7 +130,7 @@ export function SignIn(props){
                         {error && <span> Something went wrong </span> }
                     </div> 
 
-                    <a href="/signup"> Take me to sign up</a>
+                    {/* <a href="/signup"> Take me to sign up</a> */}
 
                 </form>
             </div>

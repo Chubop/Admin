@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_ROOT } from '../../settings/settings'
+import { UseBackendRoot } from '../../settings/settings'
 import { analyzeApplicants } from './analytics'
 
 export const hmService = {
@@ -11,6 +11,7 @@ export const hmService = {
 }
 
 async function createHM(hm){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
         `${API_ROOT}/hiring-manager`,
@@ -25,6 +26,7 @@ async function createHM(hm){
 }
 
 async function getHM(id){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
         let response = await axios.get(
             `${API_ROOT}/hiring-manager/${id}`,
@@ -38,6 +40,7 @@ async function getHM(id){
 }
 
 async function getAllHMs(){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
         // Query for all hiring managers
         let response = await axios.get(
@@ -53,6 +56,7 @@ async function getAllHMs(){
 }
 
 async function deleteHM(hmid){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
         `${API_ROOT}/hiring-manager/${hmid}`,
@@ -66,6 +70,7 @@ async function deleteHM(hmid){
 }
 
 async function updateHM(hm){
+    const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     if (hm.hmid){
         let response = await axios.put(
