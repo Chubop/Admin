@@ -57,6 +57,7 @@ export function candidates(state = initialState, action){
             return{
                 ...state,
                 candidates: action.data.candidates,
+                totalCount: action.data.totalCount,
                 stats: action.data.stats,
                 loading: false
             }

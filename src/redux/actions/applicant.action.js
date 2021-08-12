@@ -96,11 +96,11 @@ function updateApplicant(applicant){
     function failure(error){return {type: applicantConstants.UPDATE_APPLICANT_FAILURE, error}}
 }
 
-function getAllApplicants(){
+function getAllApplicants(currentPage, order, orderBy){
     return dispatch => {
         dispatch(request())
 
-        applicantService.getAllApplicants().then(
+        applicantService.getAllApplicants(currentPage, order, orderBy).then(
             data => {
                 dispatch(success(data))
             }

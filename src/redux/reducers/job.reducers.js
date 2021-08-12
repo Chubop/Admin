@@ -73,6 +73,7 @@ export function jobs(state = initialState, action){
             return{
                 ...state,
                 jobs: action.data.jobs,
+                totalCount: action.data.totalCount,
                 stats: action.data.stats,
                 loading: false
             }

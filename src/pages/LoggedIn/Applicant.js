@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 // redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,14 +13,28 @@ import { ApplicantTable, ActionButton, ApplicantsAnalytics } from '../../compone
 
 export function Applicant() {
     const dispatch = useDispatch()
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [currentPage, setPage] = useState(0)
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('created');
 
     // Get the applicant states from redux
-    const { error, stats, applicants } = useSelector(state => state.applicants)
+    const { error, stats, applicants, totalCount } = useSelector(state => state.applicants)
+
+    // Refresh page
+    const refreshPage = (page, order, orderBy) => {
+        dispatch(applicantActions.getAllApplicants(page, order, orderBy))
+    }
+
+    const handlePageChange = (page, order, orderBy) => {
+        setPage(page)
+        refreshPage(page, order, orderBy)
+    }
 
     // Load in all applicants at the beginning
     useEffect(() => {
         if (!applicants)
-            dispatch(applicantActions.getAllApplicants())
+            refreshPage(currentPage, order, orderBy)
     }, [])
 
     return (
@@ -31,10 +45,27 @@ export function Applicant() {
         >
             <Grid container spacing={2}>
                 <Grid item>
-                    <ApplicantsAnalytics stats={stats} applicants={applicants} refreshPageAction={() => applicantActions.getAllApplicants()} />
+                    <ApplicantsAnalytics 
+                        stats={stats} 
+                        applicants={applicants} 
+                        refreshPageAction={() => applicantActions.getAllApplicants()} 
+                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <ApplicantTable data={applicants} refreshPageAction={() => dispatch(applicantActions.getAllApplicants())}/>
+                    <ApplicantTable 
+                        paginate
+                        data={applicants} 
+                        refreshPageAction={() => dispatch(applicantActions.getAllApplicants())}
+                        totalCount={totalCount}
+                        rowsPerPage={rowsPerPage} 
+                        setRowsPerPage={setRowsPerPage} 
+                        currentPage={currentPage}
+                        handlePageChange={handlePageChange}
+                        order={order}
+                        setOrder={setOrder}
+                        orderBy={orderBy}
+                        setOrderBy={setOrderBy}
+                    />
                 </Grid>
             </Grid>
             <ActionButton />

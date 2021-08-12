@@ -46,18 +46,27 @@ async function getApplicant(aid, jid) {
     return applicant
 }
 
-async function getAllApplicants() {
+async function getAllApplicants(currentPage, order, orderBy) {
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    const preference = JSON.parse(localStorage.getItem('preferences'))
+    const rowsPerPage = preference['rowsPerPage']['applicantsPage']
     let response = await axios.get(
         `${API_ROOT}/applicant`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             },
+            params: {
+                rowsPerPage: rowsPerPage,
+                pageNumber: currentPage,
+                order: order,
+                orderBy: orderBy
+            }
         }
     )
     let data = response.data
+    console.log(data)
     let applicants = data.data
     // Sort applicants by creation time
     applicants = applicants.sort((a, b) => {
@@ -82,6 +91,7 @@ async function getAllApplicants() {
     })
     let values = {
         applicants: applicants,
+        totalCount: data.total_count,
         stats: analyzeApplicants(applicants, {}, {getBadNames: true, getAutoDecisionStats: true})
     }
     return values

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 // redux
 import { useDispatch } from 'react-redux'
@@ -9,7 +9,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 
 // Custom Components
 import { CandidateModal } from './'
-import { DeleteConfirmation, ItemTable } from '../General';
+import { DeleteConfirmation, PaginateTable, ItemTable } from '../General';
 import { Link } from 'react-router-dom';
 import { printFormat } from '../../functions';
 
@@ -24,14 +24,15 @@ export function CandidateTable(props) {
     const classes = useStyles();
     const dispatch = useDispatch()
 
+    const paginate = props.paginate ? true : false
+
     // States
-    const [editOpen, setEditOpen] = React.useState(false); // edit modal
-    const [editCID, setEditCID] = React.useState()
+    const [editOpen, setEditOpen] = useState(false); // edit modal
+    const [editCID, setEditCID] = useState()
 
     // Deletion states
-    const [deleteCID, setDeleteCID] = React.useState()
-    const [deleteOpen, setDeleteOpen] = React.useState(false)
-
+    const [deleteCID, setDeleteCID] = useState()
+    const [deleteOpen, setDeleteOpen] = useState(false)
 
     // Open the edit candidate modal
     const openEditModal = (id) => {
@@ -54,10 +55,12 @@ export function CandidateTable(props) {
         dispatch(candidateActions.deleteCandidate(deleteCID))
     }
 
+
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
-        { id: 'cid', numeric: false, disablePadding: false, label: 'Email' },
+        { id: "cid", numeric: false, disablePadding: false, label: "CID"},
+        { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
         { id: 'greenhouse_cid', numeric: false, disablePadding: false, label: 'Greenhouse CID' },
         { id: 'applicants', numeric: false, disablePadding: false, label: 'Applications',
             contentFunction: (applicants, candidate) => {
@@ -88,7 +91,7 @@ export function CandidateTable(props) {
     return (
         <>
             <Paper className={classes.paper}>
-                <ItemTable
+                <PaginateTable
                     title="Candidates"
                     idString={idString}
                     path={path}

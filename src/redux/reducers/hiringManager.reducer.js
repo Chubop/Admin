@@ -56,7 +56,8 @@ export function hiringManagers(state = initialState, action){
         case hmConstants.GET_ALL_HMS_SUCCESS:
             return{
                 ...state,
-                hiringManagers: action.data,
+                hiringManagers: action.data.profiles,
+                totalCount: action.data.totalCount,
                 loading: false
             }
         case hmConstants.GET_ALL_HMS_FAILURE:

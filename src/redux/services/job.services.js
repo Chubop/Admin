@@ -47,9 +47,11 @@ async function getJob(id){
         return getJobStats(response.data)
 }
 
-async function getAllJobs(){
+async function getAllJobs(currentPage, order, orderBy){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    const preference = JSON.parse(localStorage.getItem('preferences'))
+    const rowsPerPage = preference['rowsPerPage']['jobsPage']
     // Query for all jobs
     let response = await axios.get(
         `${API_ROOT}/job`,
@@ -57,6 +59,12 @@ async function getAllJobs(){
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             },
+            params: {
+                rowsPerPage: rowsPerPage,
+                pageNumber: currentPage,
+                order: order,
+                orderBy: orderBy
+            }
         }
     )
     let jobs = response.data.data
@@ -75,6 +83,7 @@ async function getAllJobs(){
     }
     let data = {
         jobs: jobs,
+        totalCount: response.data.total_count,
         stats: stats
     }
     return data

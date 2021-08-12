@@ -65,6 +65,7 @@ export function DaysSinceCard(props) {
 
 function RecentTable(props) {
     const { daysMax, detailsPath: path, title, data, headCells, handleDelete, idKey, prefKey } = props
+    const [rowsPerPage, setRowsPerPage] = useState(5)
     let filtered = data.filter(item => {
         // Get time created (may be an array)
         let time = item.created
@@ -87,6 +88,9 @@ function RecentTable(props) {
                 handleDelete={handleDelete}
                 prefKey={prefKey}
                 noEdit
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+
             />
         </>
     )

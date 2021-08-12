@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom'
@@ -14,28 +14,19 @@ import {
     TableRow,
     TableSortLabel,
     Toolbar,
-    Typography,
-    Checkbox,
     Tooltip,
     IconButton,
     makeStyles,
     lighten,
-    MenuItem,
-    Select,
 } from '@material-ui/core'
 
 import {
-    ZoomIn,
     Delete,
-    FilterList,
     Edit,
-    FiberManualRecord
 } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../functions'
-import { useDispatch } from 'react-redux';
-
 const tabColor = '#1769aa'
 
 // Makes a row with the categories from headCells
@@ -80,22 +71,6 @@ function descendingComparator(a, b, orderBy) {
     return 0;
 }
 
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
 const additionalColumns = 3
 function EnhancedTableHead(props) {
     const { classes, 
@@ -109,6 +84,7 @@ function EnhancedTableHead(props) {
             noEdit,
             noDelete,
     } = props;
+
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -206,7 +182,7 @@ const EnhancedTableToolbar = (props) => {
                 [classes.highlight]: numSelected > 0,
             })}
         >
-            {numSelected > 0 ? (
+            {/* {numSelected > 0 ? (
                 <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
                     {numSelected} selected
                 </Typography>
@@ -214,9 +190,9 @@ const EnhancedTableToolbar = (props) => {
                     <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
                         {title}
                     </Typography>
-                )}
+            )} */}
 
-            {numSelected > 0 ? (
+            {/* {numSelected > 0 ? (
                 <Tooltip title="In Progress">
                     <IconButton aria-label="delete" onClick={handleDelete}>
                         <Delete />
@@ -232,7 +208,7 @@ const EnhancedTableToolbar = (props) => {
                             <FilterList />
                         </IconButton>
                     </Tooltip>
-                )}
+            )} */}
         </Toolbar>
     );
 };
@@ -272,15 +248,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function ItemTable(props) {
+export function PaginateTable(props) {
     const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('');
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const dispatch = useDispatch()
+    const {order, setOrder, orderBy, setOrderBy, handlePageChange} = props
+    const [selected, setSelected] = useState([]);
+    const page = props.currentPage
+    const rowsPerPage = props.rowsPerPage
+    const totalCount = props.totalCount
+    const [rows, setRows] = useState([]);
 
     // headCells are the columns to display, and include the value key
     // prefKey is the key to use to store the rowsPerPage preference in localStorage
@@ -302,9 +277,9 @@ export function ItemTable(props) {
                 if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
                     // Read stored value
                     rowsPref = preferences.rowsPerPage[prefKey]
-                    setRowsPerPage(rowsPref)
+                    props.setRowsPerPage(rowsPref)
                 }
-                if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
+                if (!preferences['rowsPerPage']) { // Remove old preference
                     preferences['rowsPerPage'] = {}
                 }
                 preferences['rowsPerPage'][prefKey] = rowsPref
@@ -319,13 +294,16 @@ export function ItemTable(props) {
                 localStorage.setItem('preferences', JSON.stringify(preferences))
             }
         }
+
     }
 
     // Sort the rows by property
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        const currentOrder = isAsc ? 'desc' : 'asc'
+        setOrder(currentOrder);
         setOrderBy(property);
+        handlePageChange(page, currentOrder, property);
     };
 
     const handleSelectAllClick = (event) => {
@@ -357,8 +335,8 @@ export function ItemTable(props) {
     };
 
     // Pagination
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    const onChangePage = (event, newPage) => {
+        handlePageChange(newPage, order, orderBy);
     };
 
     // Pagination
@@ -374,8 +352,8 @@ export function ItemTable(props) {
             value = rows.length
         }
         value = parseInt(value, 10)
-        setRowsPerPage(value);
-        setPage(0);
+        props.setRowsPerPage(value);
+        handlePageChange(0, 'desc', 'created');
     };
 
     const handleFilterOpen = (event) => {
@@ -425,8 +403,9 @@ export function ItemTable(props) {
                     />
                     <TableBody>
 
-                        {stableSort(rows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {rows
+                            //stableSort(rows, getComparator(order, orderBy))
+                            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                                 const isItemSelected = isSelected(row.key);
                                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -439,7 +418,6 @@ export function ItemTable(props) {
                                     deleteProps = [row['jid'], row.key]
                                     editID = { [idString]: row.key, 'jid': row['jid'] }
                                 }
-
                                 return (
                                     <TableRow
                                         className={classes.tableRow}
@@ -526,10 +504,10 @@ export function ItemTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 100, 'All']}
                 component="div"
-                count={rows.length}
+                count={totalCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={handleChangePage}
+                onChangePage={onChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </div>

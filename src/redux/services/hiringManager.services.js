@@ -14,7 +14,7 @@ async function createHM(hm){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.post(
-        `${API_ROOT}/hiring-manager`,
+        `${API_ROOT}/profile`,
         hm,
         {   
             headers: {
@@ -29,7 +29,7 @@ async function getHM(id){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
         let response = await axios.get(
-            `${API_ROOT}/hiring-manager/${id}`,
+            `${API_ROOT}/profile/${id}`,
             {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
@@ -39,27 +39,40 @@ async function getHM(id){
         return getHMstats(response.data)
 }
 
-async function getAllHMs(){
+async function getAllHMs(currentPage, order, orderBy){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    const preference = JSON.parse(localStorage.getItem('preferences'))
+    const rowsPerPage = preference['rowsPerPage']['hmsPage']
         // Query for all hiring managers
         let response = await axios.get(
-            `${API_ROOT}/hiring-manager`,
+            `${API_ROOT}/profile`,
             {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 },
+                params: {
+                    rowsPerPage: rowsPerPage,
+                    pageNumber: currentPage,
+                    order: order,
+                    orderBy: orderBy
+                }
             }
         )
-        let hiringManagers = response.data.data
-        return hiringManagers
+        let data = response.data
+        let payload = {
+            'profiles': data.data,
+            'totalCount': data.total_count
+        }
+
+        return payload
 }
 
 async function deleteHM(hmid){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.delete(
-        `${API_ROOT}/hiring-manager/${hmid}`,
+        `${API_ROOT}/profile/${hmid}`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
@@ -74,7 +87,7 @@ async function updateHM(hm){
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     if (hm.hmid){
         let response = await axios.put(
-            `${API_ROOT}/hiring-manager/${hm.hmid}`,
+            `${API_ROOT}/profile/${hm.hmid}`,
             hm,
             {
                 headers: {

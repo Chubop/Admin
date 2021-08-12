@@ -98,11 +98,11 @@ function updateJob(job){
     function failure(error){return {type: jobConstants.UPDATE_JOB_FAILURE, error}}
 }
 
-function getAllJobs(){
+function getAllJobs(currentPage, order, orderBy){
     return dispatch => {
         dispatch(request())
 
-        jobService.getAllJobs().then(
+        jobService.getAllJobs(currentPage, order, orderBy).then(
             data => {
                 dispatch(success(data))
             }

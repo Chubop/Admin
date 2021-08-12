@@ -5,7 +5,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 
 // Custom Components
 import { HMModal } from './'
-import { ItemTable } from '../General';
+import { PaginateTable, ItemTable } from '../General';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme) => ({
 
 export function HMTable(props) {
 	const classes = useStyles();
+
+	const paginate = props.paginate ? true : false
 
 	// States
 	const [editOpen, setEditOpen] = useState(false);
@@ -39,8 +41,10 @@ export function HMTable(props) {
 	// These id's comes from the database, they must match
 	// You can see the possible values to display in redux
 	const headCells = [
+		{ id: "hmid", numeric: false, disablePadding: false, label: "ID"},
 		{ id: 'firstName', numeric: false, disablePadding: false, label: 'First Name' },
 		{ id: 'lastName', numeric: false, disablePadding: false, label: 'Last Name' },
+		{ id: "email", numeric: false, disablePadding: false, label: "Email"},
 		{ id: 'department', numeric: false, disablePadding: false, label: 'Department' },
 	];
 
@@ -51,7 +55,7 @@ export function HMTable(props) {
 	return (
 		<>
 			<Paper className={classes.paper}>
-				<ItemTable
+				<PaginateTable
 					title="Hiring Managers"
 					idString={idString}
 					path={path}

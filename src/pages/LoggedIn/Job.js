@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 // redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,12 +14,27 @@ import { Page } from '../../components/General'
 
 export function Job() {
     const dispatch = useDispatch()
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [currentPage, setPage] = useState(0)
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('created');
 
     // Load in all jobs at the beginning
-    const { error, jobs, stats } = useSelector(state => state.jobs)
+    const { error, jobs, stats, totalCount } = useSelector(state => state.jobs)
+
+    const refreshPage = (page, order, orderBy) => {
+        dispatch(jobActions.getAllJobs(page, order, orderBy))
+    }
+
+    const handlePageChange = (page, order, orderBy) => {
+        setPage(page)
+        refreshPage(page, order, orderBy)
+    }
+
+
     useEffect(() => {
         if (!jobs)
-            dispatch(jobActions.getAllJobs())
+            refreshPage(currentPage, order, orderBy)
     }, [])
 
     return (
@@ -33,7 +48,19 @@ export function Job() {
                     <JobsAnalytics stats={stats} jobs={jobs} />
                 </Grid>
                 <Grid item xs={12}>
-                    <JobTable data={jobs} />
+                    <JobTable 
+                        paginate
+                        data={jobs} 
+                        totalCount={totalCount}
+                        rowsPerPage={rowsPerPage} 
+                        setRowsPerPage={setRowsPerPage} 
+                        currentPage={currentPage}
+                        handlePageChange={handlePageChange}
+                        order={order}
+                        setOrder={setOrder}
+                        orderBy={orderBy}
+                        setOrderBy={setOrderBy}
+                    />
                 </Grid>
             </Grid>
             <ActionButton />

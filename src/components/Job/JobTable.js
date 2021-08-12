@@ -5,7 +5,7 @@ import { makeStyles, MenuItem, Paper, Select } from '@material-ui/core';
 
 // Custom components
 import { JobModal } from './'
-import { ItemTable } from '../General';
+import { PaginateTable, ItemTable } from '../General';
 import { FiberManualRecord } from '@material-ui/icons';
 import { jobActions } from '../../redux/actions';
 import { useDispatch } from 'react-redux';
@@ -21,9 +21,14 @@ export function JobTable(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const paginate = props.paginate ? true : false
+
+    console.log(paginate)
+
     // States
     const [editOpen, setEditOpen] = useState(false);
     const [editJID, setEditJID] = useState();
+    const [rowsPerPage, setRowsPerPage] = useState(5)
 
     // Open the edit job modal
     const openEditModal = (id) => {
@@ -53,6 +58,7 @@ export function JobTable(props) {
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
+        { id: "jid", numeric: false, disablePadding: false, label: "JID"},
         { id: 'titles', numeric: false, disablePadding: false, label: 'Title' },
         { id: 'status', numeric: false, disablePadding: false, label: 'Status',
             contentFunction: (status, job) => {
@@ -98,17 +104,14 @@ export function JobTable(props) {
         { id: 'team', numeric: false, disablePadding: false, label: 'Team' },
         { id: 'hm', numeric: false, disablePadding: false, label: 'Hiring Manager' },
         { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
-        { id: 'jid', numeric: false, disablePadding: false, label: 'JID' },
     ];
 
     const idString = 'jid'
     // This path is used to get to the details page
     const path = "job"
 
-    return (
-        <>
-            <Paper className={classes.paper}>
-                <ItemTable
+    const table = paginate ? 
+        (<PaginateTable
                     title="Jobs"
                     idString={idString}
                     path={path}
@@ -118,7 +121,24 @@ export function JobTable(props) {
                     prefKey={"jobsPage"}
                     noDelete
                     {...props}
-                />
+        />) : 
+        (<ItemTable
+            title="Jobs"
+            idString={idString}
+            path={path}
+            headCells={headCells}
+            handleClickEdit={openEditModal}
+            handleDelete={handleDelete}
+            prefKey={"jobsPage"}
+            noDelete
+            {...props}
+        />)
+    
+
+    return (
+        <>
+            <Paper className={classes.paper}>
+                {table}
             </Paper>
             <JobModal open={editOpen} handleClose={handleClose} jid={editJID}/>
         </>

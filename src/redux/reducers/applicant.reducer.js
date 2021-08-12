@@ -57,6 +57,7 @@ export function applicants(state = initialState, action){
             return{
                 ...state,
                 applicants: action.data.applicants,
+                totalCount: action.data.totalCount,
                 stats: action.data.stats,
                 loading: false
             }

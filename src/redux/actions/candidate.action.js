@@ -96,11 +96,11 @@ function updateCandidate(candidate){
     function failure(error){return {type: candidateConstants.UPDATE_CANDIDATE_FAILURE, error}}
 }
 
-function getAllCandidates(){
+function getAllCandidates(currentPage, order, orderBy){
     return dispatch => {
         dispatch(request())
 
-        candidateService.getAllCandidates().then(
+        candidateService.getAllCandidates(currentPage, order, orderBy).then(
             data => {
                 dispatch(success(data))
             }
@@ -112,6 +112,8 @@ function getAllCandidates(){
     }
     
     function request() {return {type: candidateConstants.GET_ALL_CANDIDATES_REQUEST, }}
-    function success(data){return {type: candidateConstants.GET_ALL_CANDIDATES_SUCCESS, data}}
+    function success(data){
+        console.log(data)
+        return {type: candidateConstants.GET_ALL_CANDIDATES_SUCCESS, data}}
     function failure(error){return {type: candidateConstants.GET_ALL_CANDIDATES_FAILURE, error}}
 }

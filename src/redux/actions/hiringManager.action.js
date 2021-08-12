@@ -96,11 +96,11 @@ function updateHM(hm){
     function failure(error){return {type: hmConstants.UPDATE_HM_FAILURE, error}}
 }
 
-function getAllHMs(){
+function getAllHMs(currentPage, order, orderBy){
     return dispatch => {
         dispatch(request())
 
-        hmService.getAllHMs().then(
+        hmService.getAllHMs(currentPage, order, orderBy).then(
             data => {
                 dispatch(success(data))
             }

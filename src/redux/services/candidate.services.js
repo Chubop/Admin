@@ -41,15 +41,24 @@ async function getCandidate(cid) {
     return data
 }
 
-async function getAllCandidates() {
+async function getAllCandidates(currentPage, order, orderBy) {
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    const preference = JSON.parse(localStorage.getItem('preferences'))
+    const rowsPerPage = preference['rowsPerPage']['candidatesPage']
+
     let response = await axios.get(
         `${API_ROOT}/candidate`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             },
+            params: {
+                rowsPerPage: rowsPerPage,
+                pageNumber: currentPage,
+                order: order,
+                orderBy: orderBy
+            }
         }
     )
     let data = response.data
@@ -69,6 +78,7 @@ async function getAllCandidates() {
     }
     let values = {
         candidates: candidates,
+        totalCount: data.total_count
     }
     return values
 }
