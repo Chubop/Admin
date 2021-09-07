@@ -23,8 +23,6 @@ export function JobTable(props) {
 
     const paginate = props.paginate ? true : false
 
-    console.log(paginate)
-
     // States
     const [editOpen, setEditOpen] = useState(false);
     const [editJID, setEditJID] = useState();

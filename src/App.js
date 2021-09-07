@@ -15,6 +15,13 @@ function App() {
 
   // Routes that are shown when logged in
   const loggedIn = () => {
+
+    let preferences = JSON.parse(localStorage.getItem('preferences'))
+    if(!preferences){
+      preferences = {"rowsPerPage":{"recentApplicants":5,"applicantsPage":5},"daysMax":{"applications":5}}
+      localStorage.setItem('preferences', JSON.stringify(preferences))
+    }
+
     return (
       <Router>
         <Main/>

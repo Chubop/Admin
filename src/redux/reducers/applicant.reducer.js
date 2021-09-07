@@ -50,6 +50,7 @@ export function applicants(state = initialState, action){
             return{
                 ...state,
                 applicants: null,
+                stats: {},
                 loading: true,
                 error: false,
             }

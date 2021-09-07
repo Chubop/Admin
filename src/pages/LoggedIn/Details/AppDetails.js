@@ -489,12 +489,6 @@ function ActionLog(props) {
         return <Typography> {date + " (" + printFormat(entry.time, '', true) + ")"} </Typography>
     }
 
-    function getEntryUser (entry) {
-        if (!(entry && entry.userName))
-            return null
-        return <Typography> {entry.userName} </Typography>
-    }
-
     if ( actionLog.length === 0)
         return <div/>
 
@@ -504,8 +498,10 @@ function ActionLog(props) {
             <TableContainer>
                 <Table>
                     <TableHead>
+                        <TableCell> UID </TableCell>
+                        <TableCell> User Name </TableCell>
                         <TableCell> Action </TableCell>
-                        <TableCell> User </TableCell>
+                        <TableCell> Note </TableCell>
                         <TableCell> Time </TableCell>
                     </TableHead>
                     <TableBody>
@@ -513,10 +509,16 @@ function ActionLog(props) {
                             actionLog.slice(0).reverse().map((entry) =>
                                 <TableRow key={entry.action}>
                                     <TableCell>
+                                        <Typography> {entry.uid} </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography> {entry.userName} </Typography>
+                                    </TableCell>
+                                    <TableCell>
                                         {getEntryAction(entry)}
                                     </TableCell>
                                     <TableCell>
-                                        {getEntryUser(entry)}
+                                        <Typography> {entry.note} </Typography>
                                     </TableCell>
                                     <TableCell>
                                         {getEntryDate(entry)}

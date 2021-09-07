@@ -45,11 +45,11 @@ export function Applicant() {
         >
             <Grid container spacing={2}>
                 <Grid item>
-                    <ApplicantsAnalytics 
+                    {/* <ApplicantsAnalytics 
                         stats={stats} 
                         applicants={applicants} 
                         refreshPageAction={() => applicantActions.getAllApplicants()} 
-                    />
+                    /> */}
                 </Grid>
                 <Grid item xs={12}>
                     <ApplicantTable 

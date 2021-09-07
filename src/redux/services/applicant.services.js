@@ -66,34 +66,14 @@ async function getAllApplicants(currentPage, order, orderBy) {
         }
     )
     let data = response.data
-    console.log(data)
     let applicants = data.data
-    // Sort applicants by creation time
-    applicants = applicants.sort((a, b) => {
-        if (a.created && b.created){
-            let aCreated = a.created
-            let bCreated = b.created
-            if (aCreated[0])
-                aCreated = aCreated[0]
-            if (bCreated[0])
-                bCreated = bCreated[0]
 
-            if (aCreated < bCreated)
-                return 1
-            if (aCreated > bCreated)
-                return -1
-        }
-        else if (a.created && !b.created) {
-            // if comparing applicant that has used bot to one that has not
-            return -1
-        }
-        return 0
-    })
     let values = {
         applicants: applicants,
         totalCount: data.total_count,
-        stats: analyzeApplicants(applicants, {}, {getBadNames: true, getAutoDecisionStats: true})
+        stats: data.stats,
     }
+
     return values
 }
 

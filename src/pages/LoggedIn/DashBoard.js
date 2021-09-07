@@ -54,33 +54,33 @@ export function DashBoard(){
                     <Grid item xs={12}>
                         <Grid container spacing={spacing}>
                             <Grid item >
-                                <DashCard dashIcon={People} title={"Screened Today"} value={appsToday()}
+                                <DashCard dashIcon={People} title={"Screened Today"} value={applicantStats.screenedToday}
                                 />
                             </Grid>
                             <Grid item >
-                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.status.accepted} />
+                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.totalAccepted} />
                             </Grid>
                             <Grid item >
-                                <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.avgTotal.toFixed(2) + "%"} />
+                                <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.averageGrade + "%"} />
                             </Grid>
                             <Grid item >
                                 <DashCard
                                     dashIcon={People}
                                     title={"Applications"}
-                                    value={applicantStats.numApplicants}
+                                    value={applicantStats.totalApplication}
                                 />
                             </Grid>
                             <Grid item >
                                 <DashCard
                                     dashIcon={AssignmentTurnedIn}
                                     title={"Screened"}
-                                    value={applicantStats.numScored}
+                                    value={applicantStats.totalCandidate}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
                     {/* Charts */}
-                    <Grid item xs={12} container spacing={spacing} direction='row'>
+                    {/* <Grid item xs={12} container spacing={spacing} direction='row'>
                         <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
                             <ScoreChartCard zoom
                                 title="Application Scores"
@@ -114,10 +114,12 @@ export function DashBoard(){
                                 data={applicantStats && applicantStats.status}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid item>
+                    </Grid> */}
+
+                    {/* No Need for Invalid Names and Not in Greenhouse anymore */}
+                    {/* <Grid item>
                         {applicantStats.alerts && <Alerts alerts={applicantStats.alerts} />}
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             }
         </Page>
