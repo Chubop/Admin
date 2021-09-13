@@ -37,8 +37,6 @@ export function SignIn(props){
     })
     const [error, setError] = useState(false)
 
-    const [mongoSelect, setMongoSelect] = useState(JSON.parse(localStorage.getItem('useMongo')) ? true : false)
-
     const handleChange = (event) => {
         let newValue = event.target.value
         let id = event.target.id
@@ -103,24 +101,6 @@ export function SignIn(props){
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
                     /> */}
-
-                    <div>
-                        <FormControlLabel
-                            control={
-                                <Switch 
-                                    checked={mongoSelect}
-                                    onChange={() => {
-                                        let useMongo = mongoSelect
-                                        localStorage.setItem('useMongo', JSON.stringify(!useMongo))
-                                        setMongoSelect(!useMongo)
-                                    }}
-                                    color="primary"
-                                />
-                            }
-                            label="Use Mongo"
-                        />
-                    </div>
-
 
                     <Button  onClick={loginSubmission} type="button" fullWidth variant="contained" color="primary" className={classes.submit}> 
                         Login 
