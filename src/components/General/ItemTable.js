@@ -280,7 +280,6 @@ export function ItemTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
-    const dispatch = useDispatch()
 
     // headCells are the columns to display, and include the value key
     // prefKey is the key to use to store the rowsPerPage preference in localStorage

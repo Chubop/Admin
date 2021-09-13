@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 // redux
 import { useDispatch, useSelector } from 'react-redux'
 import { jobActions } from '../../redux/actions'
+import { unsupportedJobActions } from '../../redux/Job'
 
 // MUI
 import { Grid } from '@material-ui/core'
 
 // Custom Components
-import { JobTable, ActionButton } from '../../components/Job'
+import { JobTable,  UnsupportedJobTable, ActionButton } from '../../components/Job'
 import { JobsAnalytics } from '../../components/Job'
 import { Page } from '../../components/General'
 
@@ -22,8 +23,11 @@ export function Job() {
     // Load in all jobs at the beginning
     const { error, jobs, stats, totalCount } = useSelector(state => state.jobs)
 
+    const { unsupJobs } = useSelector( state => state.unsupportedJobs)
+
     const refreshPage = (page, order, orderBy) => {
         dispatch(jobActions.getAllJobs(page, order, orderBy))
+        dispatch(unsupportedJobActions.getAllUnsupJobs())
     }
 
     const handlePageChange = (page, order, orderBy) => {
@@ -36,6 +40,7 @@ export function Job() {
         if (!jobs)
             refreshPage(currentPage, order, orderBy)
     }, [])
+
 
     return (
         <Page
@@ -61,6 +66,10 @@ export function Job() {
                         orderBy={orderBy}
                         setOrderBy={setOrderBy}
                     />
+                    <UnsupportedJobTable
+                        data={unsupJobs}                    
+                    />
+
                 </Grid>
             </Grid>
             <ActionButton />

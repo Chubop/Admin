@@ -26,7 +26,6 @@ export function JobTable(props) {
     // States
     const [editOpen, setEditOpen] = useState(false);
     const [editJID, setEditJID] = useState();
-    const [rowsPerPage, setRowsPerPage] = useState(5)
 
     // Open the edit job modal
     const openEditModal = (id) => {

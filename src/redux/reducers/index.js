@@ -29,6 +29,11 @@ import {
     refresh
 } from './refresh.reducer'
 
+import { 
+    unsupportedJob,
+    unsupportedJobs
+} from '../Job/reducer'
+
 export default combineReducers({
     authentication,
     applicant,
@@ -39,6 +44,8 @@ export default combineReducers({
     hiringManagers,
     job,
     jobs,
+    unsupportedJob,
+    unsupportedJobs,
     refresh,
     resetPassword,
 })
