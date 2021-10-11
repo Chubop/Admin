@@ -1,0 +1,17 @@
+version: '3'
+services: 
+  marlonadmin:
+    container_name: marlonadmin
+    restart: always
+    environment: 
+      REACT_ENV: development
+    build:
+      context: .
+      dockerfile: ./Docker/dev.Dockerfile
+    volumes:
+      - '.:/marlonadmin'
+      - '/marlonadmin/node_modules'
+
+    stdin_open: true
+    ports: 
+      - '3001:3001'

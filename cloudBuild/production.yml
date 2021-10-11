@@ -1,0 +1,9 @@
+steps:
+- name: "gcr.io/kaniko-project/executor:latest"
+  args: ["--cache=true", "--cache-ttl=48h", "--dockerfile=/Docker/prod.Dockerfile", "--destination=gcr.io/$PROJECT_ID/marlonadmin:latest"]
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy deployConfig/app_production.yml --image-url gcr.io/$PROJECT_ID/marlonadmin:latest']
+timeout: '1600s'
+options:
+  machineType: 'N1_HIGHCPU_8'
