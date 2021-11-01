@@ -1,11 +1,13 @@
-import { authConstants } from '../constants'
-import { authService } from '../services'
+import { authConstants } from './constant'
+import { authService } from './service'
 
 export const authActions = { 
     login,
     logout, 
     register,
     resetPassword,
+    saveProfile,
+    IAPSelf
 }
 
 function login(credentials){
@@ -80,4 +82,50 @@ function resetPassword(credentials){
     function success(profile){ return { type: authConstants.RESET_PASSWORD_SUCCESS, profile}}
     function loginSuccess(profile){ return {type: authConstants.LOGIN_SUCCESS, profile}}
     function failure(error){ return { type: authConstants.RESET_PASSWORD_FAILURE, error}}
+}
+
+function saveProfile(attribute){
+    return dispatch => {
+        dispatch(request(attribute))
+
+        authService.saveProfile(attribute).then(
+            attribute => {
+                dispatch(success(attribute))
+            },
+        ).catch(
+            error => {
+                dispatch(failure(error))
+            }
+        )
+
+    }
+
+
+    function request(attribute){ return { type: authConstants.SAVE_REQUEST, attribute}}
+    function success(attribute){ return { type: authConstants.SAVE_SUCCESS, attribute}}
+    function failure(error){ return { type: authConstants.SAVE_FAILURE, error}}
+}
+
+
+function IAPSelf(){
+    return dispatch => {
+        dispatch(request())
+
+        authService.IAPSelf().then(
+            data => {
+                dispatch(success(data))
+            },
+        ).catch(
+            error => {
+                dispatch(failure(error))
+            }
+        )
+
+    }
+
+
+    function request(){ return { type: authConstants.IAP_SELF_REQUEST}}
+    function success(data){ return { type: authConstants.LOGIN_SUCCESS, data}}
+    function failure(error){ return { type: authConstants.IAP_SELF_FAILURE, error}}
+
 }

@@ -3,7 +3,9 @@ import {combineReducers} from 'redux'
 import { 
     authentication,
     resetPassword,
-} from './auth.reducers'
+    saveProfile,
+    IAPSelf
+} from '../authentication'
 
 import { 
     applicant,
@@ -36,6 +38,8 @@ import {
 
 export default combineReducers({
     authentication,
+    saveProfile,
+    IAPSelf,
     applicant,
     applicants,
     candidate,

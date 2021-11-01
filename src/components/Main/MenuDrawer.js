@@ -21,7 +21,7 @@ import {
     Work,
 } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
-import { authActions } from "../../redux/actions";
+import { authActions } from "../../redux/authentication";
 import { Link, } from 'react-router-dom'
 
 const drawerWidth = 240;

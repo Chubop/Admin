@@ -6,12 +6,16 @@ import {
   Route,
 } from 'react-router-dom'
 
+
+import { authActions } from './redux/authentication'
+
 import { SignIn, ForgetPassword} from './pages/Authentication'
 import Main from './pages/LoggedIn/Main'
 
 function App() {
   const profile = useSelector(state => state.authentication.profile)
   const authenticated = useSelector(state => state.authentication.loggedIn)
+  const dispatch = useDispatch()
 
   // Routes that are shown when logged in
   const loggedIn = () => {
@@ -54,6 +58,12 @@ function App() {
     )
   }
   
+
+  const current_env = process.env.NODE_ENV
+  if(current_env === 'production'){
+    dispatch(authActions.IAPSelf())
+  }
+
   if(profile){
     // Temporary Alt Forced Reset Password Flow
     // TODO: Change to SSO later
