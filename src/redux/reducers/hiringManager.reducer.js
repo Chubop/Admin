@@ -29,7 +29,7 @@ export function hiringManager(state = initialState, action){
                 hiringManager: {},
                 loading: false
             }
-        case hmConstants.CREATE_HM_SUCCESS:
+        case hmConstants.CREATE_HM_FAILURE:
         case hmConstants.GET_HM_FAILURE:
         case hmConstants.UPDATE_HM_FAILURE:
         case hmConstants.DELETE_HM_FAILURE:

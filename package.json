@@ -24,8 +24,11 @@
   "scripts": {
     "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
+    "build-production": "export SET NODE_OPTIONS=--openssl-legacy-provider && export SET REACT_APP_ENV=production && react-scripts build",
+    "build-staging": "export SET NODE_OPTIONS=--openssl-legacy-provider && export SET REACT_APP_ENV=staging && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "create-env": "printenv > .env"
   },
   "eslintConfig": {
     "extends": "react-app"

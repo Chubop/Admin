@@ -29,7 +29,7 @@ export function candidate(state = initialState, action){
                 candidate: {},
                 loading: false
             }
-        case candidateConstants.CREATE_CANDIDATE_SUCCESS:
+        case candidateConstants.CREATE_CANDIDATE_FAILURE:
         case candidateConstants.GET_CANDIDATE_FAILURE:
         case candidateConstants.UPDATE_CANDIDATE_FAILURE:
         case candidateConstants.DELETE_CANDIDATE_FAILURE:

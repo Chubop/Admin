@@ -29,7 +29,7 @@ export function applicant(state = initialState, action){
                 applicant: {},
                 loading: false
             }
-        case applicantConstants.CREATE_APPLICANT_SUCCESS:
+        case applicantConstants.CREATE_APPLICANT_FAILURE:
         case applicantConstants.GET_APPLICANT_FAILURE:
         case applicantConstants.UPDATE_APPLICANT_FAILURE:
         case applicantConstants.DELETE_APPLICANT_FAILURE:

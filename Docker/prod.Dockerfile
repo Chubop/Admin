@@ -3,7 +3,7 @@ FROM node as build
 WORKDIR /app
 COPY . ./
 RUN yarn
-RUN yarn build
+RUN yarn run build-production
 
 # production environment
 FROM nginx:alpine

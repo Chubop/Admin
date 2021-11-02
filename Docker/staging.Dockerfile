@@ -3,7 +3,7 @@ FROM node as build
 WORKDIR /app
 COPY . ./
 RUN yarn
-RUN yarn build
+RUN yarn run build-staging
 
 # production environment
 FROM nginx:alpine
@@ -15,6 +15,6 @@ COPY --from=build /app/build /usr/share/nginx/www
 RUN chmod -R a+r /usr/share/nginx/www
 ENV PORT 8080
 ENV HOST 0.0.0.0
-ENV REACT_ENV=staging
+ENV REACT_APP_ENV=staging
 EXPOSE 8080
 RUN chmod -R a+r /usr/share/nginx/www

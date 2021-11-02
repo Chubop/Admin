@@ -57,9 +57,8 @@ function App() {
       </Router>
     )
   }
-  
 
-  const current_env = process.env.NODE_ENV
+  const current_env = process.env.REACT_APP_ENV
   if(current_env === 'production'){
     dispatch(authActions.IAPSelf())
   }
