@@ -4,7 +4,7 @@ services:
     container_name: marlonadmin
     restart: always
     environment: 
-      REACT_ENV: development
+      REACT_APP_ENV: development
     build:
       context: .
       dockerfile: ./Docker/dev.Dockerfile
