@@ -63,7 +63,7 @@ function App() {
     dispatch(authActions.IAPSelf())
   }
 
-  if(profile){
+  if(current_env !== 'production' && profile){
     // Temporary Alt Forced Reset Password Flow
     // TODO: Change to SSO later
     let resetPassword = profile['resetPassword']
