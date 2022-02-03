@@ -1,6 +1,6 @@
 import { candidateConstants } from '../constants' 
 import { candidateService } from '../services'
-
+import { checkAuthError } from '../ErrorHandling/auth'
 export const candidateActions = {
     createCandidate,
     getCandidate,
@@ -21,6 +21,7 @@ function createCandidate(candidate){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -42,6 +43,7 @@ function getCandidate(cid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -64,6 +66,7 @@ function deleteCandidate(cid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -86,6 +89,7 @@ function updateCandidate(candidate){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -107,6 +111,7 @@ function getAllCandidates(currentPage, order, orderBy){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }

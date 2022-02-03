@@ -1,6 +1,6 @@
 import { hmConstants } from '../constants' 
 import { hmService } from '../services'
-
+import { checkAuthError } from '../ErrorHandling/auth'
 export const hmActions = {
     createHM,
     getHM,
@@ -21,6 +21,7 @@ function createHM(hm){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -42,6 +43,7 @@ function getHM(hmid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -64,6 +66,7 @@ function deleteHM(hm){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -86,6 +89,7 @@ function updateHM(hm){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -107,6 +111,7 @@ function getAllHMs(currentPage, order, orderBy){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }

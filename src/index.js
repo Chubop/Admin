@@ -7,11 +7,6 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 import store from './redux/store'
 
-import axios from 'axios'
-axios.defaults.withCredentials = true;
-axios.defaults.xsrfHeaderName = "X-CSRFToken"
-axios.defaults.xsrfCookieName = "csrftoken"
-
 ReactDOM.render(
   <Provider store={store}> 
     <React.StrictMode>

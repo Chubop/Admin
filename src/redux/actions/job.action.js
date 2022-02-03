@@ -1,6 +1,6 @@
 import { jobConstants } from '../constants' 
 import { jobService } from '../services'
-
+import { checkAuthError } from '../ErrorHandling/auth'
 export const jobActions = {
     createJob,
     getJob,
@@ -24,6 +24,7 @@ function createJob(job){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -45,6 +46,7 @@ function getJob(jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -67,6 +69,7 @@ function deleteJob(jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -89,6 +92,7 @@ function updateJob(job){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }
@@ -109,6 +113,7 @@ function getAllJobs(currentPage, order, orderBy){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }
@@ -130,6 +135,7 @@ function rescoreJob(jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }
@@ -151,6 +157,7 @@ function updateQuestions(questions, jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }
@@ -171,6 +178,7 @@ function getJobBotLogs(jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )

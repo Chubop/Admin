@@ -1,6 +1,6 @@
 import { applicantConstants } from '../constants' 
 import { applicantService } from '../services'
-
+import { checkAuthError } from '../ErrorHandling/auth'
 export const applicantActions = {
     createApplicant,
     getApplicant,
@@ -21,6 +21,7 @@ function createApplicant(applicant){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -42,6 +43,7 @@ function getApplicant(aid, jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -64,6 +66,7 @@ function deleteApplicant(jid, aid, refreshPage){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -86,6 +89,7 @@ function updateApplicant(applicant){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -107,6 +111,7 @@ function getAllApplicants(currentPage, order, orderBy){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
     }

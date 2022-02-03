@@ -1,6 +1,6 @@
 import { refreshConstants } from '../constants' 
 import { refreshService } from '../services'
-
+import { checkAuthError } from '../ErrorHandling/auth'
 export const refreshActions = {
     refresh,
 }
@@ -16,6 +16,7 @@ function refresh(refresh){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )

@@ -1,5 +1,6 @@
 import { unsupJobConstants } from './constants' 
 import { unsupJobService } from './service'
+import { checkAuthError } from '../ErrorHandling/auth'
 
 export const unsupportedJobActions = {
     getUnsupJobs,
@@ -17,6 +18,7 @@ function getUnsupJobs(jid){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )
@@ -40,6 +42,7 @@ function getAllUnsupJobs(){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
             
         )

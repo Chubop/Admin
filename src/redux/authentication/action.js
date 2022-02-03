@@ -1,5 +1,6 @@
 import { authConstants } from './constant'
 import { authService } from './service'
+import { checkAuthError } from '../ErrorHandling/auth'
 
 export const authActions = { 
     login,
@@ -95,6 +96,7 @@ function saveProfile(attribute){
         ).catch(
             error => {
                 dispatch(failure(error))
+                checkAuthError(dispatch, error)
             }
         )
 
