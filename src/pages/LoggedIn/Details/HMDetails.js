@@ -58,7 +58,6 @@ export function HMDetails(props) {
     }
 
     const pageLoading = !hiringManager || loading
-    console.log(hiringManager)
     return (
         <div className={classes.root}>
             <Page

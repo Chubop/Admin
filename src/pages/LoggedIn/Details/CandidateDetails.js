@@ -117,8 +117,6 @@ function DetailsCard(props) {
     const { candidate } = props;
     const classes = useStyles();
 
-    console.log(candidate)
-
     if (!candidate.applications)
         return (<div/>)
 
