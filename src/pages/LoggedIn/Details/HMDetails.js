@@ -58,6 +58,7 @@ export function HMDetails(props) {
     }
 
     const pageLoading = !hiringManager || loading
+    console.log(hiringManager)
     return (
         <div className={classes.root}>
             <Page
@@ -127,7 +128,14 @@ function DetailsContent(props) {
                     title={hiringManager['firstName'] + ' ' + hiringManager['lastName']}
                 />
                 <CardContent>
+                    <Typography variant="body1">Email: {hiringManager['email']}</Typography>
+                    <Typography variant="body1">Admin: {String(hiringManager['superuser'])}</Typography>
+                    <Typography variant="body1">Unit: {hiringManager['unit']}</Typography>
+                    <Typography variant="body1">Team: {hiringManager['team']}</Typography>
+                    <Typography variant="body1">Location: {hiringManager['location']}</Typography>
                     <Typography variant="body1">Department: {hiringManager['department']}</Typography>
+                    <Typography variant="body1">Last Login: {hiringManager['last_login']}</Typography>
+                    <Typography variant="body1">Joined: {hiringManager['created']}</Typography>
                 </CardContent>
             </Card>
         </div>
