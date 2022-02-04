@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core'
 
 // Custom
+import { printFormat } from '../../../functions'
 import { Page } from '../../../components/General/Page';
 import { JobTable } from '../../../components/Job';
 import { DeleteConfirmation, ScoreChartCard } from '../../../components/General';
@@ -133,8 +134,8 @@ function DetailsContent(props) {
                     <Typography variant="body1">Team: {hiringManager['team']}</Typography>
                     <Typography variant="body1">Location: {hiringManager['location']}</Typography>
                     <Typography variant="body1">Department: {hiringManager['department']}</Typography>
-                    <Typography variant="body1">Last Login: {hiringManager['last_login']}</Typography>
-                    <Typography variant="body1">Joined: {hiringManager['created']}</Typography>
+                    <Typography variant="body1">Last Login: {printFormat(hiringManager['last_login'], null, true)}</Typography>
+                    <Typography variant="body1">Joined: {printFormat(hiringManager['created'], null, true)}</Typography>
                 </CardContent>
             </Card>
         </div>
