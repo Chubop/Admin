@@ -127,7 +127,10 @@ function DetailsCard(props) {
                 title={printFormat(candidate.email || candidate.cid)}
             />
             <CardContent className={classes.detailsCardContent}>
+                <Typography variant="body1">{"First Name: " + printFormat(candidate.first_name)} </Typography>
+                <Typography variant="body1">{"Last Name: " + printFormat(candidate.last_name)} </Typography>
                 <Typography variant="body1">{"Greenhouse CID: " + printFormat(candidate.greenhouse_cid)} </Typography>
+                <Typography variant="body1">{"First Applied: " + printFormat(candidate.created, null, true)} </Typography>
             </CardContent>
         </Card>
     )

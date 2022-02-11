@@ -181,10 +181,10 @@ function DetailsCard(props) {
                     <Grid item>
                         < Button disabled style={{ backgroundColor: applicant.status === 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
                         {
-                            applicant.email &&
+                            applicant.cid &&
                             <>
                                 <Typography variant="body1">{"Email: " + printFormat(applicant.email)} </Typography>
-                                <Link to={`/candidate/${applicant.email}`}>
+                                <Link to={`/candidate/${applicant.cid}`}>
                                     <Typography variant="body1">
                                         Click to see other applications
                                     </Typography>

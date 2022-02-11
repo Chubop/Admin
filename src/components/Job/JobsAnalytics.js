@@ -45,6 +45,7 @@ export function JobsAnalytics(props) {
                         prefKey="recentJobs"
                         // database keys
                         idKey='jid' nameKey='titles' nameLabel="Title"
+                        lastNameKey='requisition_id' lastNameLabel='requisition_id'
                         daysSinceMostRecent={Math.min(...stats.daysSince)}
                         handleDelete={(jid) => handleDeleteClick(jid)}
                     />

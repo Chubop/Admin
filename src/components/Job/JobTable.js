@@ -97,7 +97,7 @@ export function JobTable(props) {
             }
         },
         { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
-        { id: 'unit', numeric: false, disablePadding: false, label: 'Unit' },
+        { id: 'requisition_id', numeric: false, disablePadding: false, label: 'Requistion ID' },
         { id: 'team', numeric: false, disablePadding: false, label: 'Team' },
         { id: 'hm', numeric: false, disablePadding: false, label: 'Hiring Manager' },
         { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
