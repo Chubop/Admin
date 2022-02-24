@@ -234,6 +234,12 @@ function DetailsCard(props) {
                                 {"Greenhouse CID: " + applicant.greenhouse_cid}
                             </Typography>
                         }
+                        {
+                            applicant.source &&
+                            <Typography variant="body1">
+                                {"Source: " +   applicant.source['name']}
+                            </Typography>
+                        }
 
                     </Grid>
                 </Grid>
@@ -305,9 +311,10 @@ function ScoredAnswersTable(props) {
         })
 
         // backwards compatability
-        setShowBars(questions[qids[0]].eli_portion != null)
-
-        setQIDS(qids)
+        if(qids.length > 0){
+            setShowBars(questions[qids[0]].eli_portion != null)
+            setQIDS(qids)
+        }
     }, [questions])
 
     if (!questions || QIDs.length === 0 )

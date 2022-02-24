@@ -67,6 +67,8 @@ export function ApplicantTable(props) {
         { id: 'first_name', numeric: false, disablePadding: false, label: 'First Name' },
         { id: 'last_name', numeric: false, disablePadding: false, label: 'Last Name' },
         { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
+        { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+        { id: 'stage', numeric: false, disablePadding: false, label: 'Stage' },
         { id: 'will', numeric: true, disablePadding: false, label: 'Fit', suffix: '%' },
         { id: 'skill', numeric: true, disablePadding: false, label: 'Eligibility', suffix: '%' },
         { id: 'total', numeric: true, disablePadding: false, label: 'Total Score', suffix: '%' },
