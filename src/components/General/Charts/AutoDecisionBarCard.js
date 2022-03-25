@@ -1,46 +1,45 @@
 import React, { useEffect, useState } from "react";
 
 // Custom Imports
-import { BarChartCard } from "./BarChartCard";
+import { BubbleChartCard } from ".";
 
 export function AutoDecisionBarCard(props){
     const [data, setData] = useState()
-    const [colorScale, setColorScale] = useState()
+    const [bubbleData, setBubbleData] = useState()
 
     useEffect(() => {
         if (props.data) {
             let newData = []
-            let newColorScale = []
+            let newBubbleData = {}
             if (props.data.autoAccepted > 0) {
                 newData.push({ y: props.data.autoAccepted, x: "Auto Advanced" })
-                newColorScale.push("#689F38")
+                newBubbleData['Auto\nAdvanced'] = props.data.autoAccepted
             }
 
             if (props.data.accepted - props.data.autoAccepted > 0) {
-                newData.push( { y: props.data.accepted - props.data.autoAccepted, x: "Manually Accepted"} )
-                newColorScale.push("#64cdaa")
+                newData.push( { y: props.data.accepted - props.data.autoAccepted, x: "Manually Advanced"} )
+                newBubbleData['Manually\nAdvanced'] = props.data.accepted - props.data.autoAccepted
             }
 
             if (props.data.autoRejected > 0){
                 newData.push({ y: props.data.autoRejected, x: "Auto Rejected"})
-                newColorScale.push("#ff6900")
+                newBubbleData['Auto\nRejected'] = props.data.autoRejected
             }
             
             if (props.data.rejected - props.data.autoRejected > 0) {
                 newData.push( { y: props.data.rejected - props.data.autoRejected, x: "Manually Rejected"} )
-                newColorScale.push("#ff6347")
+                newBubbleData['Manually\nRejected'] = props.data.rejected - props.data.autoRejected
             }
 
             if (props.data.waiting){
                 newData.push({ y: props.data.waiting, x: "No Decision"})
-                newColorScale.push("LightSlateGray")
+                newBubbleData['Waiting'] = props.data.waiting
             }
 
             // newData.push({y: props.data.numApplicants - props.data.autoAccepted - props.data.autoRejected, x: "Neither"})
-            // newColorScale.push("#8ABDFB")
 
             setData(newData)
-            setColorScale(newColorScale)
+            setBubbleData(newBubbleData)
         }
 
     }, [props.data])
@@ -49,10 +48,6 @@ export function AutoDecisionBarCard(props){
         return <></>
 
     return (
-        <BarChartCard
-            data={data}
-            colorScale={colorScale}
-            title={props.title}
-        />
+        <BubbleChartCard title="Automated Screening" data={bubbleData} />
     )
 }

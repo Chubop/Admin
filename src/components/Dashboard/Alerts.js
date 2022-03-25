@@ -9,10 +9,8 @@ import { ApplicantTable } from '../Applicant';
 import { useDispatch } from 'react-redux';
 import { applicantActions } from '../../redux/actions';
 
-const tabColor = '#1769aa'
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
-        background: tabColor,
         color: 'white'
     },
 }));

@@ -3,7 +3,9 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Button, Grid, IconButton, InputAdornment, Paper, Popper, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@material-ui/core';
 import { Add, Clear } from '@material-ui/icons';
 
-const highlightColor = '#C9E3F8'
+import {colors} from '../../../theme/colors'
+
+const highlightColor = colors.components.tableHeader
 
 export function SearchObjectSelect(props) {
     const { selectedIDs, onChange: propsHandleChange, idKey, nameKey } = props

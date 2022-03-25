@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { UseBackendRoot } from '../../settings/settings'
-import { analyzeApplicants } from './analytics'
 
 export const applicantService = {
     createApplicant,
     getApplicant,
     getAllApplicants,
+    getAllApplicantsStats,
     deleteApplicant,
     updateApplicant,
 }
@@ -68,13 +68,28 @@ async function getAllApplicants(currentPage, order, orderBy) {
     let data = response.data
     let applicants = data.data
 
-    let values = {
+    return {
         applicants: applicants,
         totalCount: data.total_count,
-        stats: data.stats,
     }
+}
 
-    return values
+async function getAllApplicantsStats(numDays) {
+    const API_ROOT = UseBackendRoot()
+    let accessToken = JSON.parse(localStorage.getItem('accessToken'))
+
+    let response = await axios.get(
+        `${API_ROOT}/applicant-stats`,
+        {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+            params: {
+                numDays: numDays
+            }
+        }
+    )
+    return response.data.stats
 }
 
 async function deleteApplicant(jid, aid) {

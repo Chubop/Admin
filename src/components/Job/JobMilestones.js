@@ -1,63 +1,57 @@
 import React from 'react'
 import { Box, makeStyles, Typography } from "@material-ui/core";
-import { CheckCircle, RadioButtonUnchecked } from '@material-ui/icons';
+import { CheckCircle, FiberManualRecord, RadioButtonUnchecked } from '@material-ui/icons';
 import { printFormat } from '../../functions';
+import { colors } from '../../theme/colors';
 
-const tabColor = '#1769aa'
-const completeColor = '#03a9f4'
+const completeColor = colors.theme.mediumBlue
+const incompleteColor = colors.greys.mediumGrey
 
 const useStyles = makeStyles({
     timeline: {
         listStyleType: 'none',
-        display: 'flex',
-        // padding: '0'
-    },          
+    },
     event: {
+        display: 'flex',
+        alignItems: 'center',
         transition: "all 200ms ease-in",
         width: '100%',
-        "&::after": { content: "''"  },
+        "&::after": { content: "''" },
     },
     timestamp: {
-        marginBottom: "1em",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        width: '100%',
         fontWeight: 100,
     },
     eventTitle: {
         width: '100%',
-        paddingTop: "1em",
-        display: "flex",
-        justifyContent: "center",
-        position: "relative",
         transition: "all 200ms ease-in",
+        marginLeft: '8px'
     },
     eventIcon: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
+        // display: 'flex',
+        // flexDirection: 'column',
     },
     lineBefore: {
         "&::before": {
-            content: "''" ,
-            flex: "1 1" ,
-            borderBottom: "2px solid #000",
+            content: "''",
+            flex: "1 1",
+            // borderBottom: "2px solid #000",
             margin: "auto",
         },
         "&::after": {
-            content: "''" ,
-            flex: "1 1" ,
+            content: "''",
+            flex: "1 1",
         },
     },
     lineAfter: {
         "&::before": {
-            content: "''" ,
-            flex: "1 1" ,
+            content: "''",
+            flex: "1 1",
         },
         "&::after": {
-            content: "''" ,
-            flex: "1 1" ,
-            borderBottom: "2px solid #000",
+            content: "''",
+            flex: "1 1",
+            // borderBottom: "2px solid #000",
             margin: "auto",
         },
     },
@@ -65,6 +59,9 @@ const useStyles = makeStyles({
         "&::before": { borderColor: completeColor },
         "&::after": { borderColor: completeColor },
         color: completeColor,
+    },
+    incomplete: {
+        color: incompleteColor,
     }
 })
 
@@ -75,7 +72,7 @@ export function JobMilestones(props) {
 
     return (
         <Box className={classes.timeline} >
-            <Box style={{ left: '-50%', width: '100%'}}>
+            <Box style={{ left: '-50%', width: '100%' }}>
                 <MilestoneItem start
                     title="Job Created"
                     time={jobOpened}
@@ -104,6 +101,7 @@ export function JobMilestones(props) {
         </Box>
     )
 }
+const iconSize = 20
 
 function MilestoneItem(props) {
     const { title, time, start, end } = props
@@ -116,17 +114,40 @@ function MilestoneItem(props) {
         iconClass += ' ' + classes.lineAfter
     if (time)
         iconClass += ' ' + classes.complete
+    else
+        iconClass += ' ' + classes.incomplete
+
+    const Icon = () => {
+        if (time)
+            return (
+                <div className={iconClass}>
+                    {!start &&
+                        <div style={{ borderLeft: '2px solid ' + colors.theme.lightBlue, height: 10, left: iconSize / 2 + 1, position: 'relative' }} />
+                    }
+                    {<FiberManualRecord style={{ height: iconSize }} />}
+                </div>
+            )
+
+        else
+            return (
+                <div className={iconClass}>
+                    {!start &&
+                        <div style={{ borderLeft: '2px solid ' + colors.greys.mediumGrey, height: 10, left: iconSize / 2 + 1, position: 'relative' }} />
+                    }
+                    {<FiberManualRecord style={{ height: iconSize }} />}
+                </div>
+            )
+    }
+
 
     return (
         <div className={classes.event}>
-            <Typography className={classes.eventTitle} variant='h6' >
-                {title} 
+            <Icon />
+            <Typography className={classes.eventTitle} >
+                {title}
             </Typography>
-            <div className={iconClass}>
-                { time ? <CheckCircle fontSize='large'/> : <RadioButtonUnchecked fontSize='large'/> }
-            </div>
             <Typography className={classes.timestamp}>
-                {time && printFormat(time, "", true)} 
+                {time && printFormat(time, "", true)}
             </Typography>
         </div>
     )

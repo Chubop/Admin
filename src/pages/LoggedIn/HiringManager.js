@@ -40,7 +40,7 @@ export function HiringManager() {
 
     return (
         <Page
-            title="Hiring Managers"
+            breadCrumbs={["Hiring Managers"]}
             loading={!hiringManagers}
             error={error}
         >

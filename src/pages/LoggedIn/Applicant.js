@@ -39,7 +39,7 @@ export function Applicant() {
 
     return (
         <Page
-            title="Applications"
+            breadCrumbs={["Applications"]}
             loading={!applicants}
             error={error}
         >
@@ -52,13 +52,13 @@ export function Applicant() {
                     /> */}
                 </Grid>
                 <Grid item xs={12}>
-                    <ApplicantTable 
+                    <ApplicantTable
                         paginate
-                        data={applicants} 
+                        data={applicants}
                         refreshPageAction={() => dispatch(applicantActions.getAllApplicants())}
                         totalCount={totalCount}
-                        rowsPerPage={rowsPerPage} 
-                        setRowsPerPage={setRowsPerPage} 
+                        rowsPerPage={rowsPerPage}
+                        setRowsPerPage={setRowsPerPage}
                         currentPage={currentPage}
                         handlePageChange={handlePageChange}
                         order={order}

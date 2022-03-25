@@ -90,7 +90,7 @@ export function CandidateTable(props) {
 
     return (
         <>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} >
                 <PaginateTable
                     title="Candidates"
                     idString={idString}

@@ -7,6 +7,7 @@ export const applicantActions = {
     deleteApplicant,
     updateApplicant,
     getAllApplicants,
+    getAllApplicantsStats
 }
 
 function createApplicant(applicant){
@@ -119,4 +120,26 @@ function getAllApplicants(currentPage, order, orderBy){
     function request() {return {type: applicantConstants.GET_ALL_APPLICANTS_REQUEST, }}
     function success(data){return {type: applicantConstants.GET_ALL_APPLICANTS_SUCCESS, data}}
     function failure(error){return {type: applicantConstants.GET_ALL_APPLICANTS_FAILURE, error}}
+}
+
+function getAllApplicantsStats(numDays) {
+    return dispatch => {
+        dispatch(request())
+
+        applicantService.getAllApplicantsStats(numDays).then(
+            data => {
+                dispatch(success(data))
+            }
+        ).catch(
+            error => {
+                dispatch(failure(error))
+                checkAuthError(dispatch, error)
+            }
+        )
+    }
+    
+    function request() {return {type: applicantConstants.GET_ALL_APPLICANTS_STATS_REQUEST, }}
+    function success(data){return {type: applicantConstants.GET_ALL_APPLICANTS_STATS_SUCCESS, data}}
+    function failure(error){return {type: applicantConstants.GET_ALL_APPLICANTS_STATS_FAILURE, error}}
+
 }

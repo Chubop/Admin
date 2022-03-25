@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 // MUI
-import { makeStyles, MenuItem, Paper, Select } from '@material-ui/core';
+import { makeStyles, MenuItem, Paper, Select, Typography } from '@material-ui/core';
 
 // Custom components
 import { JobModal } from './'
@@ -9,6 +9,7 @@ import { PaginateTable, ItemTable } from '../General';
 import { FiberManualRecord } from '@material-ui/icons';
 import { jobActions } from '../../redux/actions';
 import { useDispatch } from 'react-redux';
+import { colors } from '../../theme/colors';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -55,9 +56,20 @@ export function JobTable(props) {
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
-        { id: "jid", numeric: false, disablePadding: false, label: "JID"},
-        { id: 'titles', numeric: false, disablePadding: false, label: 'Title' },
-        { id: 'status', numeric: false, disablePadding: false, label: 'Status',
+        { id: 'titles', numeric: false, disablePadding: false, label: 'Title',
+            contentFunction: (title, {jid}) => {
+                return (<>
+                <Typography>
+                    {title}
+                </Typography>
+                <Typography style={{opacity: 0.3}}>
+                    {jid}
+                </Typography>
+                </>)
+            }
+        },
+        {
+            id: 'status', numeric: false, disablePadding: false, label: 'Status',
             contentFunction: (status, job) => {
                 return (
                     <Select
@@ -67,7 +79,7 @@ export function JobTable(props) {
                         <MenuItem value={"open"}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <FiberManualRecord
-                                    style={{ color: "#4caf50" }}
+                                    style={{ color: colors.status.good }}
                                     fontSize={"small"}
                                 />
                                 <div> Open </div>
@@ -76,7 +88,7 @@ export function JobTable(props) {
                         <MenuItem value={"closed"}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <FiberManualRecord
-                                    color={"secondary"}
+                                    style={{ color: colors.status.bad }}
                                     fontSize={"small"}
                                 />
                                 <div> Closed </div>
@@ -107,18 +119,19 @@ export function JobTable(props) {
     // This path is used to get to the details page
     const path = "job"
 
-    const table = paginate ? 
+    const table = paginate ?
         (<PaginateTable
-                    title="Jobs"
-                    idString={idString}
-                    path={path}
-                    headCells={headCells}
-                    handleClickEdit={openEditModal}
-                    handleDelete={handleDelete}
-                    prefKey={"jobsPage"}
-                    noDelete
-                    {...props}
-        />) : 
+            title="Marlon Jobs"
+            idString={idString}
+            path={path}
+            headCells={headCells}
+            handleClickEdit={openEditModal}
+            handleDelete={handleDelete}
+            prefKey={"jobsPage"}
+            moreKeys={['jid']}
+            noDelete
+            {...props}
+        />) :
         (<ItemTable
             title="Jobs"
             idString={idString}
@@ -127,17 +140,18 @@ export function JobTable(props) {
             handleClickEdit={openEditModal}
             handleDelete={handleDelete}
             prefKey={"jobsPage"}
+            moreKeys={['jid']}
             noDelete
             {...props}
         />)
-    
+
 
     return (
         <>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} >
                 {table}
             </Paper>
-            <JobModal open={editOpen} handleClose={handleClose} jid={editJID}/>
+            <JobModal open={editOpen} handleClose={handleClose} jid={editJID} />
         </>
     )
 }

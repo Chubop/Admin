@@ -3,13 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Typography, Divider } from '@material-ui/core';
 
 import { VictoryBar, VictoryChart, VictoryAxis } from 'victory';
+import { colors } from '../../theme/colors';
 
 const useStyles = makeStyles((theme) => ({
     root: { 
         maxWidth: '512px',
     },
     header: {
-        color: '#03a9f4',
+        color: colors.theme.text,
         textAlign: 'center'
     }
 }));
@@ -19,7 +20,7 @@ const data = [
     {quarter: 2, earnings: 16500},
     {quarter: 3, earnings: 14250},
     {quarter: 4, earnings: 19000}
-  ];
+];
 
 export function BarCard(props){
     const classes = useStyles();

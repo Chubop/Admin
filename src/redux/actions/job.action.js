@@ -167,11 +167,11 @@ function updateQuestions(questions, jid){
     function failure(error){return {type: jobConstants.UPDATE_QUESTIONS_FAILURE, error}}
 }
 
-function getJobBotLogs(jid){
+function getJobBotLogs(numDays, jid){
     return dispatch => {
         dispatch(request())
 
-        jobService.getJobBotLogs(jid).then(
+        jobService.getJobBotLogs(numDays, jid).then(
             data => {
                 dispatch(success(data))
             }

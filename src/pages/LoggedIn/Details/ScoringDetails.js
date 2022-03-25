@@ -12,7 +12,6 @@ import {
 import { Page, } from '../../../components/General';
 import { QuestionsTable, QuestionsModal } from '../../../components/Questions';
 
-const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2)
     },
     detailsHeader: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
 }));
@@ -60,12 +59,17 @@ export function ScoringDetails(props) {
     const handleEditClick = () => { setEditOpen(true) }
 
     if (!questions || !QIDs)
-        return <div/>
+        return <div />
     const pageLoading = !job || loading
     return (
         <div className={classes.root}>
             <Page
                 title="Scoring Details"
+                breadCrumbs={[
+                    { link: '/job', name: "Job" },
+                    { link: `/job/${jid}`, name: "Job Details" },
+                    "Scoring Details"
+                ]}
                 loading={pageLoading}
                 error={error}
                 onEditClick={handleEditClick}

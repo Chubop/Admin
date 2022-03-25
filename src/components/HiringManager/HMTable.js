@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 // MUI
-import { makeStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper, Typography } from '@material-ui/core';
 
 // Custom Components
 import { HMModal } from './'
@@ -32,20 +32,39 @@ export function HMTable(props) {
 	// Close the edit hm modal
 	const handleClose = () => { setEditOpen(false); };
 
-    // When delete button in table is pressed
-    const handleDelete = (hiringManagers) => {
-        // TODO
-        console.log(hiringManagers)
-    }
+	// When delete button in table is pressed
+	const handleDelete = (hiringManagers) => {
+		// TODO
+		console.log(hiringManagers)
+	}
 
 	// These id's comes from the database, they must match
 	// You can see the possible values to display in redux
 	const headCells = [
-		{ id: "hmid", numeric: false, disablePadding: false, label: "ID"},
 		{ id: 'firstName', numeric: false, disablePadding: false, label: 'First Name' },
 		{ id: 'lastName', numeric: false, disablePadding: false, label: 'Last Name' },
-		{ id: "email", numeric: false, disablePadding: false, label: "Email"},
+		{
+			id: "email", numeric: false, disablePadding: false, label: "Email",
+			contentFunction: (email, { hmid }) => {
+				return (<>
+					<Typography>
+						{email}
+					</Typography>
+					<Typography style={{ opacity: 0.3 }}>
+						{hmid}
+					</Typography>
+				</>)
+			}
+		},
 		{ id: 'department', numeric: false, disablePadding: false, label: 'Department' },
+		{
+			id: 'accessibleJobs', numeric: true, disablePadding: false, label: 'Accessible Jobs',
+			contentFunction: (accessibleJobs, { }) => {
+				if (Array.isArray(accessibleJobs))
+					return (accessibleJobs.length)
+				return 0
+			}
+		},
 	];
 
 	const idString = 'hmid'
@@ -54,7 +73,7 @@ export function HMTable(props) {
 
 	return (
 		<>
-			<Paper className={classes.paper}>
+			<Paper className={classes.paper} >
 				<PaginateTable
 					title="Hiring Managers"
 					idString={idString}
@@ -63,11 +82,12 @@ export function HMTable(props) {
 					handleClickEdit={openEditModal}
 					handleDelete={handleDelete}
 					prefKey={"hmsPage"}
+					moreKeys={['hmid']}
 					noDelete
 					{...props}
 				/>
 			</Paper>
-			<HMModal open={editOpen} handleClose={handleClose} hmid={editHMID}/>
+			<HMModal open={editOpen} handleClose={handleClose} hmid={editHMID} />
 		</>
 	)
 }

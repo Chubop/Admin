@@ -50,19 +50,29 @@ export function applicants(state = initialState, action){
             return{
                 ...state,
                 applicants: null,
+                loading: true,
+            }
+        case applicantConstants.GET_ALL_APPLICANTS_STATS_REQUEST:
+            return{
+                ...state,
                 stats: {},
                 loading: true,
-                error: false,
+            }
+        case applicantConstants.GET_ALL_APPLICANTS_STATS_SUCCESS:
+            return{
+                ...state,
+                stats: action.data,
+                loading: false
             }
         case applicantConstants.GET_ALL_APPLICANTS_SUCCESS:
             return{
                 ...state,
                 applicants: action.data.applicants,
                 totalCount: action.data.totalCount,
-                stats: action.data.stats,
                 loading: false
             }
         case applicantConstants.GET_ALL_APPLICANTS_FAILURE:
+        case applicantConstants.GET_ALL_APPLICANTS_STATS_FAILURE:
             return {
                 ...state,
                 error: action.error.message,

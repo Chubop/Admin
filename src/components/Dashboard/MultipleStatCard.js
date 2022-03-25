@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
         // maxWidth: '256px'
     },
     header: {
-        color: '#03a9f4',
         textAlign: 'center'
     }
 }));

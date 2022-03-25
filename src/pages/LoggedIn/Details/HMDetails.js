@@ -21,13 +21,12 @@ import { DeleteConfirmation, ScoreChartCard } from '../../../components/General'
 import { HMModal } from '../../../components/HiringManager';
 import { ApplicantsAnalytics } from '../../../components/Applicant';
 
-const tabColor = '#1769aa'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
     },
     detailsHeader: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
 }));
@@ -62,7 +61,10 @@ export function HMDetails(props) {
     return (
         <div className={classes.root}>
             <Page
-                title="Hiring Manager Details"
+                breadCrumbs={[
+                    {name: "Hiring Managers", link: '/HM'},
+                    "Hiring Manager Details"
+                ]}
                 loading={pageLoading}
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}

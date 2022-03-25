@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom'
@@ -18,6 +18,7 @@ import {
     IconButton,
     makeStyles,
     lighten,
+    Typography,
 } from '@material-ui/core'
 
 import {
@@ -27,25 +28,21 @@ import {
 
 // Custom
 import { printFormat } from '../../functions'
-const tabColor = '#1769aa'
+import { colors } from '../../theme/colors';
 
 // Makes a row with the categories from headCells
-function createRow(dataRow, headCells, idString) {
+function createRow(dataRow, allKeys, idString) {
     let row = {}
     row.key = dataRow[idString]
-    row.jid = dataRow.jid
-    for (let i = 0; i < headCells.length; i++) {
-        let id = headCells[i].id
-        let newCell = dataRow[id]
+    for (let key of allKeys){
+        let newCell = dataRow[key]
         if (!newCell) {
-            if (newCell === 0) {
+            if (newCell === 0)
                 newCell = 0
-            }
-            else {
-                newCell = "" 
-            }
+            else
+                newCell = ""
         }
-        row[id] = newCell
+        row[key] = newCell
     }
     return row;
 }
@@ -53,36 +50,24 @@ function createRow(dataRow, headCells, idString) {
 // Makes all rows from items
 function createRows(data, headCells, idString) {
     let rows = []
-    for (let i = 0; i < data.length; i++) {
+    for (let i in data) {
         rows[i] = createRow(data[i], headCells, idString)
     }
     return (rows)
 }
 
-function descendingComparator(a, b, orderBy) {
-    if ((b[orderBy] || b[orderBy] === 0) && (a[orderBy] || a[orderBy] === 0)) { // always have empty values last when sorting
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
 const additionalColumns = 3
 function EnhancedTableHead(props) {
-    const { classes, 
-            onSelectAllClick, 
-            order, 
-            orderBy, 
-            numSelected, 
-            rowCount, 
-            onRequestSort, 
-            headCells,
-            noEdit,
-            noDelete,
+    const { classes,
+        onSelectAllClick,
+        order,
+        orderBy,
+        numSelected,
+        rowCount,
+        onRequestSort,
+        headCells,
+        noEdit,
+        noDelete,
     } = props;
 
     const createSortHandler = (property) => (event) => {
@@ -101,15 +86,7 @@ function EnhancedTableHead(props) {
 
     return (
         <TableHead>
-            <TableRow>
-                {/* <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
-                </TableCell> */}
+            <TableRow style={{backgroundColor: colors.components.tableHeader}}>
                 {header.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -122,7 +99,9 @@ function EnhancedTableHead(props) {
                             direction={orderBy === headCell.id ? order : 'asc'}
                             onClick={createSortHandler(headCell.id)}
                         >
-                            {headCell.label}
+                            <Typography variant='subtitle1'>
+                                {headCell.label}
+                            </Typography>
                             {orderBy === headCell.id ? (
                                 <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -151,8 +130,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
-        backgroundColor: tabColor,
-        color: 'white'
+        color: colors.theme.text
     },
     highlight:
         theme.palette.type === 'light'
@@ -182,6 +160,9 @@ const EnhancedTableToolbar = (props) => {
                 [classes.highlight]: numSelected > 0,
             })}
         >
+            <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+                {title}
+            </Typography>
             {/* {numSelected > 0 ? (
                 <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
                     {numSelected} selected
@@ -224,10 +205,6 @@ const useStyles = makeStyles((theme) => ({
     tableRow: {
         textDecoration: "none"
     },
-    paper: {
-        width: '100%',
-        marginBottom: theme.spacing(2),
-    },
     table: {
         minWidth: 750,
     },
@@ -242,15 +219,11 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
-    statusButton: {
-        fontSize: '24px',
-        colorPrimary: "red"
-    }
 }));
 
 export function PaginateTable(props) {
     const classes = useStyles();
-    const {order, setOrder, orderBy, setOrderBy, handlePageChange} = props
+    const { order, setOrder, orderBy, setOrderBy, handlePageChange } = props
     const [selected, setSelected] = useState([]);
     const page = props.currentPage
     const rowsPerPage = props.rowsPerPage
@@ -261,40 +234,45 @@ export function PaginateTable(props) {
     // prefKey is the key to use to store the rowsPerPage preference in localStorage
     const { data, idString, headCells, path, title, prefKey } = props
 
+    useEffect(() => {
+        if (data) {
+            let allKeys = headCells.map((cell) => cell.id)
+            if (props.moreKeys)
+                allKeys = allKeys.concat(props.moreKeys)
+
+            setRows(createRows(data, allKeys, idString))
+
+            let preferences = JSON.parse(localStorage.getItem('preferences'))
+            let rowsPref = rowsPerPage
+            if (prefKey) {
+                // Check if preferences are stored and prefKey is given
+                if (preferences) {
+                    if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]) {
+                        // Read stored value
+                        rowsPref = preferences.rowsPerPage[prefKey]
+                        props.setRowsPerPage(rowsPref)
+                    }
+                    if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
+                        preferences['rowsPerPage'] = {}
+                    }
+                    preferences['rowsPerPage'][prefKey] = rowsPref
+                    localStorage.setItem('preferences', JSON.stringify(preferences))
+                }
+                else {
+                    preferences = {
+                        'rowsPerPage': {
+                            [prefKey]: rowsPref
+                        }
+                    }
+                    localStorage.setItem('preferences', JSON.stringify(preferences))
+                }
+            }
+        }
+    }, [data])
+
     // If loading
     if (!data) {
         return <div />
-    }
-    // If the data has loaded in and we need to fill the rows
-    if (data.length > 0 && rows.length === 0) {
-        setRows(createRows(data, headCells, idString))
-
-        let preferences = JSON.parse(localStorage.getItem('preferences'))
-        let rowsPref = rowsPerPage
-        if (prefKey) {
-            // Check if preferences are stored and prefKey is given
-            if (preferences) {
-                if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
-                    // Read stored value
-                    rowsPref = preferences.rowsPerPage[prefKey]
-                    props.setRowsPerPage(rowsPref)
-                }
-                if (!preferences['rowsPerPage']) { // Remove old preference
-                    preferences['rowsPerPage'] = {}
-                }
-                preferences['rowsPerPage'][prefKey] = rowsPref
-                localStorage.setItem('preferences', JSON.stringify(preferences))
-            }
-            else {
-                preferences = {
-                    'rowsPerPage': {
-                        [prefKey]: rowsPref
-                    }
-                }
-                localStorage.setItem('preferences', JSON.stringify(preferences))
-            }
-        }
-
     }
 
     // Sort the rows by property
@@ -382,7 +360,7 @@ export function PaginateTable(props) {
 
     return (
         <div className={classes.root}>
-            <EnhancedTableToolbar numSelected={selected.length} title={title} handleFilterOpen={handleFilterOpen} handleDelete={handleDelete}/>
+            <EnhancedTableToolbar numSelected={selected.length} title={title} handleFilterOpen={handleFilterOpen} handleDelete={handleDelete} />
             <TableContainer>
                 <Table
                     className={classes.table}
@@ -403,34 +381,34 @@ export function PaginateTable(props) {
                     />
                     <TableBody>
 
-                        {rows
-                            //stableSort(rows, getComparator(order, orderBy))
-                            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                const isItemSelected = isSelected(row.key);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                        {rows.map((row, index) => {
+                            const isItemSelected = isSelected(row.key);
+                            const labelId = `enhanced-table-checkbox-${index}`;
 
-                                let detailsPath = `/${path}/${row.key}`
-                                let deleteProps = [row.key]
-                                let editID = { [idString]: row.key }
-                                if ('jid' in row && 'aid' in row || props.includeJID) {
-                                    detailsPath = `/${path}/${row['jid']}/${row.key}`
-                                    deleteProps = [row['jid'], row.key]
-                                    editID = { [idString]: row.key, 'jid': row['jid'] }
-                                }
-                                return (
-                                    <TableRow
-                                        className={classes.tableRow}
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.key}
-                                        selected={isItemSelected}
-                                        component={Link}
-                                        to={detailsPath}
-                                    >
-                                        {/* <TableCell padding="checkbox">
+                            let detailsPath = `/${path}/${row.key}`
+                            if (props.getDetailsPath !== undefined)
+                                detailsPath = props.getDetailsPath(row)
+                            let deleteProps = [row.key]
+                            let editID = { [idString]: row.key }
+
+                            if ('jid' in row && 'aid' in row || props.includeJID) {
+                                deleteProps = [row['jid'], row.key]
+                                editID = { [idString]: row.key, 'jid': row['jid'] }
+                            }
+
+                            return (
+                                <TableRow
+                                    className={classes.tableRow}
+                                    hover
+                                    role="checkbox"
+                                    aria-checked={isItemSelected}
+                                    tabIndex={-1}
+                                    key={row.key}
+                                    selected={isItemSelected}
+                                    component={Link}
+                                    to={detailsPath}
+                                >
+                                    {/* <TableCell padding="checkbox">
                                             <Checkbox
                                                 onClick={(event) => handleSelectClick(event, row.key)}
                                                 checked={isItemSelected}
@@ -438,61 +416,63 @@ export function PaginateTable(props) {
                                             />
                                         </TableCell> */}
 
-                                        {headCells.map((cell) => {
-                                            return (
-                                                <TableCell
-                                                    align={cell.numeric ? 'right' : 'left'}
-                                                    padding={cell.disablePadding ? 'none' : 'default'}
-                                                    key={cell.id}
-                                                >
-                                                    { 
-                                                        cell.contentFunction === undefined ?
-                                                            printFormat(row[cell['id']], cell.suffix, cell.isDate) 
+                                    {headCells.map((cell) => {
+                                        return (
+                                            <TableCell
+                                                align={cell.numeric ? 'right' : 'left'}
+                                                padding={cell.disablePadding ? 'none' : 'default'}
+                                                key={cell.id}
+                                            >
+                                                <Typography variant="subtitle2">
+                                                {
+                                                    cell.contentFunction === undefined ?
+                                                        printFormat(row[cell['id']], cell.suffix, cell.isDate)
                                                         :
                                                         <>
                                                             {cell.contentFunction(row[cell['id']], row)}
                                                         </>
-                                                    }
-                                                </TableCell>
-                                            )
-                                        })}
-                                        {
-                                            !props.noEdit &&
-                                            <TableCell 
-                                                align="right"
-                                                onClick={(event) => {
-                                                    // Stopping link and preserving action 
-                                                     event.preventDefault()
-                                                     event.stopPropagation()    
-                                                 }}
-                                            >
-                                                <Tooltip title="Open Edit Modal">
-                                                    <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
-                                                        <Edit />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                }
+                                                </Typography>
                                             </TableCell>
-                                        }
-                                        {
-                                            !props.noDelete &&
-                                            <TableCell 
-                                                align="right"
-                                                onClick={(event) => {
-                                                    // Stopping link and preserving action 
-                                                    event.preventDefault()
-                                                    event.stopPropagation()    
-                                                }}    
-                                            >
-                                                <Tooltip title="Delete">
-                                                    <IconButton aria-label="delete" color="primary" onClick={() => { props.handleDelete(deleteProps) }}>
-                                                        <Delete />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        }
-                                    </TableRow>
-                                );
-                            })}
+                                        )
+                                    })}
+                                    {
+                                        !props.noEdit &&
+                                        <TableCell
+                                            align="right"
+                                            onClick={(event) => {
+                                                // Stopping link and preserving action 
+                                                event.preventDefault()
+                                                event.stopPropagation()
+                                            }}
+                                        >
+                                            <Tooltip title="Open Edit Modal">
+                                                <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
+                                                    <Edit />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
+                                    {
+                                        !props.noDelete &&
+                                        <TableCell
+                                            align="right"
+                                            onClick={(event) => {
+                                                // Stopping link and preserving action 
+                                                event.preventDefault()
+                                                event.stopPropagation()
+                                            }}
+                                        >
+                                            <Tooltip title="Delete">
+                                                <IconButton aria-label="delete" color="primary" onClick={() => { props.handleDelete(deleteProps) }}>
+                                                    <Delete />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
+                                </TableRow>
+                            );
+                        })}
                         {emptyRows > 0 && rows.length > rowsPerPage && (
                             <TableRow style={{ height: 81 * emptyRows }}>
                                 <TableCell colSpan={headCells.length + additionalColumns} />

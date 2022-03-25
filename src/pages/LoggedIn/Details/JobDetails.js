@@ -32,11 +32,10 @@ import { JobMilestones } from '../../../components/Job/JobMilestones';
 import { waitingColor } from '../../../functions/waitingColor';
 import { AutoDecisionBarCard } from '../../../components/General/Charts';
 
-const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
     tabColor: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
 }));
@@ -68,6 +67,10 @@ export function JobDetails(props) {
     return (
         <Page
             title={"Job Details" + (job ? " - " + job.titles : "")}
+            breadCrumbs={[
+                { name: "Jobs", link: '/job' },
+                "Job Details - " + (job ? job.title : "")
+            ]}
             loading={pageLoading}
             error={error}
             onDeleteClick={() => setDeleteOpen(true)}
@@ -80,11 +83,11 @@ export function JobDetails(props) {
                             <DashCards stats={stats} job={job} />
                         }
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={9}>
                         <DetailsContent job={job} />
                     </Grid>
-                    <Grid container item xs={9}>
-                        <MilestonesCard job={job} stats={stats}/>
+                    <Grid container item xs={3}>
+                        <MilestonesCard job={job} stats={stats} />
                     </Grid>
                     <Grid item xs={12}>
                         <ScoreCharts job={job} stats={stats} />
@@ -131,9 +134,8 @@ function DetailsContent(props) {
     return (
         <Card>
             <CardHeader
-                className={classes.tabColor}
                 title={
-                    <Grid container justify='space-between' alignItems='center'>
+                    <Grid container justifyContent='space-between' alignItems='center'>
                         <Grid item>{job.titles}</Grid>
                         <Grid item>
                             <Tooltip title='Edit Job'>
@@ -145,30 +147,32 @@ function DetailsContent(props) {
                     </Grid>
                 }
             />
-            <CardContent>
-                <Typography variant="h5" gutterBottom>
-                    {
-                        job.hm ?
-                            <>
-                                {"Hiring Manager: "}
-                                <Link to={`/hm/${job.hmid}`}>
-                                    {printFormat(job.hm)}
-                                </Link>
-                            </>
-                            :
-                            "No hiring manager is in charge of this job."
-                    }
-                </Typography>
-                <Typography variant="body1">Type: {printFormat(job.type)} </Typography>
-                <Typography variant="body1">Teams: {printFormat(job.team)} </Typography>
-                <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
-                <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
-                <Typography variant="body1">Appointment Link: {printFormat(job.appointment_link)} </Typography>
-                <Typography variant="body1">Greenhouse Requistion ID: {printFormat(job.requisition_id)} </Typography>
-                <Typography variant="body1">Greenhouse JID: {printFormat(job.greenhouse_jid)} </Typography>
-                <Typography variant="body1">Bot ID: {printFormat(job.botID)} </Typography>
-                <Typography variant="body1"> 
-                <Link to= {`/job/${job.jid}/bot`} > Two Way Bot Details </Link> </Typography>
+            <CardContent style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>
+                    <Typography variant="body1">Greenhouse Requistion ID: {printFormat(job.requisition_id)} </Typography>
+                    <Typography variant="body1">Greenhouse JID: {printFormat(job.greenhouse_jid)} </Typography>
+                    <Typography variant="body1">Teams: {printFormat(job.team)} </Typography>
+                    <Typography variant="body1">Unit: {printFormat(job.unit)} </Typography>
+                </div>
+                <div>
+                    <Typography variant="h5" gutterBottom>
+                        {
+                            job.hm ?
+                                <>
+                                    {"Hiring Manager: "}
+                                    <Link to={`/hm/${job.hmid}`}>
+                                        {printFormat(job.hm)}
+                                    </Link>
+                                </>
+                                :
+                                "No recruiter is in charge of this job."
+                        }
+                    </Typography>
+                    <Typography variant="body1">Type: {printFormat(job.type)} </Typography>
+                    <Typography variant="body1">Locations: {printFormat(job.location)} </Typography>
+                    <Typography variant="body1">Appointment Link: {printFormat(job.appointment_link)} </Typography>
+                    <Typography variant="body1"> <Link to={`/job/${job.jid}/bot`} > Two Way Bot Details </Link> </Typography>
+                </div>
             </CardContent>
             <JobModal
                 open={editOpen}
@@ -185,53 +189,42 @@ function DashCards(props) {
 
     return (
         <Grid container spacing={spacing} >
-            <Grid item>
+            <Grid item xs={2}>
                 <DashCard
-                    dashIcon={AccessTimeRounded}
-                    title={"Last Action"}
-                    value={printFormat(stats.lastAction, '', true)}
+                    dashIcon={Assessment}
+                    title={"Applications"}
+                    value={stats.numApplicants}
                 />
             </Grid>
-            {stats &&
-                <>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={Assessment}
-                            title={"Applications"}
-                            value={stats.numApplicants}
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={FilterList}
-                            title={"Screened"}
-                            value={stats.numScored}
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={AccessAlarm}
-                            title={"Waiting"}
-                            value={stats.waiting}
-                            color={ waitingColor(stats.waiting) }
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={Clear}
-                            title={"Rejected"}
-                            value={stats.rejected}
-                        />
-                    </Grid>
-                    <Grid item >
-                        <DashCard
-                            dashIcon={DoneAll}
-                            title={"Accepted"}
-                            value={stats.status.accepted}
-                        />
-                    </Grid>
-                </>
-            }
+            <Grid item xs={2}>
+                <DashCard
+                    dashIcon={FilterList}
+                    title={"Screened"}
+                    value={stats.numScored}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <DashCard
+                    dashIcon={AccessAlarm}
+                    title={"Waiting"}
+                    value={stats.waiting}
+                    color={waitingColor(stats.waiting)}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <DashCard
+                    dashIcon={Clear}
+                    title={"Rejected"}
+                    value={stats.rejected}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <DashCard
+                    dashIcon={DoneAll}
+                    title={"Accepted"}
+                    value={stats.status.accepted}
+                />
+            </Grid>
         </Grid>
     )
 }
@@ -240,10 +233,10 @@ function ScoreCharts(props) {
     const { stats } = props
 
     if (stats.numScored === 0)
-        return <div/>
+        return <div />
     return (
         <Grid container spacing={spacing}>
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={6} md={3}>
                 <ScoreChartCard
                     title={"Scores"}
                     data={stats.scores.total}
@@ -251,7 +244,7 @@ function ScoreCharts(props) {
                     zoom
                 />
             </Grid>
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={6} md={3}>
                 <ScoreChartCard
                     title={"Eligibility"}
                     data={stats.scores.eli}
@@ -259,7 +252,7 @@ function ScoreCharts(props) {
                     zoom
                 />
             </Grid>
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={6} md={3}>
                 <ScoreChartCard
                     title={"Fit"}
                     data={stats.scores.fit}
@@ -267,7 +260,7 @@ function ScoreCharts(props) {
                     zoom
                 />
             </Grid>
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={6} md={3}>
                 <AutoDecisionBarCard
                     title={"Automated Screening"}
                     data={stats && stats.status}
@@ -282,7 +275,7 @@ const useMilestonesStyles = makeStyles((theme) => ({
         width: '100%',
         height: '100%',
         padding: '3em 0',
-        background: tabColor,
+        // background: tabColor,
     },
     milestonesCard: {
         height: '100%',
@@ -297,7 +290,7 @@ function MilestonesCard(props) {
 
     return (
         <Paper className={classes.milestonesPaper} >
-            <Card elevation={0} square className={classes.milestonesCard} >
+            <Card square className={classes.milestonesCard} >
                 <JobMilestones
                     jobOpened={job.created}
                     firstScreened={stats.firstScreened}

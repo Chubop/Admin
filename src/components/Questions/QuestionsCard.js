@@ -17,7 +17,6 @@ import { Edit, Refresh, ZoomIn } from '@material-ui/icons'
 // Custom
 import { QuestionsTable, QuestionsModal } from '../Questions';
 
-const tabColor = '#1769aa'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -28,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2)
     },
     detailsHeader: {
-        background: tabColor,
         color: 'white'
     },
 }));
@@ -53,7 +51,7 @@ export function QuestionsCard(props) {
             <CardHeader
                 className={classes.detailsHeader}
                 title={
-                    <Grid container justify='space-between' alignItems='center'>
+                    <Grid container justifyContent='space-between' alignItems='center'>
                         <Grid item> Screening Questions </Grid>
                         <Grid item>
                             <Tooltip title='More Details'>

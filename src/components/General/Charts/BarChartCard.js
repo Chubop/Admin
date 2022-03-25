@@ -5,16 +5,16 @@ import { Card, CardActions, CardContent, CircularProgress, Grid, makeStyles, Typ
 
 // Victory Charts imports
 import { VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, } from 'victory';
+import { colors } from '../../../theme/colors';
 
 
-const tabColor = '#1769aa'
+const tabColor = colors.components.tableHeader
 const height = 300
 
 const useStyles = makeStyles((theme) => ({
     root: {},
     title: {
         textAlign: 'left',
-        color: 'white',
     },
     titleContainer: {
         backgroundColor: tabColor,
@@ -49,6 +49,9 @@ export function BarChartCard(props) {
     return (
         <Card className={classes.root} ref={ref}>
             <CardContent className={classes.cardContent} style={{ parent: { overflow: "visible" } }}>
+                <Typography variant="h6">
+                    {props.title}
+                </Typography>
                 {
                     data === [] ?
                         <CircularProgress />
@@ -59,12 +62,14 @@ export function BarChartCard(props) {
                         >
                             <VictoryBar
                                 colorScale={colorScale}
-                                style={{ data: { fill: ({ index }) => colorScale[index], stroke: 'black', strokeWidth: 2 } }}
+                                style={{ data: { fill: ({ index }) => colorScale[index] } }}
                                 data={data}
                                 height={height}
                                 width={width}
                                 standalone={false}
                                 labels={({ datum }) => `${datum.y}`}
+                                domainPadding="20"
+                                cornerRadius={{ topLeft: 5, topRight: 5 }}
 
                                 labelComponent={
                                     <VictoryLabel style={[{ fill: 'black', fontWeight: 'bold' }]} />
@@ -76,16 +81,6 @@ export function BarChartCard(props) {
                         </VictoryChart>
                 }
             </CardContent>
-            <CardActions className={classes.titleContainer}>
-                <Grid container>
-                    <Grid item>
-
-                        <Typography variant="h6" className={classes.title}>
-                            {props.title}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </CardActions>
         </Card>
     )
 }

@@ -1,127 +1,163 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 // MUI
-import { Grid, makeStyles } from '@material-ui/core'
-import { AssignmentTurnedIn, DoneAll, Grade, People } from '@material-ui/icons'
+import { FormControl, Grid, Input, MenuItem, Select } from '@material-ui/core'
 
 // Custom Components
 import { Alerts, DashCard, } from '../../components/Dashboard'
-import { Page, ScoreChartCard } from '../../components/General';
-import { WeekCard } from '../../components/General';
+import { Page, ScoreChartCard, WeekCard, SourceTimelineChart } from '../../components/General';
 import { applicantActions } from '../../redux/actions';
-import { AutoDecisionBarCard } from '../../components/General/Charts';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    control: {
-        padding: theme.spacing(2),
-    },
-}));
+import { resumeAIActions } from '../../redux/resumeAIStore/action';
+import { botLogActions } from '../../redux/BotLogs/action';
+import { ResumeAIConversionChart } from '../../components/General/Charts/ResumeAIConversionChart';
+import { AllBotLogsChart } from '../../components/General/Charts/AllBotLogsChart';
 
-export function DashBoard(){
-    const classes = useStyles();
-    const [spacing, setSpacing] = React.useState(2);
-    const dispatch = useDispatch()
+export function DashBoard() {
+    const [statsDays, setStatsDays] = useState(5000);
+    const dispatch = useDispatch();
 
     // Get all applicants in the beginning to get applicant analytics
     const { stats: applicantStats, error } = useSelector(state => state.applicants)
+    const { stats: resumeAIStats } = useSelector(state => state.resumeAI)
+    const { botLogs } = useSelector(state => state.botLogs)
     useEffect(() => {
         if (!applicantStats)
-            dispatch(applicantActions.getAllApplicants())
+            dispatch(applicantActions.getAllApplicantsStats(statsDays))
+        if (!resumeAIStats)
+            dispatch(resumeAIActions.getConversionRate(statsDays))
+        if (!botLogs)
+            dispatch(botLogActions.getAllBotLogs(statsDays))
     }, [])
-    
-    function appsToday() {
-        return (
-            applicantStats ?
-                applicantStats.daysSince.filter(days => days <= 1).length
-                : '...'
-        )
+
+    const handleDaysChange = (event) => {
+        let newDays = event.target.value
+        setStatsDays(newDays)
+        dispatch(applicantActions.getAllApplicantsStats(newDays))
+        dispatch(resumeAIActions.getConversionRate(newDays))
+        dispatch(botLogActions.getAllBotLogs(newDays))
     }
 
-    const loading = !applicantStats
+    const loading = !applicantStats || !resumeAIStats || !botLogs
 
     return (
         <Page
-            title="Dashboard - All Jobs"
+            title=""
             loading={loading}
             error={error}
         >
-            { !loading &&
-                <Grid container spacing={spacing}>
+            {!loading &&
+                <Grid container spacing={2}>
+                    <Grid container item xs={12} justifyContent='flex-end'>
+                        <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
+                    </Grid>
                     <Grid item xs={12}>
-                        <Grid container spacing={spacing}>
-                            <Grid item >
-                                <DashCard dashIcon={People} title={"Screened Today"} value={applicantStats.screenedToday}
+                        <Grid container spacing={2} style={{backgroundColor: 'white'}}>
+                            <Grid item xs={3}>
+                                <DashCard title={"# Smart Apply Bots"}
+                                    value={applicantStats.numBots}
+                                    change={statsDays !== 5000 && applicantStats.numBotsChange}
                                 />
                             </Grid>
-                            <Grid item >
-                                <DashCard dashIcon={DoneAll} title={"Accepted"} value={applicantStats.totalAccepted} />
-                            </Grid>
-                            <Grid item >
-                                <DashCard dashIcon={Grade} title={"Average Grade"} value={applicantStats.averageGrade + "%"} />
-                            </Grid>
-                            <Grid item >
-                                <DashCard
-                                    dashIcon={People}
-                                    title={"Applications"}
-                                    value={applicantStats.totalApplication}
+                            <Grid item xs={3}>
+                                <DashCard title={"# Completed Conversations"}
+                                    value={applicantStats.numConversationsRecent}
+                                    change={statsDays !== 5000 && applicantStats.numConversationsChange}
                                 />
                             </Grid>
-                            <Grid item >
-                                <DashCard
-                                    dashIcon={AssignmentTurnedIn}
-                                    title={"Screened"}
-                                    value={applicantStats.totalCandidate}
+                            <Grid item xs={3}>
+                                <DashCard title={"# Auto Advanced"}
+                                    value={applicantStats.autoAdvancedRecent}
+                                    change={statsDays !== 5000 && applicantStats.autoAdvancedChange}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <DashCard title={"Resume AI Conversions"}
+                                    value={resumeAIStats.recentConversionsRate}
+                                    change={statsDays !== 5000 && resumeAIStats.conversionsRateChange}
+                                    displayValue={(v) => typeof v === 'number' ? v.toFixed(0) + "%" : ""}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
-                    {/* Charts */}
-                    {/* <Grid item xs={12} container spacing={spacing} direction='row'>
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <ScoreChartCard zoom
-                                title="Application Scores"
-                                data={applicantStats && applicantStats.scores.total}
-                                average={applicantStats && applicantStats.avgTotal.toFixed(2) + "%"}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <ScoreChartCard zoom
-                                title="Application Eligibility"
-                                data={applicantStats && applicantStats.scores.eli}
-                                average={applicantStats && applicantStats.avgEli.toFixed(2) + "%"}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <ScoreChartCard zoom
-                                title="Application Fit"
-                                data={applicantStats && applicantStats.scores.fit}
-                                average={applicantStats && applicantStats.avgFit.toFixed(2) + "%"}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <WeekCard
-                                title="Screened This Week"
-                                data={applicantStats && applicantStats.daysSince}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <AutoDecisionBarCard
-                                title={"Automated Screening"}
-                                data={applicantStats && applicantStats.status}
-                            />
-                        </Grid>
-                    </Grid> */}
-
-                    {/* No Need for Invalid Names and Not in Greenhouse anymore */}
-                    {/* <Grid item>
-                        {applicantStats.alerts && <Alerts alerts={applicantStats.alerts} />}
+                    <Grid item xs={12}>
+                        <SourceTimelineChart log={applicantStats.bySourceLog} />
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ResumeAIConversionChart
+                            data={[
+                                { x: "Visited", y: 2000 },
+                                { x: "Used AI", y: resumeAIStats.recentResumeAI },
+                                { x: "Clicked Match", y: resumeAIStats.recentClicks },
+                                { x: "Applied to Match", y: resumeAIStats.recentConversions },
+                            ]}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <AllBotLogsChart
+                            data={botLogs.allLogs}
+                        />
+                    </Grid>
+                    {/* <Grid >
+                        <p style={{ color: 'black' }}>Requested Resume AI {resumeAIStats.recentResumeAIRequests}</p>
+                        <p style={{ color: 'black' }}>Used Resume AI {resumeAIStats.recentResumeAI}</p>
+                        <p style={{ color: 'black' }}>Clicked matched job {resumeAIStats.recentClicks}</p>
+                        <p style={{ color: 'black' }}>Applied to matched {resumeAIStats.recentConversions}</p>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {
+                            botLogs.allLogs &&
+                            Object.keys(botLogs.allLogs).map((key) => {
+                                return (<>
+                                    <p>
+                                        {botLogs.allLogs[key].length} : {key}
+                                    </p>
+                                </>
+                                )
+                            })
+                        }
                     </Grid> */}
                 </Grid>
             }
         </Page>
     )
 }
+
+function TimeDropDown (props) {
+    const {days, setDays} = props;
+    const times = [
+        {
+            value: 1,
+            name: "Last Day",
+        },
+        {
+            value: 7,
+            name: "Last Week",
+        },
+        {
+            value: 30,
+            name: "Last Month",
+        },
+        {
+            value: 5000,
+            name: "All Time",
+        },
+    ]
+
+        return (
+            <FormControl >
+                    <Select
+                        input={<Input/>}
+                        value={days}
+                        onChange={setDays}
+                    >
+                        {times.map((time) => (
+                            <MenuItem value={time.value} >
+                                {time.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+            </FormControl>
+        )
+    }

@@ -2,10 +2,12 @@ import React from 'react'
 
 // MUI
 import { Grid, IconButton, makeStyles, Tooltip, Typography, } from '@material-ui/core'
-import { Delete, Edit } from '@material-ui/icons';
+import { Dashboard, Delete, Edit } from '@material-ui/icons';
 
 // Custom Components
 import { LoadingSymbol } from './LoadingSymbol';
+import { colors } from '../../theme/colors';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -24,22 +26,22 @@ const useStyles = makeStyles((theme) => ({
 
 export function Page(props) {
     const classes = useStyles();
-    const { title, children, loading, error, onDeleteClick, onEditClick} = props
+    const { title, children, loading, error, onDeleteClick, onEditClick } = props
 
     return (
         <>
-            <Grid container justify="space-between">
+            <Grid container justifyContent="space-between">
                 <Grid item>
-                    <Typography variant="h3" className={classes.title}> {title} </Typography>
+                    <BreadCrumbs pageTitle={title} titles={props.breadCrumbs} />
                 </Grid>
                 <Grid item>
                     {
                         (onEditClick !== undefined && !error & !loading) ?
-                        <IconButton onClick={onEditClick}>
-                            <Edit />
-                        </IconButton>
-                        :
-                        <div/>
+                            <IconButton onClick={onEditClick}>
+                                <Edit />
+                            </IconButton>
+                            :
+                            <div />
                     }
                     {
                         (onDeleteClick !== undefined && !error & !loading) ?
@@ -63,5 +65,55 @@ export function Page(props) {
                         children
             }
         </>
+    )
+}
+
+function BreadCrumbs(props) {
+    const { pageTitle, titles } = props;
+    const classes = useStyles();
+
+    if (pageTitle === "")
+        return (<></>)
+
+    return (
+        <Grid container spacing={1} alignItems="center">
+            <Grid item >
+                <Link to="/dashboard" className={classes.link}>
+                    <Grid container alignItems="center">
+                        <Dashboard style={{ color: colors.greys.mediumGrey, marginRight: '4px' }} />
+                        <Typography >
+                            Home
+                        </Typography>
+                    </Grid>
+                </Link>
+            </Grid>
+            {titles.map((title) => {
+                if (typeof title === 'string') {
+                    return (
+                        <>
+                            <Grid item>
+                                <Typography>/</Typography>
+                            </Grid>
+                            <Grid item>
+                                <Typography style={{ fontWeight: 600 }}> {title} </Typography>
+                            </Grid>
+                        </>
+                    )
+                }
+                return (
+                    <>
+                        <Grid item>
+                            <Typography>/</Typography>
+                        </Grid>
+                        <Grid item>
+                            <Link to={title.link} className={classes.link}>
+                                <Typography > {title.name} </Typography>
+                            </Link>
+                        </Grid>
+                    </>
+                )
+            })}
+        </Grid>
+
     )
 }

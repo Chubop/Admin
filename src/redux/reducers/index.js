@@ -36,12 +36,21 @@ import {
     unsupportedJobs
 } from '../Job/reducer'
 
+import {
+    resumeAI
+} from '../resumeAIStore/reducer'
+
+import {
+    botLogs
+} from '../BotLogs/reducer'
+
 export default combineReducers({
     authentication,
     saveProfile,
     IAPSelf,
     applicant,
     applicants,
+    botLogs,
     candidate,
     candidates,
     hiringManager,
@@ -52,4 +61,5 @@ export default combineReducers({
     unsupportedJobs,
     refresh,
     resetPassword,
+    resumeAI
 })

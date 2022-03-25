@@ -6,19 +6,7 @@ import { Card, CardActions, CardContent, CircularProgress, Grid, makeStyles, Typ
 // Victory Charts imports
 import { VictoryContainer, VictoryLabel, VictoryLegend, VictoryPie } from 'victory';
 
-
-const tabColor = '#1769aa'
-const height = 300
-
 const useStyles = makeStyles((theme) => ({
-    root: {},
-    title: {
-        textAlign: 'left',
-        color: 'white',
-    },
-    titleContainer: {
-        backgroundColor: tabColor,
-    },
     cardContent: {
         padding: 0,
     },
@@ -29,7 +17,10 @@ const useStyles = makeStyles((theme) => ({
 
 export function PieChartCard(props) {
     const { data, colorScale } = props;
+    // customization
+    const { noLegend, donut, noPadding, centerTitle } = props;
     const classes = useStyles();
+    const height = props.height || 300
 
     const [total, setTotal] = useState()
 
@@ -56,19 +47,18 @@ export function PieChartCard(props) {
         if (data) {
             let newLegendData = []
             let newTotal = 0
-            for (let i = 0; i < data.length; i++) {
-                newLegendData.push({ name: data[i].x, sybmol: { fill: colorScale[i] } })
-                newTotal += data[i].y
+            for (let i in data) {
+                let datum = data[i]
+                newLegendData.push({ name: datum.x })
+                newTotal += datum.y
             }
             setTotal(newTotal)
             setLegendData(newLegendData)
         }
     }, [data])
 
-
-
     return (
-        <Card className={classes.root} ref={ref}>
+        <Card ref={ref} style={{ height: '100%', padding: noPadding && 0 }}>
             <CardContent className={classes.cardContent} style={{ parent: { overflow: "visible" } }}>
                 {
                     data === [] ?
@@ -78,42 +68,75 @@ export function PieChartCard(props) {
                             height={height}
                             width={width}
                         >
-                            <VictoryLegend
-                                orientation="vertical"
-                                gutter={20}
-                                // style={{ border: { stroke: "black" }, title: { fontSize: 20 } }}
-                                data={legendData}
-                                centerTitle
-                                colorScale={colorScale}
-                                x={20}
-                                y={20}
-                                standalone={false}
-                            />
-
+                            { !noLegend &&
+                                <VictoryLegend
+                                    orientation="vertical"
+                                    gutter={20}
+                                    data={legendData}
+                                    centerTitle
+                                    colorScale={colorScale}
+                                    x={20}
+                                    y={20}
+                                    standalone={false}
+                                />
+                            }
                             <VictoryPie
                                 colorScale={colorScale}
                                 data={data}
                                 height={height}
                                 width={width}
                                 standalone={false}
-                                labels={({ datum }) => `${(datum.y / total * 100).toFixed(1)}%`}
-                                padding={{ left: 100, bottom: 15, top: 15 }}
-                                labelRadius={({ innerRadius }) => innerRadius + 90}
+                                labels={({ datum }) => 
+                                datum.x !== 'none' ?
+                                datum.y > 0 ? `${(datum.y / total * 100).toFixed(0)}%` : ""
+                                : ''
+                            }
+                                padding={{ left: noLegend ? 5 : 100, bottom: 15, top: 15 }}
+                                labelRadius={({ innerRadius }) => 
+                                donut ?  0.01 : innerRadius + 90
+                            }
+                                // labelRadius={({ innerRadius }) => 0 }
+                                innerRadius={ donut ? Math.min(width, height) * 0.40 - 15 : 0}
                                 labelComponent={
                                     <VictoryLabel
-                                        style={[{ fill: 'white', fontWeight: 'bold' }]}
-                                        className={classes.pieLabel} />
+                                        style={[{ 
+                                            fill: donut ?  'black' : 'white', 
+                                            fontWeight: 'bold',
+                                            // If donut, make fontSize large and dependent on size of chart
+                                            // otherwise, make font regular size
+                                            fontSize: donut ? Math.min(width, height) * 0.2 + 5 : '16',
+                                        }]}
+
+                                        // center the label if it is a donut by moving label up by half
+                                        // of the fontSize if value >= 75% of total
+                                        dy={({datum}) => 
+                                        (datum.y >= 0.75 * total && donut) ? 
+                                        - (Math.min(width, height) * .125 + 2.5)
+                                        : 0 }
+
+                                        // center the label if it is a donut by moving label left by half
+                                        // of the fontSize if value < 75% of total
+                                        dx={({datum}) => 
+                                        (datum.y < 0.75 * total && donut) ? 
+                                        - (Math.min(width, height) * .125 + 2.5)
+                                        : 0 
+                                        }
+                                    />
                                 }
                             />
                         </VictoryContainer>
                 }
             </CardContent>
-            <CardActions className={classes.titleContainer}>
-                <Grid container>
+            <CardActions >
+                <Grid container justifyContent={centerTitle? "center" : "flex-end"}>
                     <Grid item>
-
                         <Typography variant="h6" className={classes.title}>
-                            {props.title}
+                            {
+                                typeof props.title === "function" ?
+                                    props.title({ total: total })
+                                    :
+                                    props.title
+                            }
                         </Typography>
                     </Grid>
                 </Grid>

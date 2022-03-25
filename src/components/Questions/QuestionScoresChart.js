@@ -13,8 +13,6 @@ import {
     VictoryHistogram, 
 } from 'victory';
 
-const tabColor = '#1769aa'
-
 const binSize = 1
 const fill = "DarkCyan"
 const stroke = "#005252"
@@ -28,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
     },
     titleContainer: {
-        backgroundColor: tabColor,
+        // backgroundColor: tabColor,
     },
     cardContent : {
         padding: 0,

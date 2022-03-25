@@ -149,11 +149,11 @@ async function updateQuestions(questions, jid){
     return response.data
 }
 
-async function getJobBotLogs(jid){
+async function getJobBotLogs(numDays, jid){
     const API_ROOT = UseBackendRoot()
     let accessToken = JSON.parse(localStorage.getItem('accessToken'))
     let response = await axios.get(
-        `${API_ROOT}/botLogs/${jid}`,
+        `${API_ROOT}/bot_logs/${numDays}/${jid}`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`

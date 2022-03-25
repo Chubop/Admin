@@ -66,7 +66,7 @@ export class LinkedItems extends Component
         return (
             <Grid container
                 direction="row"
-                // justify="center"
+                // justifyContent="center"
                 alignItems="flex-start"
             >
                 <div className={classes.container}>

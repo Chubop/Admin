@@ -1,15 +1,17 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 // redux
 import { useDispatch } from 'react-redux'
 import { applicantActions } from '../../redux/actions'
 
 // MUI
-import { makeStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper, Typography } from '@material-ui/core';
 
 // Custom Components
 import { ApplicantModal } from './'
 import { DeleteConfirmation, PaginateTable, ItemTable } from '../General';
+import { FiberManualRecord } from '@material-ui/icons';
+import { colors } from '../../theme/colors';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -25,7 +27,7 @@ export function ApplicantTable(props) {
     const paginate = props.paginate ? true : false
 
     // States
-    const [editOpen, setEditOpen] = useState(false); 
+    const [editOpen, setEditOpen] = useState(false);
     const [editAID, setEditAID] = useState();
     const [editJID, setEditJID] = useState();
 
@@ -62,12 +64,46 @@ export function ApplicantTable(props) {
     // These id's comes from the database, they must match
     // You can see the possible values to display in redux
     const headCells = [
-        { id: 'aid', numeric: false, disablePadding: false, label: 'AID' },
-        { id: 'created', numeric: true, disablePadding: false, label: 'Screened', isDate: true},
+        { id: 'created', numeric: true, disablePadding: false, label: 'Screened', isDate: true },
         { id: 'first_name', numeric: false, disablePadding: false, label: 'First Name' },
         { id: 'last_name', numeric: false, disablePadding: false, label: 'Last Name' },
-        { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-        { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+        {
+            id: 'email', numeric: false, disablePadding: false, label: 'Email',
+            contentFunction: (email, { aid }) => {
+                return (<>
+                    <Typography>
+                        {email}
+                    </Typography>
+                    <Typography style={{ opacity: 0.3 }}>
+                        {aid}
+                    </Typography>
+                </>)
+            }
+        },
+        {
+            id: 'status', numeric: false, disablePadding: false, label: 'Status',
+            contentFunction: (status, { }) => {
+                if (status === 'rejected')
+                    return (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <FiberManualRecord
+                                style={{ color: colors.status.bad }}
+                                fontSize={"small"}
+                            />
+                            <div> Rejected </div>
+                        </div>
+                    )
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <FiberManualRecord
+                            style={{ color: colors.status.good }}
+                            fontSize={"small"}
+                        />
+                        <div> Active </div>
+                    </div>
+                )
+            }
+        },
         { id: 'stage', numeric: false, disablePadding: false, label: 'Stage' },
         { id: 'will', numeric: true, disablePadding: false, label: 'Fit', suffix: '%' },
         { id: 'skill', numeric: true, disablePadding: false, label: 'Eligibility', suffix: '%' },
@@ -76,35 +112,37 @@ export function ApplicantTable(props) {
 
     const idString = 'aid'
     // This path is used to get to the details page
-    const path = "applications"
+    const getDetailsPath = ({ aid, jid }) => `/applications/${jid}/${aid}`
 
-    const table = paginate ? 
+    const table = paginate ?
         (<PaginateTable
-                    title="Applications"
-                    idString={idString}
-                    path={path}
-                    headCells={headCells}
-                    handleClickEdit={openEditModal}
-                    handleDelete={handleDelete}
-                    prefKey={"applicantsPage"}
-                    noDelete
-                    {...props}
-        />) : 
-        (<ItemTable
             title="Applications"
             idString={idString}
-            path={path}
+            getDetailsPath={getDetailsPath}
             headCells={headCells}
             handleClickEdit={openEditModal}
             handleDelete={handleDelete}
             prefKey={"applicantsPage"}
+            moreKeys={['aid', 'jid']}
+            noDelete
+            {...props}
+        />) :
+        (<ItemTable
+            title="Applications"
+            idString={idString}
+            getDetailsPath={getDetailsPath}
+            headCells={headCells}
+            handleClickEdit={openEditModal}
+            handleDelete={handleDelete}
+            prefKey={"applicantsPage"}
+            moreKeys={['aid', 'jid']}
             noDelete
             {...props}
         />)
 
     return (
         <>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} >
                 {table}
                 <DeleteConfirmation
                     open={deleteOpen}

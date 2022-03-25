@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { candidateActions } from '../../../redux/actions';
 
 // MUI
-import { 
+import {
     Card,
     CardContent,
     Grid,
@@ -19,7 +19,6 @@ import { DeleteConfirmation, Page } from '../../../components/General';
 import { CandidateModal } from '../../../components/Candidate';
 import { ApplicantTable } from '../../../components/Applicant';
 
-const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         height: '100%'
     },
     detailsHeader: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
 }));
@@ -64,9 +63,9 @@ export function CandidateDetails(props) {
     }, [])
 
     // When delete is confirmed
-    const handleDelete = () => { 
+    const handleDelete = () => {
         setDeleted(true) // redirects page to '/candidates'
-        dispatch(candidateActions.deleteCandidate(cid)) 
+        dispatch(candidateActions.deleteCandidate(cid))
     }
 
     const pageLoading = !candidate || loading
@@ -74,6 +73,10 @@ export function CandidateDetails(props) {
         <div className={classes.root}>
             <Page
                 title="Candidate Details"
+                breadCrumbs={[
+                    { name: "Candidates", link: "/candidate" },
+                    "Candidate Details"]
+                }
                 loading={pageLoading}
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}
@@ -87,7 +90,7 @@ export function CandidateDetails(props) {
                         {
                             candidate.applicants && candidate.applicants[0] && candidate.applicants[0].aid &&
                             <Grid item xs={12}>
-                                <ApplicantTable data={candidate.applicants} refreshPageAction={() => dispatch(candidateActions.getCandidate(cid))}/>
+                                <ApplicantTable data={candidate.applicants} refreshPageAction={() => dispatch(candidateActions.getCandidate(cid))} />
                             </Grid>
                         }
                         <DeleteConfirmation
@@ -99,7 +102,7 @@ export function CandidateDetails(props) {
                         </DeleteConfirmation>
                         {
                             deleted &&
-                            <Redirect to="/candidate"/>
+                            <Redirect to="/candidate" />
                         }
                         <CandidateModal
                             cid={cid}
@@ -118,10 +121,10 @@ function DetailsCard(props) {
     const classes = useStyles();
 
     if (!candidate.applications)
-        return (<div/>)
+        return (<div />)
 
     return (
-        <Card style={{height: '100%'}}>
+        <Card style={{ height: '100%' }}>
             <CardHeader
                 className={classes.detailsHeader}
                 title={printFormat(candidate.email || candidate.cid)}

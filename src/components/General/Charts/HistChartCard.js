@@ -18,19 +18,20 @@ import {
     VictoryHistogram,
 } from 'victory';
 
-const tabColor = '#1769aa'
+import {colors } from '../../../theme/colors'
+
+const tabColor = colors.components.tableHeader
 
 const binSize = 5 
-const fill = "DarkCyan"
-const hoverFill = "Cyan"
-const stroke = "#005252"
-const hoverStroke = "#0099C5"
+const fill = colors.theme.mediumBlue
+const hoverFill = colors.theme.lightBlue
+const stroke = colors.theme.darkBlue
+const hoverStroke = colors.theme.mediumBlue
 
 const useStyles = makeStyles((theme) => ({
     root: { },
     title: {
         textAlign: 'left',
-        color: 'white',
     },
     titleContainer: {
         backgroundColor: tabColor,
@@ -147,6 +148,17 @@ export function HistChartCard(props){
     return (
         <Card className={classes.root} ref={ref}>
             <CardContent className={classes.cardContent}>
+                    {
+                        props.average ?
+                            <Typography variant="h6" className={classes.title}>
+                                {`Average ${props.title}: ` + props.average}
+                            </Typography>
+                        :
+                            <Typography variant="h6" className={classes.title}>
+                                {props.title}
+                            </Typography>
+                    }
+
                 {
                     xValues === [] || bins === [] ?
                     <CircularProgress/>
@@ -171,6 +183,7 @@ export function HistChartCard(props){
                             >
                                 <VictoryHistogram
                                     style={{ data: { fill: fill, stroke: stroke } }}
+                                    binSpacing={5}
                                     cornerRadius={5}
                                     data={xValues}
                                     bins={bins}
@@ -198,23 +211,6 @@ export function HistChartCard(props){
                         </svg>
                 }
             </CardContent>
-            <CardActions className={classes.titleContainer}>
-                <Grid container justify='space-between'>
-                    <Grid item>
-                        <Typography variant="h6" className={classes.title}>
-                            {props.title}
-                        </Typography>
-                    </Grid>
-                    {
-                        props.average &&
-                        <Grid item>
-                            <Typography variant="h6" className={classes.title}>
-                                {"Average: " + props.average}
-                            </Typography>
-                        </Grid>
-                    }
-                </Grid>
-            </CardActions>
         </Card>
     )
 }

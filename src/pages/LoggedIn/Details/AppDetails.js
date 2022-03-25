@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { applicantActions } from '../../../redux/actions';
 
 // MUI
-import { 
+import {
     Card,
     CardContent,
     Grid,
@@ -20,25 +20,27 @@ import {
     Button,
     IconButton,
     Tooltip,
+    Paper,
 } from '@material-ui/core'
-import { 
-    Check, 
-    Extension, 
-    InfoOutlined, 
-    Star, 
-    ToggleOff, 
+import {
+    Check,
+    Extension,
+    InfoOutlined,
+    Star,
+    ToggleOff,
     ToggleOn
 } from '@material-ui/icons';
 
 // Custom
 import { printFormat } from '../../../functions'
-import { DeleteConfirmation, Page } from '../../../components/General';
+import { DeleteConfirmation, Page, PieChartCard } from '../../../components/General';
 import { DashCard } from '../../../components/Dashboard';
 import { ApplicantModal } from '../../../components/Applicant';
 import LinkedItems from '../../../components/Applicant/LinkedItems';
 import { green, lime, orange, red, yellow } from '@material-ui/core/colors';
+import { colors } from '../../../theme/colors';
+import { TableTabs } from '../../../components/General/TableTabs';
 
-const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,12 +61,10 @@ const useStyles = makeStyles((theme) => ({
         height: '100%'
     },
     detailsHeader: {
-        background: tabColor,
-        color: 'white'
     },
-    actionLogPaper:{
+    actionLogPaper: {
         padding: 4,
-        borderRadius:10,
+        borderRadius: 10,
         width: '100%',
     },
     scoreBarCell: {
@@ -95,9 +95,9 @@ export function AppDetails(props) {
     }, [])
 
     // When delete is confirmed
-    const handleDelete = () => { 
+    const handleDelete = () => {
         setDeleted(true) // redirects page to '/applicants'
-        dispatch(applicantActions.deleteApplicant(jid, aid)) 
+        dispatch(applicantActions.deleteApplicant(jid, aid))
     }
 
     const pageLoading = !applicant || loading
@@ -108,7 +108,11 @@ export function AppDetails(props) {
                 <Redirect to="/applications" />
             }
             <Page
-                title="Application Details"
+                breadCrumbs={[
+                    { name: "Jobs", link: "/job" },
+                    { name: "Job Details", link: `/job/${jid}` },
+                    "Application Details"]
+                }
                 loading={pageLoading}
                 error={error}
                 onDeleteClick={() => setDeleteOpen(true)}
@@ -116,10 +120,10 @@ export function AppDetails(props) {
             >
                 {!pageLoading && !error &&
                     <Grid container spacing={spacing}>
-                        <Grid item xs={applicant.total ? 9 : 12}>
+                        <Grid item xs={applicant.total ? 8 : 12}>
                             <DetailsCard applicant={applicant} />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             {
                                 applicant.total &&
                                 <Scores applicant={applicant} />
@@ -159,25 +163,25 @@ function DetailsCard(props) {
 
     let dateCreated = '---'
     let created = '---'
-    if (applicant.created){
+    if (applicant.created) {
         created = applicant.created
         dateCreated = new Date(applicant.created * 1000)
         dateCreated = dateCreated.toLocaleTimeString() + " " + dateCreated.toLocaleDateString()
     }
-    if (applicant.created[0]){
+    if (applicant.created[0]) {
         created = applicant.created[0]
         dateCreated = new Date(applicant.created[0] * 1000)
         dateCreated = dateCreated.toLocaleTimeString() + " " + dateCreated.toLocaleDateString()
     }
 
     return (
-        <Card style={{height: '100%'}}>
+        <Card style={{ height: '100%' }}>
             <CardHeader
                 className={classes.detailsHeader}
                 title={printFormat(applicant.name)}
             />
             <CardContent>
-                <Grid container justify='space-between'>
+                <Grid container justifyContent='space-between'>
                     <Grid item>
                         < Button disabled style={{ backgroundColor: applicant.status === 'Rejected' ? "red" : 'green', color: 'white' }}>{printFormat(applicant.status)} </Button>
                         {
@@ -193,9 +197,9 @@ function DetailsCard(props) {
                         }
                         <Typography variant="body1">
                             {'Applied to: '}
-                                <Link to={`/job/${applicant.jid}`}>
-                                    {applicant.job_title}
-                                </Link>
+                            <Link to={`/job/${applicant.jid}`}>
+                                {applicant.job_title}
+                            </Link>
                         </Typography>
                         <Typography variant="body1">{"Screened: " + dateCreated + " (" + printFormat(created, "", true) + ")"} </Typography>
                         {
@@ -237,7 +241,7 @@ function DetailsCard(props) {
                         {
                             applicant.source &&
                             <Typography variant="body1">
-                                {"Source: " +   applicant.source['name']}
+                                {"Source: " + applicant.source['name']}
                             </Typography>
                         }
 
@@ -250,30 +254,34 @@ function DetailsCard(props) {
 
 function Scores(props) {
     const { applicant } = props
+    const { skill, will, total } = applicant
     return (
-        <Grid container spacing={spacing}>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Star}
-                    title={"Score"}
-                    value={applicant.total + "%"}
-                />
+        <Card>
+            <CardHeader title={<Typography variant="h2">Overview</Typography>} />
+            <Grid container spacing={0}>
+                <Grid item xs={4}>
+                    <PieChartCard donut noLegend noPadding centerTitle height={150}
+                        data={[{ y: total, x: 'score' }, { y: 100 - total, x: 'none' }]}
+                        title={"Score"}
+                        colorScale={[colors.theme.darkBlue, colors.theme.white]}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <PieChartCard donut noLegend noPadding centerTitle height={150}
+                        data={[{ y: skill, x: 'score' }, { y: 100 - skill, x: 'none' }]}
+                        title={"Eligibility"}
+                        colorScale={[colors.theme.mediumBlue, colors.theme.white]}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <PieChartCard donut noLegend noPadding centerTitle height={150}
+                        data={[{ y: will, x: 'score' }, { y: 100 - will, x: 'none' }]}
+                        title={"Job Fit"}
+                        colorScale={[colors.theme.lightBlue, colors.theme.white]}
+                    />
+                </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Check}
-                    title={"Eligibility"}
-                    value={applicant.skill + "%"}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <DashCard
-                    dashIcon={Extension}
-                    title={"Job Fit"}
-                    value={applicant.will + "%"}
-                />
-            </Grid>
-        </Grid>
+        </Card>
     )
 }
 
@@ -282,6 +290,7 @@ function ScoredAnswersTable(props) {
     const classes = useStyles()
     const [QIDs, setQIDS] = useState([])
     const [showBars, setShowBars] = useState(true)
+    const [scoreType, setScoreType] = useState('details')
 
     const headCells = [
         { id: 'answer', numeric: false, disablePadding: false, label: 'Answer' },
@@ -311,69 +320,61 @@ function ScoredAnswersTable(props) {
         })
 
         // backwards compatability
-        if(qids.length > 0){
-            setShowBars(questions[qids[0]].eli_portion != null)
+        if (qids.length > 0) {
+            setScoreType(questions[qids[0]].eli_portion != null ? 'bars' : 'details')
             setQIDS(qids)
         }
     }, [questions])
 
-    if (!questions || QIDs.length === 0 )
+    if (!questions || QIDs.length === 0)
         return <></>
 
     return (
-        <Card className={classes.paper}>
-            <CardHeader className={classes.detailsHeader} 
-            title={
-                <Grid container justify='space-between'>
-                    <Grid item> Scored Answers</Grid>
-                    {
-                        questions[QIDs[0]].eli_portion &&
-                        <Grid item style={{display: 'flex', align: 'center'}} alignItems='center'>
-                            <Typography> Detailed Scores </Typography>
-                            <IconButton onClick={() => setShowBars(!showBars)} style={{padding: 0, paddingLeft: 10}} >
-                                {showBars ? <ToggleOff /> : <ToggleOn />}
-                            </IconButton>
-                        </Grid>
-                    }
-                </Grid>
-            }
+        <Paper>
+            <TableTabs
+                tabs={[
+                    { title: 'Score Bars', value: 'bars' },
+                    { title: 'Detailed Scores', value: 'details' },
+                ]}
+                setCurrentTab={setScoreType}
+                currentTab={scoreType}
             />
-            <TableContainer>
+            <TableContainer style={{ marginTop: '8px' }}>
                 <Table
                     className={classes.table}
                     aria-labelledby="tableTitle"
                     size={'medium'}
                 >
-                    <ScoredAnswersTableHead questions={questions} toggleView={setShowBars} headCells={headCells}/>
+                    <ScoredAnswersTableHead questions={questions} toggleView={setShowBars} headCells={headCells} />
                     <TableBody className={classes.tableBody}>
                         {QIDs.map((qid) => {
                             let question = questions[qid]
                             return (
                                 <TableRow>
-                                {headCells.map((cell) => {
-                                    let cellContent = printFormat(question[cell['id']])
-                                    if (cell['hidden']) {
-                                        return <></>
-                                    }
-                                    if (question['eli_portion'] && showBars) {
-                                        cellContent = getCellContent(question, cell['id'], cellContent)
-                                    }
-                                    return (
-                                        <TableCell
-                                            align={ cell.numeric ? 'right' : 'left' }
-                                            padding={cell.disablePadding ? 'none' : 'default'}
-                                        >
-                                            { cellContent }
-                                        </TableCell>
-                                    )
-                                })}
-                            </TableRow>
+                                    {headCells.map((cell) => {
+                                        let cellContent = printFormat(question[cell['id']])
+                                        if (cell['hidden']) {
+                                            return <></>
+                                        }
+                                        if (question['eli_portion'] && scoreType === 'bars') {
+                                            cellContent = getCellContent(question, cell['id'], cellContent)
+                                        }
+                                        return (
+                                            <TableCell
+                                                align={cell.numeric ? 'right' : 'left'}
+                                                padding={cell.disablePadding ? 'none' : 'default'}
+                                            >
+                                                {cellContent}
+                                            </TableCell>
+                                        )
+                                    })}
+                                </TableRow>
                             )
                         })}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Card>
+        </Paper>
     )
 }
 
@@ -419,7 +420,7 @@ function ScoredAnswersTableHead(props) {
     const classes = useStyles();
     return (
         <TableHead>
-            <TableRow>
+            <TableRow style={{ backgroundColor: colors.components.tableHeader }}>
                 {headCells.map((headCell) => {
                     if (headCell['hidden'])
                         return <></>
@@ -433,7 +434,7 @@ function ScoredAnswersTableHead(props) {
 
                             {
                                 headCell.tooltip ?
-                                    <Grid container justify={'space-between'} spacing={0}>
+                                    <Grid container justifyContent={'space-between'} spacing={0}>
                                         <Grid item>
                                             {headCell.label}
                                         </Grid>
@@ -444,7 +445,7 @@ function ScoredAnswersTableHead(props) {
                                         </Grid>
                                     </Grid>
                                     :
-                                    <> { headCell.label} </>
+                                    <> {headCell.label} </>
                             }
                         </TableCell>
                     )
@@ -458,12 +459,12 @@ function ActionLog(props) {
     const { actionLog } = props
     const classes = useStyles();
 
-    function getEntryAction (entry) {
+    function getEntryAction(entry) {
         let textColor = 'red'
         let actionText = ''
 
         if (!(entry && entry.action))
-            return <div/>
+            return <div />
         switch (entry.action) {
             case 'advanced':
                 textColor = 'green'
@@ -488,16 +489,16 @@ function ActionLog(props) {
         )
     }
 
-    function getEntryDate (entry) {
+    function getEntryDate(entry) {
         if (!(entry && entry.time))
-            return null 
+            return null
         let date = new Date(entry.time * 1000)
         date = date.toLocaleDateString()
         return <Typography> {date + " (" + printFormat(entry.time, '', true) + ")"} </Typography>
     }
 
-    if ( actionLog.length === 0)
-        return <div/>
+    if (actionLog.length === 0)
+        return <div />
 
     return (
         <Card className={classes.paper}>
@@ -577,7 +578,6 @@ function percentBarColor(percent, saturation) {
     }
     // 95 and above
     return green[saturation * 100]
-    // return '#1769aa'
 }
 
 function ScorePercentBar(props) {
@@ -585,12 +585,12 @@ function ScorePercentBar(props) {
     const classes = usePercentBarStyles()
     return (
         <div className={classes.container}>
-            <div className={classes.filler} 
-            style={{ 
-                width: `${percent}%`,
-                backgroundColor: 'SlateGrey' , // light bright blue
-            }}
-                >
+            <div className={classes.filler}
+                style={{
+                    width: `${percent}%`,
+                    backgroundColor: 'SlateGrey', // light bright blue
+                }}
+            >
                 <span className={classes.label}>
                     {`${percent.toFixed(0)}%`}
                 </span>
@@ -606,7 +606,7 @@ function TotalScoreBar(props) {
     // const spaceBetweenFitAndEnd = fit * 10 * (1 - (fit_percent / 100))
     const spaceBetweenFitAndEnd = percent < 100
     return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent:'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div className={classes.container} >
                 <div className={classes.filler}
                     style={{
@@ -617,7 +617,7 @@ function TotalScoreBar(props) {
                         borderBottomRightRadius: 0,
                     }}
                 >
-                    <span className={classes.label}/>
+                    <span className={classes.label} />
                 </div>
                 <div className={classes.filler}
                     style={{
@@ -630,7 +630,7 @@ function TotalScoreBar(props) {
                         borderBottomRightRadius: spaceBetweenFitAndEnd > 0 ? 0 : 50,
                     }}
                 >
-                    <span className={classes.label}/>
+                    <span className={classes.label} />
                 </div>
             </div>
         </div>

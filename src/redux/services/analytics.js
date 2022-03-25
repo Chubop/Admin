@@ -49,7 +49,7 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
         }
 
         // If applicant is screened, analyze scores
-        if (!isNaN(applicant.total)){
+        if (applicant.total !== null){
             // Add to number of screened/scored applicants
             numScored += 1
 
@@ -216,9 +216,8 @@ export function analyzeBotLogs(botLogs, data) {
 
     // On average how many questions did each applicant ask
     // How many times was each question asked
-    for (let questionID in botLogs) {
-        let question = botLogs[questionID]
-        let logs = question.log
+    for (let questionID of Object.keys(botLogs)) {
+        let logs = botLogs[questionID]
         totalNumberOfQuestionsAsked += logs.length
         numEachQuestionAsked[questionID] = logs.length
 

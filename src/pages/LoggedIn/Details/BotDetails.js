@@ -29,7 +29,6 @@ import { BarChartCard } from '../../../components/General/Charts/BarChartCard';
 import { jobActions } from '../../../redux/actions';
 import { BubbleChartCard, LogTimelineChart } from '../../../components/General/Charts';
 
-const tabColor = '#1769aa'
 const spacing = 2
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,11 +40,11 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2)
     },
     detailsHeader: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
     cardHeader: {
-        background: tabColor,
+        // background: tabColor,
         color: 'white'
     },
 }));
@@ -63,7 +62,7 @@ export function BotDetails(props) {
     const { botLogs, loading, botStats: stats, error } = useSelector(state => state.job)
     useEffect(() => {
         if (!botLogs || (botLogs.jid !== jid)) {
-            dispatch(jobActions.getJobBotLogs(jid))
+            dispatch(jobActions.getJobBotLogs(365, jid))
         }
     }, [])
 
@@ -78,13 +77,17 @@ export function BotDetails(props) {
     }, [botLogs])
 
     if (!botLogs || !questionIDs)
-        return <div/>
+        return <div />
 
     const pageLoading = !botLogs || loading
     return (
         <div className={classes.root}>
             <Page
-                title="Bot Details"
+                breadCrumbs={[
+                    { name: "Jobs", link: "/job" },
+                    { name: "Job Details", link: `/job/${jid}` },
+                    "Bot Details"]
+                }
                 loading={pageLoading}
                 error={error}
             >
@@ -92,10 +95,15 @@ export function BotDetails(props) {
                     <>
                         <Grid container spacing={spacing}>
                             <Grid item style={{ width: '100%' }}>
-                                <BubbleChartCard
-                                    data={stats.numEachQuestionAsked}
-                                    title={"Amount Asked per Question"}
-                                />
+                                {stats.numEachQuestionAsked &&
+                                    <BubbleChartCard random
+                                        data={stats.numEachQuestionAsked}
+                                        title={"Amount Asked per Question"}
+                                        chartHeight={600}
+                                        verticalPadding={150}
+                                        horizontalPadding={150}
+                                    />
+                                }
                             </Grid>
                             <Grid item style={{ width: '100%' }}>
                                 <Card>
@@ -115,11 +123,11 @@ export function BotDetails(props) {
                             </Grid>
                             <Grid item container spacing={spacing} >
                                 {
-                                    questionIDs.map((questionID) => {
-                                        let question = botLogs[questionID]
+                                    questionIDs.map((question) => {
+                                        let log = botLogs[question]
                                         return (
-                                            <Grid item key={`question-timeline-${questionID}`} xs={12} md={6} lg={4} xl={3}>
-                                                <BotQuestionDetailsCard question={question} questionID={questionID} jid={jid}/>
+                                            <Grid item key={`question-timeline-${question}`} xs={12} md={6} lg={4} xl={3}>
+                                                <BotQuestionDetailsCard log={log} question={question} jid={jid} />
                                             </Grid>
                                         )
                                     })
@@ -134,17 +142,16 @@ export function BotDetails(props) {
 }
 
 function BotQuestionDetailsCard(props) {
-    const { question, questionID, jid } = props;
+    const { log, question, jid } = props;
     const classes = useStyles();
-    const log = question.log;
 
     return (
         <>
             <Card style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                <CardHeader title={questionID} className={classes.cardHeader} />
-                <LogTimelineChart log={question.log}/>
+                <CardHeader title={question} className={classes.cardHeader} />
+                <LogTimelineChart log={log} />
             </Card>
-            <QuestionLogAccordion log={log} questionID={questionID} jid={jid} />
+            <QuestionLogAccordion log={log} question={question} jid={jid} />
         </>
     )
 }
@@ -159,7 +166,7 @@ const Accordion = withStyles({
 })(MuiAccordion);
 
 function QuestionLogAccordion(props) {
-    const { log, questionID, jid } = props;
+    const { log, question, jid } = props;
     const [expanded, setExpanded] = useState(false);
 
     return (
@@ -168,7 +175,7 @@ function QuestionLogAccordion(props) {
         >
             <AccordionSummary
                 expandIcon={<ExpandMore />}
-                aria-controls={`${questionID}-log-content`}
+                aria-controls={`${question}-log-content`}
             >
                 {/* <Typography>Event Log</Typography> */}
                 <Typography>Asked {log.length} time{log.length > 1 && "s"} </Typography>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom'
@@ -15,46 +15,38 @@ import {
     TableSortLabel,
     Toolbar,
     Typography,
-    Checkbox,
     Tooltip,
     IconButton,
     makeStyles,
     lighten,
-    MenuItem,
-    Select,
 } from '@material-ui/core'
 
 import {
-    ZoomIn,
     Delete,
     FilterList,
     Edit,
-    FiberManualRecord
 } from '@material-ui/icons'
 
 // Custom
 import { printFormat } from '../../functions'
 import { useDispatch } from 'react-redux';
-
-const tabColor = '#1769aa'
+import { colors } from '../../theme/colors';
 
 // Makes a row with the categories from headCells
-function createRow(dataRow, headCells, idString) {
+function createRow(dataRow, allKeys, idString) {
     let row = {}
     row.key = dataRow[idString]
-    row.jid = dataRow.jid
-    for (let i = 0; i < headCells.length; i++) {
-        let id = headCells[i].id
-        let newCell = dataRow[id]
+    for (let key of allKeys){
+        let newCell = dataRow[key]
         if (!newCell) {
             if (newCell === 0) {
                 newCell = 0
             }
             else {
-                newCell = "" 
+                newCell = ""
             }
         }
-        row[id] = newCell
+        row[key] = newCell
     }
     return row;
 }
@@ -98,16 +90,16 @@ function stableSort(array, comparator) {
 
 const additionalColumns = 3
 function EnhancedTableHead(props) {
-    const { classes, 
-            onSelectAllClick, 
-            order, 
-            orderBy, 
-            numSelected, 
-            rowCount, 
-            onRequestSort, 
-            headCells,
-            noEdit,
-            noDelete,
+    const { classes,
+        onSelectAllClick,
+        order,
+        orderBy,
+        numSelected,
+        rowCount,
+        onRequestSort,
+        headCells,
+        noEdit,
+        noDelete,
     } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -124,16 +116,8 @@ function EnhancedTableHead(props) {
     }
 
     return (
-        <TableHead>
+        <TableHead style={{backgroundColor: colors.components.tableHeader}}>
             <TableRow>
-                {/* <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
-                </TableCell> */}
                 {header.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -146,7 +130,9 @@ function EnhancedTableHead(props) {
                             direction={orderBy === headCell.id ? order : 'asc'}
                             onClick={createSortHandler(headCell.id)}
                         >
-                            {headCell.label}
+                            <Typography variant='subtitle1'>
+                                {headCell.label}
+                            </Typography>
                             {orderBy === headCell.id ? (
                                 <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -175,8 +161,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
-        backgroundColor: tabColor,
-        color: 'white'
+        color: colors.theme.text
     },
     highlight:
         theme.palette.type === 'light'
@@ -211,10 +196,10 @@ const EnhancedTableToolbar = (props) => {
                     {numSelected} selected
                 </Typography>
             ) : (
-                    <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                        {title}
-                    </Typography>
-                )}
+                <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+                    {title}
+                </Typography>
+            )}
 
             {numSelected > 0 ? (
                 <Tooltip title="In Progress">
@@ -223,16 +208,16 @@ const EnhancedTableToolbar = (props) => {
                     </IconButton>
                 </Tooltip>
             ) : (
-                    // <Tooltip title="Filter list">
-                    <Tooltip title="IN PROGRESS">
-                        <IconButton
-                            onClick={props.handleFilterOpen}
-                            className={classes.filter}
-                            aria-label="filter list">
-                            <FilterList />
-                        </IconButton>
-                    </Tooltip>
-                )}
+                // <Tooltip title="Filter list">
+                <Tooltip title="IN PROGRESS">
+                    <IconButton
+                        onClick={props.handleFilterOpen}
+                        className={classes.filter}
+                        aria-label="filter list">
+                        <FilterList />
+                    </IconButton>
+                </Tooltip>
+            )}
         </Toolbar>
     );
 };
@@ -248,10 +233,6 @@ const useStyles = makeStyles((theme) => ({
     tableRow: {
         textDecoration: "none"
     },
-    paper: {
-        width: '100%',
-        marginBottom: theme.spacing(2),
-    },
     table: {
         minWidth: 750,
     },
@@ -266,10 +247,6 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
-    statusButton: {
-        fontSize: '24px',
-        colorPrimary: "red"
-    }
 }));
 
 export function ItemTable(props) {
@@ -285,39 +262,44 @@ export function ItemTable(props) {
     // prefKey is the key to use to store the rowsPerPage preference in localStorage
     const { data, idString, headCells, path, title, prefKey } = props
 
+    useEffect(() => {
+        if (data) {
+            let allKeys = headCells.map((cell) => cell.id)
+            if (props.moreKeys)
+                allKeys = allKeys.concat(props.moreKeys)
+            setRows(createRows(data, allKeys, idString))
+
+            let preferences = JSON.parse(localStorage.getItem('preferences'))
+            let rowsPref = rowsPerPage
+            if (prefKey) {
+                // Check if preferences are stored and prefKey is given
+                if (preferences) {
+                    if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]) {
+                        // Read stored value
+                        rowsPref = preferences.rowsPerPage[prefKey]
+                        setRowsPerPage(rowsPref)
+                    }
+                    if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
+                        preferences['rowsPerPage'] = {}
+                    }
+                    preferences['rowsPerPage'][prefKey] = rowsPref
+                    localStorage.setItem('preferences', JSON.stringify(preferences))
+                }
+                else {
+                    preferences = {
+                        'rowsPerPage': {
+                            [prefKey]: rowsPref
+                        }
+                    }
+                    localStorage.setItem('preferences', JSON.stringify(preferences))
+                }
+            }
+        }
+    }, [data])
+
     // If loading
     if (!data) {
         return <div />
-    }
-    // If the data has loaded in and we need to fill the rows
-    if (data.length > 0 && rows.length === 0) {
-        setRows(createRows(data, headCells, idString))
-
-        let preferences = JSON.parse(localStorage.getItem('preferences'))
-        let rowsPref = rowsPerPage
-        if (prefKey) {
-            // Check if preferences are stored and prefKey is given
-            if (preferences) {
-                if (preferences.rowsPerPage && preferences.rowsPerPage[prefKey]){
-                    // Read stored value
-                    rowsPref = preferences.rowsPerPage[prefKey]
-                    setRowsPerPage(rowsPref)
-                }
-                if (!isNaN(preferences['rowsPerPage'])) { // Remove old preference
-                    preferences['rowsPerPage'] = {}
-                }
-                preferences['rowsPerPage'][prefKey] = rowsPref
-                localStorage.setItem('preferences', JSON.stringify(preferences))
-            }
-            else {
-                preferences = {
-                    'rowsPerPage': {
-                        [prefKey]: rowsPref
-                    }
-                }
-                localStorage.setItem('preferences', JSON.stringify(preferences))
-            }
-        }
     }
 
     // Sort the rows by property
@@ -403,7 +385,7 @@ export function ItemTable(props) {
 
     return (
         <div className={classes.root}>
-            <EnhancedTableToolbar numSelected={selected.length} title={title} handleFilterOpen={handleFilterOpen} handleDelete={handleDelete}/>
+            <EnhancedTableToolbar numSelected={selected.length} title={title} handleFilterOpen={handleFilterOpen} handleDelete={handleDelete} />
             <TableContainer>
                 <Table
                     className={classes.table}
@@ -431,10 +413,12 @@ export function ItemTable(props) {
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 let detailsPath = `/${path}/${row.key}`
+                                if (props.getDetailsPath !== undefined)
+                                    detailsPath = props.getDetailsPath(row)
+
                                 let deleteProps = [row.key]
                                 let editID = { [idString]: row.key }
                                 if ('jid' in row && 'aid' in row || props.includeJID) {
-                                    detailsPath = `/${path}/${row['jid']}/${row.key}`
                                     deleteProps = [row['jid'], row.key]
                                     editID = { [idString]: row.key, 'jid': row['jid'] }
                                 }
@@ -466,26 +450,29 @@ export function ItemTable(props) {
                                                     padding={cell.disablePadding ? 'none' : 'default'}
                                                     key={cell.id}
                                                 >
-                                                    { 
+                                                    <Typography variant="subtitle2">
+
+                                                    {
                                                         cell.contentFunction === undefined ?
-                                                            printFormat(row[cell['id']], cell.suffix, cell.isDate) 
-                                                        :
-                                                        <>
-                                                            {cell.contentFunction(row[cell['id']], row)}
-                                                        </>
+                                                            printFormat(row[cell['id']], cell.suffix, cell.isDate)
+                                                            :
+                                                            <>
+                                                                {cell.contentFunction(row[cell['id']], row)}
+                                                            </>
                                                     }
+                                                    </Typography>
                                                 </TableCell>
                                             )
                                         })}
                                         {
                                             !props.noEdit &&
-                                            <TableCell 
+                                            <TableCell
                                                 align="right"
                                                 onClick={(event) => {
                                                     // Stopping link and preserving action 
-                                                     event.preventDefault()
-                                                     event.stopPropagation()    
-                                                 }}
+                                                    event.preventDefault()
+                                                    event.stopPropagation()
+                                                }}
                                             >
                                                 <Tooltip title="Open Edit Modal">
                                                     <IconButton aria-label="edit" color="primary" onClick={() => { props.handleClickEdit(editID) }}>
@@ -496,13 +483,13 @@ export function ItemTable(props) {
                                         }
                                         {
                                             !props.noDelete &&
-                                            <TableCell 
+                                            <TableCell
                                                 align="right"
                                                 onClick={(event) => {
                                                     // Stopping link and preserving action 
                                                     event.preventDefault()
-                                                    event.stopPropagation()    
-                                                }}    
+                                                    event.stopPropagation()
+                                                }}
                                             >
                                                 <Tooltip title="Delete">
                                                     <IconButton aria-label="delete" color="primary" onClick={() => { props.handleDelete(deleteProps) }}>

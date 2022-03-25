@@ -41,7 +41,7 @@ export function Candidate() {
 
     return (
         <Page
-            title="Candidates"
+            breadCrumbs={["Candidates"]}
             loading={!candidates}
             error={error}
         >

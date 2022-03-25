@@ -71,7 +71,6 @@ export function MenuDrawer(props) {
                     {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
                 </IconButton>
             </div>
-            <Divider />
             <List>
                 <Link className={classes.link} to="/dashboard">
                     <ListItem button>
