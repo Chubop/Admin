@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Main() {
   const classes = useStyles();
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -121,9 +121,7 @@ function Main() {
           >
             <Menu />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Marlon Admin
-          </Typography>
+
         </Toolbar>
       </AppBar>
       <MenuDrawer

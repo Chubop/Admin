@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 // MUI
-import { FormControl, Grid, Input, MenuItem, Select } from '@material-ui/core'
+import { FormControl, Grid, Input, MenuItem, Select, Typography } from '@material-ui/core'
 
 // Custom Components
 import { Alerts, DashCard, } from '../../components/Dashboard'
@@ -13,6 +13,7 @@ import { resumeAIActions } from '../../redux/resumeAIStore/action';
 import { botLogActions } from '../../redux/BotLogs/action';
 import { ResumeAIConversionChart } from '../../components/General/Charts/ResumeAIConversionChart';
 import { AllBotLogsChart } from '../../components/General/Charts/AllBotLogsChart';
+import { theme } from '../../theme/muiTheme';
 
 export function DashBoard() {
     const [statsDays, setStatsDays] = useState(5000);
@@ -53,7 +54,13 @@ export function DashBoard() {
                         <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grid container spacing={2} style={{backgroundColor: 'white'}}>
+                        <Grid container spacing={4} style={{backgroundColor: 'white'}}>
+                            <Grid container item xs={12} justifyContent='flex-start'>
+                                <Typography variant="h2" style={{width: '50%', padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing}}>
+                                    👋 Welcome, Marco
+                                </Typography>
+
+                            </Grid>
                             <Grid item xs={3}>
                                 <DashCard title={"# Smart Apply Bots"}
                                     value={applicantStats.numBots}

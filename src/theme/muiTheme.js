@@ -104,6 +104,11 @@ export const theme = responsiveFontSizes(createTheme({
         },
     },
     overrides: {
+        MuiDrawer: {
+            paperAnchorDockedLeft: {
+                borderRight: 0
+            },
+        },
         MuiDivider: {
             root: {
                 backgroundColor: colors.components.divider,
@@ -322,7 +327,7 @@ export const theme = responsiveFontSizes(createTheme({
         MuiCard: {
             root: {
                 padding: '10px',
-                borderRadius: '16px',
+                borderRadius: '4px',
                 boxShadow: 'none'
             }
         },
@@ -352,7 +357,7 @@ export const theme = responsiveFontSizes(createTheme({
             colorPrimary: {
                 color:  colors.theme.text,
                 backgroundColor: colors.theme.white,
-                boxShadow: 'none'
+                boxShadow: '0px 4px 10px rgba(78, 89, 105, 0.06)'
             }
         }
     },
