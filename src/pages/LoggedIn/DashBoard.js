@@ -50,16 +50,17 @@ export function DashBoard() {
         >
             {!loading &&
                 <Grid container spacing={2}>
-                    <Grid container item xs={12} justifyContent='flex-end'>
-                        <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
-                    </Grid>
                     <Grid item xs={12}>
-                        <Grid container spacing={4} style={{backgroundColor: 'white'}}>
-                            <Grid container item xs={12} justifyContent='flex-start'>
-                                <Typography variant="h2" style={{width: '50%', padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing}}>
-                                    👋 Welcome, Marco
-                                </Typography>
-
+                        <Grid container spacing={3} style={{backgroundColor: 'white'}}>
+                            <Grid container item xs={12}>
+                                <Grid item xs={6}>
+                                    <Typography variant="h2" style={{paddingTop: theme.spacing(1)}}>
+                                        👋 Welcome, Marco
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={6} justifyContent='flex-end'>
+                                    <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
+                                </Grid>
                             </Grid>
                             <Grid item xs={3}>
                                 <DashCard title={"# Smart Apply Bots"}
