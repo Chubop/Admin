@@ -72,7 +72,7 @@ export const theme = responsiveFontSizes(createTheme({
             fontFamily: 'Roboto',
             fontSize: '14px',
             lineHeight: '1.35',
-            fontWeight: 400
+            fontWeight: 500
         },
         body2: {
             // Body bold, button text, labels, table titles, emphasis
