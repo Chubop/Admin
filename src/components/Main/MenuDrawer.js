@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerHeader: {
         display: 'flex',
+        fontWeight: 700,
         alignItems: 'center',
         padding: theme.spacing(0, 1),
         paddingLeft: theme.spacing(2),
@@ -53,8 +54,6 @@ const useStyles = makeStyles((theme) => ({
         ...theme.mixins.toolbar,
         justifyContent: 'flex-start',
     },
-
-
 }));
 
 export function MenuDrawer(props) {
