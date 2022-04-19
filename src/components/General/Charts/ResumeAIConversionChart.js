@@ -71,14 +71,15 @@ export function ChartTitle(props){
 export function ResumeAIConversionChart (props) {
 
     const [allVisitors, setAllVisitors] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-    const getAllVisitors = async(timePeriod) => {
+    const getVisitors = async(timePeriod) => {
         const API_ROOT = UseBackendRoot();
         var body = {
             "time_period": timePeriod ?? '7daysAgo'
         };
 
-        let url = `${API_ROOT}/get_all_visitors`;
+        let url = `${API_ROOT}/get_visitors`;
             
             var config = {
             method: 'POST',
@@ -103,7 +104,7 @@ export function ResumeAIConversionChart (props) {
 
     useEffect( () => {
         if(allVisitors === 0){
-            getAllVisitors('14daysAgo');
+            getVisitors('14daysAgo');
         }
     }, []);
 
@@ -143,6 +144,8 @@ export function ResumeAIConversionChart (props) {
     let visitedConversion = getConversionRate(allVisitors/usedAi);
     let usedAiConversion = getConversionRate(usedAi/clicked);
     let clickedConversion = getConversionRate(applied/clicked);
+    let appliedConversion = getConversionRate(1/applied);
+
 
     return (
         <Card ref={ref}>
@@ -168,7 +171,8 @@ export function ResumeAIConversionChart (props) {
                             title={"Step 4"}
                             subtitle={"Applied Recommended Roles"}/>
                     </Grid>
-                    <VictoryChart 
+                    <VictoryChart
+                    disableInlineStyles
                     containerComponent={<VictoryContainer style={{height: 'auto', border: 0}}/>}
                     width={width} domainPadding={{ x: 0 }} padding={{ top: 0, bottom: 0, right: 0, left: 0 }}>
                         <VictoryArea data={[{x: 'Visited', y: allVisitors}, data[1]]}
@@ -202,7 +206,7 @@ export function ResumeAIConversionChart (props) {
 
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox bottom
-                        subtitle="5.8%"/>
+                        subtitle={appliedConversion.toString() + '%'}/>
                     </Grid>
 
                 </Grid>
@@ -222,7 +226,7 @@ export function ResumeAIConversionChart (props) {
                 </Grid>
             </CardContent>
             
-            <button onClick={()=>getAllVisitors("30daysAgo")}> click me </button>
+            {/* <button onClick={()=>getVisitors("30daysAgo")}> click me </button> */}
 
         </Card>
     )

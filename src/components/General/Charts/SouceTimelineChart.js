@@ -144,7 +144,7 @@ export function SourceTimelineChart(props) {
                             />
                         }
                     >
-                        {/* {data.map((source) => { return <VictoryBar barWidth={10} data={source} /> })} */}
+                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} /> })}
                     </VictoryStack>
                     <VictoryAxis dependentAxis />
                     <VictoryAxis
