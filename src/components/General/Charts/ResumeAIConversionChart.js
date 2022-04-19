@@ -141,11 +141,11 @@ export function ResumeAIConversionChart (props) {
     let clicked = data[2].y;
     let applied = data[3].y;
 
-    let visitedConversion = getConversionRate(allVisitors/usedAi);
-    let usedAiConversion = getConversionRate(usedAi/clicked);
+    let visitedConversion = getConversionRate(usedAi/allVisitors);
+    let usedAiConversion = getConversionRate(clicked/usedAi);
     let clickedConversion = getConversionRate(applied/clicked);
+    // not sure about appliedConversion
     let appliedConversion = getConversionRate(1/applied);
-
 
     return (
         <Card ref={ref}>
