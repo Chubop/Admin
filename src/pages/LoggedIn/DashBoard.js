@@ -55,7 +55,7 @@ export function DashBoard() {
                             <Grid container item xs={12}>
                                 <Grid item xs={6}>
                                     <Typography variant="h2" style={{paddingTop: theme.spacing(1)}}>
-                                        👋 Welcome, Marco
+                                        👋 Welcome
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={6} justifyContent='flex-end'>
