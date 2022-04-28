@@ -113,6 +113,8 @@ export function SourceTimelineChart(props) {
             <CardContent>
                 <VictoryChart height={chartHeight} width={width} >
                     <VictoryLabel text={title} y={15} x={10} style={{ fontSize: '20px', fontWeight: 600 }} />
+                    {/* the function below creates the equally separated gray horizontal lines in the timeline chart by taking
+                    the max value on the y axis and adding a gray line on each 5th division  */}
                     {[...Array(maxDateValue + 1).keys()].map( (v) => {
                         if(v % 5 === 0 && v !== 0){
                             return(
