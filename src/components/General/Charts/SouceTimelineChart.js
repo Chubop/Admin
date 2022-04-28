@@ -118,7 +118,7 @@ export function SourceTimelineChart(props) {
                     {[...Array(maxDateValue + 1).keys()].map( (v) => {
                         if(v % 5 === 0 && v !== 0){
                             return(
-                            <VictoryLine y={() => v} style={{data: { stroke: "#F2F3F5" }}}/>
+                            <VictoryLine y={() => v} style={{data: { stroke: colors.greys.lightGrey }}} key={v}/>
                             )
                         }
                     })}
@@ -146,7 +146,7 @@ export function SourceTimelineChart(props) {
                             />
                         }
                     >
-                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} /> })}
+                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source}/> })}
                     </VictoryStack>
                     <VictoryAxis dependentAxis />
                     <VictoryAxis
