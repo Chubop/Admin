@@ -7,7 +7,7 @@ import ConversionBox from './ConversionBox';
 import { theme } from '../../../theme/muiTheme';
 
 import axios from 'axios';
-import { UseBackendRoot } from '../../../settings/settings';
+import { UseBackendRoot, current_env } from '../../../settings/settings';
 
 const chartHeight = 400
 
@@ -86,11 +86,15 @@ export function ResumeAIConversionChart (props) {
     const ref = useRef(null)
     const [width, setWidth] = useState(window.innerWidth)
 
+
     useEffect( () => {
-        if(allVisitors === 0){
-            getVisitors('14daysAgo');
+        if(current_env !== 'production'){
+            if(allVisitors === 0){
+                getVisitors('14daysAgo');
+            }
         }
     }, []);
+    
 
     useEffect(() => {
         window.addEventListener('resize', updateWidth)
@@ -98,7 +102,10 @@ export function ResumeAIConversionChart (props) {
             window.removeEventListener('resize', updateWidth)
         }
     }, [])
+
+
     useEffect(() => { updateWidth() }, [ref])
+
 
     const getVisitors = async(timePeriod) => {
         const API_ROOT = UseBackendRoot();
@@ -114,25 +121,10 @@ export function ResumeAIConversionChart (props) {
             // No need for content type since axios will automatically determine that it's json, though you want you can still specify it here
             "Authorization": `Bearer ${accessToken}`
             },
+        }).then(function (response) {
+            setAllVisitors(response.data.visitors);
+            return response.data.visitors;
         });
-        return response.data
-        // var config = {
-        //     method: 'POST',
-        //     url: url,
-        //     headers: { 
-        //         'Content-Type': 'application/json'
-        //     },
-        //     data: body
-        // };
-        
-        // axios(config)
-        // .then(function (response) {
-        //     setAllVisitors(response.data.visitors)
-        // })
-        // .catch(function (error) {
-        // });
-              
-        // return data;
     }
 
     const updateWidth = () => {
@@ -153,11 +145,11 @@ export function ResumeAIConversionChart (props) {
     let clicked = data[2].y;
     let applied = data[3].y;
 
-    let visitedConversion = getConversionRate(usedAi/allVisitors);
-    let usedAiConversion = getConversionRate(clicked/usedAi);
-    let clickedConversion = getConversionRate(applied/clicked);
+    let visitedConversion = getConversionRate(1/0);
+    let usedAiConversion = getConversionRate(1/0);
+    let clickedConversion = getConversionRate(1/0);
     // not sure about appliedConversion
-    let appliedConversion = getConversionRate(1/applied);
+    let appliedConversion = getConversionRate(1/0);
 
     return (
         <Card ref={ref}>
