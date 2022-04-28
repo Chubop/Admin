@@ -1,8 +1,6 @@
 import React from 'react'
 import { 
-    Divider, 
     Drawer, 
-    IconButton, 
     List, 
     ListItem, 
     ListItemIcon, 
@@ -12,14 +10,9 @@ import {
     Typography
 } from "@material-ui/core";
 import { 
-    ChevronLeft, 
-    ChevronRight, 
     Dashboard, 
     ExitToApp, 
-    Face, 
-    People, 
     Settings, 
-    Work,
 } from "@material-ui/icons";
 import Briefcase from "../../assets/icons/Briefcase.svg";
 import Document from "../../assets/icons/Document.svg";
