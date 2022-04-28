@@ -52,7 +52,7 @@ export default function ConversionBox (props) {
           <img style={{width: '2vw'}} src={UpCircleArrow}/>
         </div>
         <Typography className={classes.bottomTitle}>
-          CONVERSION
+          Conversion
         </Typography>
         <Typography className={classes.bottomSubtitle}>
           {props.subtitle}
