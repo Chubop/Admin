@@ -20,15 +20,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-// getConversionRate takes a decimal and rounds it to the nearest first decimal point and multiplies it by 100
-// i.e. 0.7647 => 76.5%
+/*
+getConversionRate takes a decimal and rounds it to the nearest first decimal point and multiplies it by 100
+i.e. 0.7647 => 76.5%
+*/
 const getConversionRate = (float) => {
     return ((float) * 100).toFixed(1);
 }
 
 
-// numToK converts a string to "K" format, K as in kilo.
-// i.e. 3400 => 3.4K
+/*
+numToK converts a string to "K" format, K as in kilo.
+i.e. 3400 => 3.4K
+*/ 
 const numToK = (num) => {
     let x = (num / 1000).toFixed(1);
     if(num < 1000){
@@ -42,7 +46,11 @@ const numToK = (num) => {
     }
 };
 
-
+/*
+getChartTitleSubtitle retrieves the small sub-title inside of the 
+ConversionBox by taking the previous number, dividing it by the new number,
+and multiplying it by 1000.
+*/
 const getChartTitleSubtitle = (total, sub) => {
     let percentage = parseFloat(((sub/total) * 1000).toFixed(1)).toLocaleString();
     let ofNumber = numToK(total);
@@ -73,34 +81,10 @@ export function ResumeAIConversionChart (props) {
     const [allVisitors, setAllVisitors] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    const getVisitors = async(timePeriod) => {
-        const API_ROOT = UseBackendRoot();
-        var body = {
-            "time_period": timePeriod ?? '7daysAgo'
-        };
-
-        let url = `${API_ROOT}/get_visitors`;
-            
-            var config = {
-            method: 'POST',
-            url: url,
-            headers: { 
-                'Content-Type': 'application/json'
-            },
-            data: body
-            };
-            
-            axios(config)
-            .then(function (response) {
-            console.log(JSON.stringify(response.data));
-            setAllVisitors(response.data.visitors)
-            })
-            .catch(function (error) {
-            console.log(error);
-            });
-              
-        return data;
-    }
+    const { data } = props
+    const classes = useStyles();
+    const ref = useRef(null)
+    const [width, setWidth] = useState(window.innerWidth)
 
     useEffect( () => {
         if(allVisitors === 0){
@@ -108,27 +92,55 @@ export function ResumeAIConversionChart (props) {
         }
     }, []);
 
-
-    const { data } = props
-
-    const classes = useStyles();
-
-    const ref = useRef(null)
-    useEffect(() => { updateWidth() }, [ref])
-
-    const [width, setWidth] = useState(window.innerWidth)
-    const updateWidth = () => {
-        setWidth(ref.current ? ref.current.offsetWidth : window.innerWidth)
-        if (!ref.current)
-            setTimeout(() => updateWidth(), 50)
-    }
-
     useEffect(() => {
         window.addEventListener('resize', updateWidth)
         return () => {
             window.removeEventListener('resize', updateWidth)
         }
     }, [])
+    useEffect(() => { updateWidth() }, [ref])
+
+    const getVisitors = async(timePeriod) => {
+        const API_ROOT = UseBackendRoot();
+        var body = {
+            "time_period": timePeriod ?? '7daysAgo'
+        };
+
+        let url = `${API_ROOT}/get_visitors`;
+
+        let accessToken = JSON.parse(localStorage.getItem('accessToken')) // You are missing access token to the api call, otherwise it will fail since I required it to be @jwt_required on the backend
+        let response = await axios.post( url, body, {            
+            headers: {
+            // No need for content type since axios will automatically determine that it's json, though you want you can still specify it here
+            "Authorization": `Bearer ${accessToken}`
+            },
+        });
+        return response.data
+        // var config = {
+        //     method: 'POST',
+        //     url: url,
+        //     headers: { 
+        //         'Content-Type': 'application/json'
+        //     },
+        //     data: body
+        // };
+        
+        // axios(config)
+        // .then(function (response) {
+        //     setAllVisitors(response.data.visitors)
+        // })
+        // .catch(function (error) {
+        // });
+              
+        // return data;
+    }
+
+    const updateWidth = () => {
+        setWidth(ref.current ? ref.current.offsetWidth : window.innerWidth)
+        if (!ref.current)
+            setTimeout(() => updateWidth(), 50)
+    }
+
 
     if (!data) {
         return <Card style={{ height: chartHeight, width: '100%' }} ref={ref} />
@@ -169,7 +181,7 @@ export function ResumeAIConversionChart (props) {
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox top
                             title={"Step 4"}
-                            subtitle={"Applied Recommended Roles"}/>
+                            subtitle={"Applied to Recommended Roles"}/>
                     </Grid>
                     <VictoryChart
                     disableInlineStyles
@@ -225,9 +237,6 @@ export function ResumeAIConversionChart (props) {
                     </Grid>
                 </Grid>
             </CardContent>
-            
-            {/* <button onClick={()=>getVisitors("30daysAgo")}> click me </button> */}
-
         </Card>
     )
 }
