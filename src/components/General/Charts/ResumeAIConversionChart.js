@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Card, CardContent, Grid, makeStyles } from '@material-ui/core';
 
-import { VictoryArea, VictoryChart, VictoryAxis, VictoryLabel, VictoryContainer } from 'victory';
+import { VictoryArea, VictoryChart, VictoryAxis, VictoryContainer } from 'victory';
 import { colors } from '../../../theme/colors';
 import ConversionBox from './ConversionBox';
 import { theme } from '../../../theme/muiTheme';
@@ -41,6 +41,9 @@ const numToK = (num) => {
     else if(num % 10 === 0){
         return Math.round(x).toString() + 'K';
     }
+    else if(isNaN(x)){
+        return '0'
+    }
     else{
         return x.toString() + 'K'
     }
@@ -54,6 +57,9 @@ and multiplying it by 1000.
 const getChartTitleSubtitle = (total, sub) => {
     let percentage = parseFloat(((sub/total) * 1000).toFixed(1)).toLocaleString();
     let ofNumber = numToK(total);
+    
+    if(isNaN(percentage))
+        percentage = 0;
     return percentage + '% OF ' + ofNumber;
 }
 
@@ -121,10 +127,9 @@ export function ResumeAIConversionChart (props) {
             // No need for content type since axios will automatically determine that it's json, though you want you can still specify it here
             "Authorization": `Bearer ${accessToken}`
             },
-        }).then(function (response) {
-            setAllVisitors(response.data.visitors);
-            return response.data.visitors;
-        });
+        })
+        setAllVisitors(response.data.visitors);
+        return response.data.visitors;
     }
 
     const updateWidth = () => {
@@ -190,36 +195,49 @@ export function ResumeAIConversionChart (props) {
                         <VictoryAxis
                             style={{
                                 grid: { stroke: '#E5E6EB', strokeWidth: 1.5 },
+                                axis: { stroke: 'transparent' }
                             }}
                         />
                     </VictoryChart>
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox bottom
-                        subtitle={visitedConversion.toString() + '%'}/>
+                        subtitle={
+                            !isFinite(visitedConversion) ? '...' : 
+                            visitedConversion.toString() + '%'
+                        }/>
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox bottom
-                        subtitle={usedAiConversion.toString() + '%'}/>
+                        subtitle={
+                            !isFinite(usedAiConversion) ? '...' : 
+                            usedAiConversion.toString() + '%'
+                        }/>
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox bottom
-                        subtitle={clickedConversion.toString() + '%'}/>
+                        subtitle={
+                            !isFinite(clickedConversion) ? '...' : 
+                            clickedConversion.toString() + '%'
+                        }/>                    
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
                         <ConversionBox bottom
-                        subtitle={appliedConversion.toString() + '%'}/>
+                        subtitle={
+                            !isFinite(appliedConversion) ? '...' : 
+                            appliedConversion.toString() + '%'
+                        }/>
                     </Grid>
 
                 </Grid>
                 <Grid container>
                     <Grid item xs={3}>
-                        <ChartTitle title={numToK(allVisitors)}/>
+                        <ChartTitle title={numToK(allVisitors) || 0}/>
                     </Grid>
                     <Grid item xs={3}>
-                        <ChartTitle title={numToK(usedAi)} subtitle={getChartTitleSubtitle(allVisitors, usedAi)}/>
+                        <ChartTitle title={numToK(usedAi) || 0} subtitle={getChartTitleSubtitle(allVisitors, usedAi)}/>
                     </Grid>
                     <Grid item xs={3}>
                         <ChartTitle title={numToK(clicked)} subtitle={getChartTitleSubtitle(usedAi, clicked)}/>
