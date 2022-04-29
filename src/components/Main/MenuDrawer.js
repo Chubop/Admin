@@ -7,9 +7,12 @@ import {
     ListItemText, 
     makeStyles, 
     useTheme,
-    Typography
+    Typography,
+    IconButton,
 } from "@material-ui/core";
 import { 
+    ChevronLeft,
+    ChevronRight,
     Dashboard, 
     ExitToApp, 
     Settings, 
@@ -21,6 +24,7 @@ import TwoPeopleCircle from "../../assets/icons/TwoPeopleCircle.svg";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../redux/authentication";
 import { Link, } from 'react-router-dom'
+import { colors } from '../../theme/colors';
 
 const drawerWidth = 240;
 const title = "Marlon Admin";
@@ -67,10 +71,10 @@ export function MenuDrawer(props) {
             }}
         >
             <Typography className={classes.drawerHeader} variant="h6">
-                {/* <IconButton onClick={handleClose}>
-                    {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
-                </IconButton> */}
                 {title}
+                <IconButton onClick={handleClose}>
+                    {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+                </IconButton>
             </Typography>
             <List>
                 <Link className={classes.link} to="/dashboard">
@@ -81,7 +85,7 @@ export function MenuDrawer(props) {
                 </Link>
                 <Link className={classes.link} to="/job">
                     <ListItem button href="/job">
-                        <ListItemIcon><img src={Briefcase} style={{height: '1.5rem', width: '1.5rem'}}/></ListItemIcon>
+                        <ListItemIcon><img src={Briefcase} style={{height: '1.5rem', width: '1.5rem', color: colors.theme.text }}/></ListItemIcon>
                         <ListItemText primary={"Jobs"} />
                     </ListItem>
                 </Link>
