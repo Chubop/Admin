@@ -195,7 +195,7 @@ export function ResumeAIConversionChart (props) {
                         <VictoryAxis
                             style={{
                                 grid: { stroke: '#E5E6EB', strokeWidth: 1.5 },
-                                axis: { stroke: 'transparent' }
+                                axis: { stroke: 'transparent'  }
                             }}
                         />
                     </VictoryChart>
