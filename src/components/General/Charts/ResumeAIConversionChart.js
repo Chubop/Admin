@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, Grid, makeStyles } from '@material-ui/core';
+import { Card, CardContent, CircularProgress, Grid, makeStyles } from '@material-ui/core';
 
 import { VictoryArea, VictoryChart, VictoryAxis, VictoryContainer } from 'victory';
 import { colors } from '../../../theme/colors';
@@ -65,17 +65,33 @@ const getChartTitleSubtitle = (total, sub) => {
 
 
 export function ChartTitle(props){
-    return(
-        <div style={{position: 'absolute', zIndex: 3, marginTop: -theme.spacing(40), paddingLeft: 16, fontSize: 16}}>
-           <div style={{fontSize: 36, mixBlendMode: 'difference'}}>
-               {props.title}
-           </div>
-           <div style={{color: colors.greys.mediumGrey}}>
-               {props.subtitle}
-           </div>
-        </div>
-    )
+    if(!props.loading){
+        return(
+            <div style={{position: 'absolute', zIndex: 3, marginTop: -theme.spacing(40), paddingLeft: 16, fontSize: 16}}>
+               <div style={{fontSize: 36, mixBlendMode: 'difference'}}>
+                   {props.title}
+               </div>
+               <div style={{color: colors.greys.mediumGrey}}>
+                   {props.subtitle}
+               </div>
+            </div>
+        )
+    }
+    else{
+        return(
+            <>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <div style={{ zIndex: 3, marginTop: -theme.spacing(40), textAlign: 'center'}}>
+                            <CircularProgress/>
+                        </div>
+                    </Grid>
+                </Grid>
+            </>
+        )
+    }
 }
+
 
 /*
     This is a chart that shows conversion from site visits, to resume ai use, to
@@ -85,12 +101,14 @@ export function ChartTitle(props){
 export function ResumeAIConversionChart (props) {
 
     const [allVisitors, setAllVisitors] = useState(0);
-    const [loading, setLoading] = useState(true);
 
     const { data } = props
     const classes = useStyles();
     const ref = useRef(null)
     const [width, setWidth] = useState(window.innerWidth)
+    const [visitStatLoading, setVisitStatLoading] = useState(true);
+    const [conversionStatLoading, setConversionStatLoading] = useState(true);
+    const [x, setX] = useState(data);
 
 
     useEffect( () => {
@@ -100,6 +118,21 @@ export function ResumeAIConversionChart (props) {
             }
         }
     }, []);
+
+
+    useEffect( () => {
+       setX(data);            
+       if(x[1].y !== undefined){
+            setConversionStatLoading(false);
+       }
+    }, [data]);
+
+
+    useEffect( () => {
+        if(allVisitors !== 0){
+            setVisitStatLoading(false);
+        }
+    }, [allVisitors]);
     
 
     useEffect(() => {
@@ -200,7 +233,7 @@ export function ResumeAIConversionChart (props) {
                         />
                     </VictoryChart>
                     <Grid item className={classes.thirdTitle} xs={3}>
-                        <ConversionBox bottom
+                        <ConversionBox bottom loading={visitStatLoading}
                         subtitle={
                             !isFinite(visitedConversion) ? '...' : 
                             visitedConversion.toString() + '%'
@@ -208,7 +241,7 @@ export function ResumeAIConversionChart (props) {
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
-                        <ConversionBox bottom
+                        <ConversionBox bottom loading={conversionStatLoading}
                         subtitle={
                             !isFinite(usedAiConversion) ? '...' : 
                             usedAiConversion.toString() + '%'
@@ -216,7 +249,7 @@ export function ResumeAIConversionChart (props) {
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
-                        <ConversionBox bottom
+                        <ConversionBox bottom loading={conversionStatLoading}
                         subtitle={
                             !isFinite(clickedConversion) ? '...' : 
                             clickedConversion.toString() + '%'
@@ -224,7 +257,7 @@ export function ResumeAIConversionChart (props) {
                     </Grid>
 
                     <Grid item className={classes.thirdTitle} xs={3}>
-                        <ConversionBox bottom
+                        <ConversionBox bottom loading={conversionStatLoading}
                         subtitle={
                             !isFinite(appliedConversion) ? '...' : 
                             appliedConversion.toString() + '%'
@@ -234,17 +267,21 @@ export function ResumeAIConversionChart (props) {
                 </Grid>
                 <Grid container>
                     <Grid item xs={3}>
-                        <ChartTitle title={numToK(allVisitors) || 0}/>
+                        <ChartTitle title={numToK(allVisitors) || 0} loading={visitStatLoading}/>
                     </Grid>
                     <Grid item xs={3}>
-                        <ChartTitle title={numToK(usedAi) || 0} subtitle={getChartTitleSubtitle(allVisitors, usedAi)}/>
+                        <ChartTitle title={numToK(usedAi) || 0} subtitle={getChartTitleSubtitle(allVisitors, usedAi)} loading={conversionStatLoading}/>
                     </Grid>
                     <Grid item xs={3}>
-                        <ChartTitle title={numToK(clicked)} subtitle={getChartTitleSubtitle(usedAi, clicked)}/>
+                        {/* <CircularProgress style={{position: 'relative'}}/> */}
+                        <ChartTitle title={numToK(clicked)} subtitle={getChartTitleSubtitle(usedAi, clicked)} loading={conversionStatLoading}/>
                     </Grid>
                     <Grid item xs={3}>
+                        <ChartTitle title={numToK(applied)} subtitle={getChartTitleSubtitle(clicked, applied)} loading={conversionStatLoading}/>
+                    </Grid>
+                    {/* <Grid item xs={3}>
                         <ChartTitle title={numToK(applied)} subtitle={getChartTitleSubtitle(clicked, applied)}/>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </CardContent>
         </Card>
