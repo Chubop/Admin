@@ -47,16 +47,18 @@ export default function ConversionBox (props) {
 
   else if(props.bottom){
     return(
-      <div style={{padding: 8}}>
-        <div style={{textAlign: 'center', marginTop: '-1.5vw', zIndex: 2, position: 'relative'}}>
-          <img style={{width: '2vw'}} src={UpCircleArrow}/>
+      <div style={{padding: 8, height: 85}}>
+        <div style={{display: props.loading ? 'none' : 'inline'}}>
+          <div style={{textAlign: 'center', marginTop: '-1.5vw', zIndex: 2, position: 'relative'}}>
+            <img style={{width: '2vw'}} src={UpCircleArrow}/>
+          </div>
+          <Typography className={classes.bottomTitle}>
+            Conversion
+          </Typography>
+          <Typography className={classes.bottomSubtitle}>
+            {props.subtitle}
+          </Typography>
         </div>
-        <Typography className={classes.bottomTitle}>
-          Conversion
-        </Typography>
-        <Typography className={classes.bottomSubtitle}>
-          {props.subtitle}
-        </Typography>
       </div>
     )
   }
