@@ -48,7 +48,7 @@ export default function ConversionBox (props) {
   else if(props.bottom){
     return(
       <div style={{padding: 8}}>
-        <div style={{textAlign: 'center', marginTop: -theme.spacing(3.5), zIndex: 2, position: 'relative'}}>
+        <div style={{textAlign: 'center', marginTop: '-1.5vw', zIndex: 2, position: 'relative'}}>
           <img style={{width: '2vw'}} src={UpCircleArrow}/>
         </div>
         <Typography className={classes.bottomTitle}>
