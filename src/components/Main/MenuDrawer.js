@@ -1,30 +1,33 @@
 import React from 'react'
 import { 
-    Divider, 
     Drawer, 
-    IconButton, 
     List, 
     ListItem, 
     ListItemIcon, 
     ListItemText, 
     makeStyles, 
-    useTheme
+    useTheme,
+    Typography,
+    IconButton,
 } from "@material-ui/core";
 import { 
-    ChevronLeft, 
-    ChevronRight, 
+    ChevronLeft,
+    ChevronRight,
     Dashboard, 
     ExitToApp, 
-    Face, 
-    People, 
     Settings, 
-    Work,
 } from "@material-ui/icons";
+import Briefcase from "../../assets/icons/Briefcase.svg";
+import Document from "../../assets/icons/Document.svg";
+import ProfileShield from "../../assets/icons/ProfileShield.svg";
+import TwoPeopleCircle from "../../assets/icons/TwoPeopleCircle.svg";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../redux/authentication";
 import { Link, } from 'react-router-dom'
+import { colors } from '../../theme/colors';
 
 const drawerWidth = 240;
+const title = "Marlon Admin";
 
 const useStyles = makeStyles((theme) => ({
     link: {
@@ -40,14 +43,14 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerHeader: {
         display: 'flex',
+        fontWeight: 700,
         alignItems: 'center',
         padding: theme.spacing(0, 1),
+        paddingLeft: theme.spacing(2),
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
     },
-
-
 }));
 
 export function MenuDrawer(props) {
@@ -58,6 +61,7 @@ export function MenuDrawer(props) {
 
     return (
         <Drawer
+            borderColor="white"
             className={classes.drawer}
             variant="persistent"
             anchor="left"
@@ -66,11 +70,12 @@ export function MenuDrawer(props) {
                 paper: classes.drawerPaper,
             }}
         >
-            <div className={classes.drawerHeader}>
+            <Typography className={classes.drawerHeader} variant="h6">
+                {title}
                 <IconButton onClick={handleClose}>
                     {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
                 </IconButton>
-            </div>
+            </Typography>
             <List>
                 <Link className={classes.link} to="/dashboard">
                     <ListItem button>
@@ -80,28 +85,28 @@ export function MenuDrawer(props) {
                 </Link>
                 <Link className={classes.link} to="/job">
                     <ListItem button href="/job">
-                        <ListItemIcon><Work /></ListItemIcon>
+                        <ListItemIcon><img src={Briefcase} style={{height: '1.5rem', width: '1.5rem', color: colors.theme.text }}/></ListItemIcon>
                         <ListItemText primary={"Jobs"} />
                     </ListItem>
                 </Link>
 
                 <Link className={classes.link} to="/HM">
                     <ListItem button>
-                        <ListItemIcon><Face /></ListItemIcon>
-                        <ListItemText primary={"Hiring Managers"} />
+                        <ListItemIcon><img src={ProfileShield} style={{height: '1.5rem', width: '1.5rem'}}/></ListItemIcon>
+                        <ListItemText primary={"Profile"} />
                     </ListItem>
                 </Link>
 
                 <Link className={classes.link} to="/applications">
                     <ListItem button>
-                        <ListItemIcon><People /></ListItemIcon>
+                        <ListItemIcon><img src={Document} style={{height: '1.5rem', width: '1.5rem'}}/></ListItemIcon>
                         <ListItemText primary={"Applications"} />
                     </ListItem>
                 </Link>
 
                 <Link className={classes.link} to="/candidate">
                     <ListItem button>
-                        <ListItemIcon><People /></ListItemIcon>
+                        <ListItemIcon><img src={TwoPeopleCircle} style={{height: '1.5rem', width: '1.5rem'}}/></ListItemIcon>
                         <ListItemText primary={"Candidates"} />
                     </ListItem>
                 </Link>

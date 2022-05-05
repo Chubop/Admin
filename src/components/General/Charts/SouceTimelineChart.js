@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, makeStyles } from '@material-ui/core';
 
 // Victory Imports
-import { VictoryAxis, VictoryChart, VictoryStack, VictoryBar, VictoryLabel, VictoryTooltip, VictoryLegend } from 'victory';
+import { VictoryAxis, VictoryChart, VictoryStack, VictoryBar, VictoryLabel, VictoryTooltip, VictoryLegend, VictoryLine } from 'victory';
 import { colors } from '../../../theme/colors';
 
 const chartHeight = 400
@@ -17,6 +17,7 @@ export function SourceTimelineChart(props) {
     const { log } = props;
     const [data, setData] = useState();
     const [datesData, setDatesData] = useState({});
+    const [maxDateValue, setMaxDateValue] = useState(0);
 
     const sources = ['bot', 'form', 'match', 'linkedin']
 
@@ -68,16 +69,18 @@ export function SourceTimelineChart(props) {
 
             // Go through all dates and add data in correct format
             let newData2 = {}
+            let values = []
             for (let date in dates) {
                 let day = []
                 for (let source in dates[date]) {
                     let num = dates[date][source]
-
+                    values.push(num);
                     day.push({ x: source, y: num })
                 }
                 newData2[date] = day
             }
             setDatesData(newData2)
+            setMaxDateValue(Math.max(...values))
             updateWidth()
         }
     }, [log])
@@ -110,6 +113,15 @@ export function SourceTimelineChart(props) {
             <CardContent>
                 <VictoryChart height={chartHeight} width={width} >
                     <VictoryLabel text={title} y={15} x={10} style={{ fontSize: '20px', fontWeight: 600 }} />
+                    {/* the function below creates the equally separated gray horizontal lines in the timeline chart by taking
+                    the max value on the y axis and adding a gray line on each 5th division  */}
+                    {[...Array(maxDateValue + 1).keys()].map( (v) => {
+                        if(v % 5 === 0 && v !== 0){
+                            return(
+                            <VictoryLine y={() => v} style={{data: { stroke: colors.greys.lightGrey }}} key={v}/>
+                            )
+                        }
+                    })}
                     <VictoryStack
                         colorScale={colorScale}
                         domainPadding={10}
@@ -128,13 +140,13 @@ export function SourceTimelineChart(props) {
 
                                 labelComponent={<VictoryLabel
                                     textAnchor='start'
-                                    style={{ fontSize: 20, }}
+                                    style={{ fontSize: 20 }}
                                     textComponent={<CustomText colors={colorScaleReverse} />}
                                 />}
                             />
                         }
                     >
-                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} /> })}
+                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source}/> })}
                     </VictoryStack>
                     <VictoryAxis dependentAxis />
                     <VictoryAxis
@@ -219,18 +231,19 @@ function CustomFlyout(props) {
 
     return (
         <svg height={height} width={width} x={x} y={y} >
-            {/* <defs>
+            <defs>
                 <filter id="blur" x="0" y="0">
                     <feGaussianBlur
                         in="SourceGraphic"
-                        stdDeviation="10" />
+                        stdDeviation="50" />
                 </filter>
-            </defs> */}
+            </defs>
+
             <rect height={height} width={width}
                 fill="#EFEFFC"
                 // fill="lightgrey"
-                fillOpacity={0.8}
-                // filter="url(#blur)"
+                fillOpacity={1}
+                filter="url(#blur)"
                 rx="15"
             />
         </svg>

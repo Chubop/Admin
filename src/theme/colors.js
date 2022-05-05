@@ -1,11 +1,15 @@
 export const colors = {
     theme: {
+        lightBlue: "#81E2FF",
+        babyBlue: "#60D0FF",
+        blue: "#06B4FF",
+        mediumBlue: "#00B2FF",
+        darkBlue: "#246EFF",
+        
         lightPurple: "#B789F0",
         purple: "#A974EA",
         darkPurple: "#8D4EDA",
-        darkBlue: "#246EFF",
-        mediumBlue: "#00B2FF",
-        lightBlue: "#81E2FF",
+
         text: "#353B3C",
         background: "#FCFCFC",
         white: "#FFFFFF",

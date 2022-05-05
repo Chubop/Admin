@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 // MUI
-import { FormControl, Grid, Input, MenuItem, Select } from '@material-ui/core'
+import { FormControl, Grid, Input, MenuItem, Select, Typography } from '@material-ui/core'
 
 // Custom Components
 import { Alerts, DashCard, } from '../../components/Dashboard'
@@ -13,6 +13,7 @@ import { resumeAIActions } from '../../redux/resumeAIStore/action';
 import { botLogActions } from '../../redux/BotLogs/action';
 import { ResumeAIConversionChart } from '../../components/General/Charts/ResumeAIConversionChart';
 import { AllBotLogsChart } from '../../components/General/Charts/AllBotLogsChart';
+import { theme } from '../../theme/muiTheme';
 
 export function DashBoard() {
     const [statsDays, setStatsDays] = useState(5000);
@@ -49,11 +50,18 @@ export function DashBoard() {
         >
             {!loading &&
                 <Grid container spacing={2}>
-                    <Grid container item xs={12} justifyContent='flex-end'>
-                        <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
-                    </Grid>
                     <Grid item xs={12}>
-                        <Grid container spacing={2} style={{backgroundColor: 'white'}}>
+                        <Grid container spacing={3} style={{backgroundColor: 'white'}}>
+                            <Grid container item xs={12}>
+                                <Grid item xs={6}>
+                                    <Typography variant="h2" style={{paddingTop: theme.spacing(1)}}>
+                                        👋 Welcome
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={6} justifyContent='flex-end'>
+                                    <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
+                                </Grid>
+                            </Grid>
                             <Grid item xs={3}>
                                 <DashCard title={"# Smart Apply Bots"}
                                     value={applicantStats.numBots}
