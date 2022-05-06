@@ -93,7 +93,7 @@ export function JobDetails(props) {
                         <ScoreCharts job={job} stats={stats} />
                     </Grid>
                     <Grid item xs={12}>
-                        <QuestionsCard questions={job.question} jid={job.jid} stats={stats} />
+                        <QuestionsCard questions={job.questions} jid={job.jid} stats={stats} />
                     </Grid>
                     {job.applicants && job.applicants.length > 0 ?
                         <Grid item xs={12}>
