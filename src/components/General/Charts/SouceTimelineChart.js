@@ -19,7 +19,7 @@ export function SourceTimelineChart(props) {
     const [datesData, setDatesData] = useState({});
     const [maxDateValue, setMaxDateValue] = useState(0);
 
-    const sources = ['bot', 'form', 'match', 'linkedin', 'indeed']
+    const sources = ['bot', 'form', 'match', 'linkedin', 'Indeed']
 
     const title = "Overall Applications by Source"
 
@@ -37,7 +37,7 @@ export function SourceTimelineChart(props) {
                 form: 0,
                 match: 0,
                 linkedin: 0,
-                indeed: 0
+                Indeed: 0
             }
             do {
                 current = current.addDays(1)
@@ -46,7 +46,7 @@ export function SourceTimelineChart(props) {
                     form: 0,
                     match: 0,
                     linkedin: 0,
-                    indeed: 0
+                    Indeed: 0
                 }
             } while (current.toLocaleDateString() !== now.toLocaleDateString())
 
@@ -148,7 +148,7 @@ export function SourceTimelineChart(props) {
                             />
                         }
                     >
-                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source}/> })}
+                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source} /> })}
                     </VictoryStack>
                     <VictoryAxis dependentAxis />
                     <VictoryAxis
@@ -186,10 +186,10 @@ function parseSource(source) {
             return "Smart Matched"
         case "linkedin":
             return "LinkedIn"
-        case "indeed":
+        case "Indeed":
             return "Indeed"
         default:
-            return ""
+            return source
     }
 }
 
@@ -201,7 +201,7 @@ function CustomText(props) {
             {children.map((child, index) => {
                 {
                     let y = index * 35 + 5
-                    let x = 0.96*props.x - 58
+                    let x = 0.96 * props.x - 58
                     let x2 = x - 24
 
                     return (
