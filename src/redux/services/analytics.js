@@ -133,17 +133,11 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
         }
 
         // For acceptance rate
-        if (applicant.status === "Sent to Recruiter")
+        if (applicant.status === "Sent to Recruiter" || applicant.stage === "Recruiter Screen")
             numAccepted += 1
-        if (applicant.stage === "Recruiter Screen")
-            numAccepted += 1
-        else if (applicant.status === "Rejected")
+        else if (applicant.status === "Rejected" || applicant.status === "rejected")
             numRejected += 1
-        else if (applicant.status === "rejected")
-            numRejected += 1
-        else if (applicant.status === 'Applied')
-            numWaiting += 1
-        if (applicant.stage === "Hiring Manager Review" && applicant.status !== 'rejected')
+        if ((applicant.status === "Applied" || applicant.stage === "Application Review" || applicant.stage === "Hiring Manager Review") && applicant.status !== 'rejected')
             numWaiting += 1
     }
 
