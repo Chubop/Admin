@@ -19,7 +19,7 @@ export function SourceTimelineChart(props) {
     const [datesData, setDatesData] = useState({});
     const [maxDateValue, setMaxDateValue] = useState(0);
 
-    const sources = ['bot', 'form', 'match', 'linkedin']
+    const sources = ['bot', 'form', 'match', 'linkedin', 'indeed']
 
     const title = "Overall Applications by Source"
 
@@ -37,6 +37,7 @@ export function SourceTimelineChart(props) {
                 form: 0,
                 match: 0,
                 linkedin: 0,
+                indeed: 0
             }
             do {
                 current = current.addDays(1)
@@ -45,6 +46,7 @@ export function SourceTimelineChart(props) {
                     form: 0,
                     match: 0,
                     linkedin: 0,
+                    indeed: 0
                 }
             } while (current.toLocaleDateString() !== now.toLocaleDateString())
 
@@ -105,7 +107,7 @@ export function SourceTimelineChart(props) {
     if (!data || data.length === 0)
         return <Card style={{ height: chartHeight, width: '100%' }} ref={ref} />
 
-    const colorScale = [colors.theme.darkPurple, colors.theme.darkBlue, colors.theme.mediumBlue, colors.theme.lightBlue]
+    const colorScale = [colors.theme.lightPurple, colors.theme.darkPurple, colors.theme.darkBlue, colors.theme.mediumBlue, colors.theme.lightBlue]
     const colorScaleReverse = colorScale.slice(0).reverse()
 
     return (
@@ -159,7 +161,7 @@ export function SourceTimelineChart(props) {
                         x={width / 2 - 250}
                         gutter={30}
                         symbolSpacer={10}
-                        data={[{ name: "LP Site Bots" }, { name: "LP Site Forms" }, { name: "Smart Matched" }, { name: "LinkedIn" }].reverse()}
+                        data={[{ name: "LP Site Bots" }, { name: "LP Site Forms" }, { name: "Smart Matched" }, { name: "LinkedIn" }, { name: "Indeed" }].reverse()}
                     />
                 </VictoryChart>
             </CardContent>
@@ -184,6 +186,8 @@ function parseSource(source) {
             return "Smart Matched"
         case "linkedin":
             return "LinkedIn"
+        case "indeed":
+            return "Indeed"
         default:
             return ""
     }
