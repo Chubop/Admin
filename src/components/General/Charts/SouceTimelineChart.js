@@ -53,7 +53,8 @@ export function SourceTimelineChart(props) {
             // Go through log and add to counter for each date and source
             for (let entry of log) {
                 let time = new Date(entry.time).toLocaleDateString()
-                dates[time][entry.source] += 1
+                if (dates[time][entry.source] !== undefined)
+                    dates[time][entry.source] += 1
             }
 
             for (let s of sources) {
