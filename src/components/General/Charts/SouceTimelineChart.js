@@ -58,7 +58,6 @@ export function SourceTimelineChart(props) {
 
             for (let s of sources) {
                 let source = []
-                let name = s.name
                 for (let date in dates) {
                     let num = dates[date][s]
 
@@ -74,11 +73,15 @@ export function SourceTimelineChart(props) {
             let values = []
             for (let date in dates) {
                 let day = []
+                let dayTotal = 0
                 for (let source in dates[date]) {
                     let num = dates[date][source]
-                    values.push(num);
+                    if (!isNaN(num)) {
+                        dayTotal += num
+                    }
                     day.push({ x: source, y: num })
                 }
+                values.push(dayTotal)
                 newData2[date] = day
             }
             setDatesData(newData2)
