@@ -19,7 +19,7 @@ export function SourceTimelineChart(props) {
     const [datesData, setDatesData] = useState({});
     const [maxDateValue, setMaxDateValue] = useState(0);
 
-    const sources = ['bot', 'form', 'match', 'linkedin']
+    const sources = ['bot', 'form', 'match', 'linkedin', 'Indeed']
 
     const title = "Overall Applications by Source"
 
@@ -37,6 +37,7 @@ export function SourceTimelineChart(props) {
                 form: 0,
                 match: 0,
                 linkedin: 0,
+                Indeed: 0
             }
             do {
                 current = current.addDays(1)
@@ -45,18 +46,19 @@ export function SourceTimelineChart(props) {
                     form: 0,
                     match: 0,
                     linkedin: 0,
+                    Indeed: 0
                 }
             } while (current.toLocaleDateString() !== now.toLocaleDateString())
 
             // Go through log and add to counter for each date and source
             for (let entry of log) {
                 let time = new Date(entry.time).toLocaleDateString()
-                dates[time][entry.source] += 1
+                if (dates[time][entry.source] !== undefined)
+                    dates[time][entry.source] += 1
             }
 
             for (let s of sources) {
                 let source = []
-                let name = s.name
                 for (let date in dates) {
                     let num = dates[date][s]
 
@@ -72,11 +74,15 @@ export function SourceTimelineChart(props) {
             let values = []
             for (let date in dates) {
                 let day = []
+                let dayTotal = 0
                 for (let source in dates[date]) {
                     let num = dates[date][source]
-                    values.push(num);
+                    if (!isNaN(num)) {
+                        dayTotal += num
+                    }
                     day.push({ x: source, y: num })
                 }
+                values.push(dayTotal)
                 newData2[date] = day
             }
             setDatesData(newData2)
@@ -105,7 +111,7 @@ export function SourceTimelineChart(props) {
     if (!data || data.length === 0)
         return <Card style={{ height: chartHeight, width: '100%' }} ref={ref} />
 
-    const colorScale = [colors.theme.darkPurple, colors.theme.darkBlue, colors.theme.mediumBlue, colors.theme.lightBlue]
+    const colorScale = [colors.theme.lightPurple, colors.theme.darkPurple, colors.theme.darkBlue, colors.theme.mediumBlue, colors.theme.lightBlue]
     const colorScaleReverse = colorScale.slice(0).reverse()
 
     return (
@@ -146,7 +152,7 @@ export function SourceTimelineChart(props) {
                             />
                         }
                     >
-                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source}/> })}
+                        {data.map((source) => { return <VictoryBar barWidth={10} data={source} key={source} /> })}
                     </VictoryStack>
                     <VictoryAxis dependentAxis />
                     <VictoryAxis
@@ -159,7 +165,7 @@ export function SourceTimelineChart(props) {
                         x={width / 2 - 250}
                         gutter={30}
                         symbolSpacer={10}
-                        data={[{ name: "LP Site Bots" }, { name: "LP Site Forms" }, { name: "Smart Matched" }, { name: "LinkedIn" }].reverse()}
+                        data={[{ name: "LP Site Bots" }, { name: "LP Site Forms" }, { name: "Smart Matched" }, { name: "LinkedIn" }, { name: "Indeed" }].reverse()}
                     />
                 </VictoryChart>
             </CardContent>
@@ -184,8 +190,10 @@ function parseSource(source) {
             return "Smart Matched"
         case "linkedin":
             return "LinkedIn"
+        case "Indeed":
+            return "Indeed"
         default:
-            return ""
+            return source
     }
 }
 
@@ -197,7 +205,7 @@ function CustomText(props) {
             {children.map((child, index) => {
                 {
                     let y = index * 35 + 5
-                    let x = 0.96*props.x - 58
+                    let x = 0.96 * props.x - 58
                     let x2 = x - 24
 
                     return (

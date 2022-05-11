@@ -21,10 +21,44 @@ function App() {
   const loggedIn = () => {
 
     let preferences = JSON.parse(localStorage.getItem('preferences'))
-    if(!preferences){
-      preferences = {"rowsPerPage":{"recentApplicants":5,"applicantsPage":5},"daysMax":{"applications":5}}
-      localStorage.setItem('preferences', JSON.stringify(preferences))
+    if (!preferences) {
+      // Set all default preferences
+      preferences = {
+        "rowsPerPage": { "recentApplicants": 5, "applicantsPage": 5 },
+        "daysMax": { "applications": 5 },
+        "dashboard": { "statsDays": 5000 }
+      }
     }
+    else {
+      // Set each default preference as needed
+      if (!preferences.rowsPerPage) {
+        preferences = {
+          ...preferences,
+          "rowsPerPage": { 
+            "recentApplicants": 5, 
+            "recentJobs": 5,
+            "applicantsPage": 5,
+            "candidatesPage": 5,
+            "jobsPage": 5,
+            "unsupJobPage": 5,
+            "hmsPage": 5,
+          },
+        }
+      }
+      if (!preferences.daysMax) {
+        preferences = {
+          ...preferences,
+          "daysMax": { "applications": 5 }
+        }
+      }
+      if (!preferences.dashboard) {
+        preferences = {
+          ...preferences,
+          "dashboard": { "statsDays": 5000 }
+        }
+      }
+    }
+    localStorage.setItem('preferences', JSON.stringify(preferences))
 
     return (
       <Router>

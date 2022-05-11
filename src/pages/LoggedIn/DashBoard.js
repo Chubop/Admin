@@ -24,17 +24,29 @@ export function DashBoard() {
     const { stats: resumeAIStats } = useSelector(state => state.resumeAI)
     const { botLogs } = useSelector(state => state.botLogs)
     useEffect(() => {
+        // Gets stored statsDays preference
+        // If this is the first time on the site, the default is in App
+        let preferences = JSON.parse(localStorage.getItem('preferences'))
+        let storedStatsDays = preferences.dashboard.statsDays
+        setStatsDays(storedStatsDays)
+
         if (!applicantStats)
-            dispatch(applicantActions.getAllApplicantsStats(statsDays))
+            dispatch(applicantActions.getAllApplicantsStats(storedStatsDays))
         if (!resumeAIStats)
-            dispatch(resumeAIActions.getConversionRate(statsDays))
+            dispatch(resumeAIActions.getConversionRate(storedStatsDays))
         if (!botLogs)
-            dispatch(botLogActions.getAllBotLogs(statsDays))
+            dispatch(botLogActions.getAllBotLogs(storedStatsDays))
     }, [])
 
     const handleDaysChange = (event) => {
         let newDays = event.target.value
         setStatsDays(newDays)
+
+        // Store stats days in local storage's preferences
+        let preferences = JSON.parse(localStorage.getItem('preferences'))
+        preferences.dashboard.statsDays = newDays
+        localStorage.setItem('preferences', JSON.stringify(preferences))
+
         dispatch(applicantActions.getAllApplicantsStats(newDays))
         dispatch(resumeAIActions.getConversionRate(newDays))
         dispatch(botLogActions.getAllBotLogs(newDays))
@@ -51,15 +63,15 @@ export function DashBoard() {
             {!loading &&
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Grid container spacing={3} style={{backgroundColor: 'white'}}>
+                        <Grid container spacing={3} style={{ backgroundColor: 'white' }}>
                             <Grid container item xs={12}>
                                 <Grid item xs={6}>
-                                    <Typography variant="h2" style={{paddingTop: theme.spacing(1)}}>
+                                    <Typography variant="h2" style={{ paddingTop: theme.spacing(1) }}>
                                         👋 Welcome
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={6} justifyContent='flex-end'>
-                                    <TimeDropDown days={statsDays} setDays={handleDaysChange}/>
+                                    <TimeDropDown days={statsDays} setDays={handleDaysChange} />
                                 </Grid>
                             </Grid>
                             <Grid item xs={3}>
@@ -132,8 +144,8 @@ export function DashBoard() {
     )
 }
 
-function TimeDropDown (props) {
-    const {days, setDays} = props;
+function TimeDropDown(props) {
+    const { days, setDays } = props;
     const times = [
         {
             value: 1,
@@ -153,19 +165,19 @@ function TimeDropDown (props) {
         },
     ]
 
-        return (
-            <FormControl >
-                    <Select
-                        input={<Input/>}
-                        value={days}
-                        onChange={setDays}
-                    >
-                        {times.map((time) => (
-                            <MenuItem value={time.value} >
-                                {time.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-            </FormControl>
-        )
-    }
+    return (
+        <FormControl >
+            <Select
+                input={<Input />}
+                value={days}
+                onChange={setDays}
+            >
+                {times.map((time) => (
+                    <MenuItem value={time.value} >
+                        {time.name}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    )
+}

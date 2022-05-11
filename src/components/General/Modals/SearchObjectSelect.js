@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Button, Grid, IconButton, InputAdornment, Paper, Popper, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@material-ui/core';
 import { Add, Clear } from '@material-ui/icons';
 
-import {colors} from '../../../theme/colors'
+import { colors } from '../../../theme/colors'
 
 const highlightColor = colors.components.tableHeader
 
@@ -130,7 +130,7 @@ export function SearchObjectSelect(props) {
             <TableRow key={`search-option-${idKey}-${option[idKey]}`}
                 style={{ backgroundColor: highlighted && highlightColor }}
             >
-                { columns.map((column) => <TableCell>{option[column.key]}</TableCell>)}
+                {columns.map((column) => <TableCell>{option[column.key]}</TableCell>)}
                 <TableCell>
                     <IconButton onClick={(e) => {
                         handleAddRow(e, option)
@@ -276,7 +276,7 @@ export function SearchObjectSelect(props) {
                         anchorEl={inputContainerRef.current} open={popupOpen}
                         disableAutoFocus disableEnforceFocus
                         onFocus={() => setPopupOpen(true)}
-                        style={{ width: popupWidth, zIndex: 1500 }}
+                        style={{ width: popupWidth, zIndex: 1500, border: '2px solid black' }}
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                     >
@@ -302,17 +302,23 @@ export function SearchObjectSelect(props) {
                             </TableHead>
                             <TableBody>
                                 {
-                                    selectedObjects.map((object) =>
-                                        <TableRow key={`selected-${idKey}-${object[idKey]}`}>
-                                            {optionColumns.map((column) =>
-                                                <TableCell> {object[column.key]} </TableCell>)
-                                            }
-                                            <TableCell>
-                                                <IconButton onClick={() => handleRemoveRow(object)}>
-                                                    <Clear />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
+                                    selectedObjects.map((object) => {
+                                        if (!object)
+                                            return <></>
+
+                                        return (
+                                            <TableRow key={`selected-${idKey}-${object[idKey]}`}>
+                                                {optionColumns.map((column) =>
+                                                    <TableCell> {object[column.key]} </TableCell>)
+                                                }
+                                                <TableCell>
+                                                    <IconButton onClick={() => handleRemoveRow(object)}>
+                                                        <Clear />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    }
                                     )
                                 }
                             </TableBody>
