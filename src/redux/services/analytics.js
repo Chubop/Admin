@@ -14,6 +14,8 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
     let autoRejected = 0
     let numWaiting = 0
     let numScored = 0
+    let numConversational = 0
+    let numInitialConversations = 0
 
     // Question Analysis
     let scoresPerQuestion = {}
@@ -52,6 +54,11 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
         if (applicant.total !== null){
             // Add to number of screened/scored applicants
             numScored += 1
+            if (applicant.conversational_application) {
+                numConversational += 1
+                if (applicant.initial_application) 
+                    numInitialConversations += 1
+            }
 
             // For score distribution charts
             scores.eli.push(applicant.skill)
@@ -149,6 +156,8 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
     data['status'] = {
         'numApplicants': applicants.length,
         'numScored': numScored,
+        'numConversational': numConversational,
+        'numInitialConversations': numInitialConversations,
         'rejected': numRejected,
         'autoRejected': autoRejected,
         'accepted': numAccepted,
@@ -157,6 +166,8 @@ export function analyzeApplicants(applicants, data, {getMilestones, getBadNames,
     }
     data['numApplicants'] = applicants.length
     data['numScored'] = numScored
+    data['numConversational'] = numConversational
+    data['numInitialConversations'] = numInitialConversations
     data['rejected'] = numRejected
     data['accepted'] = numAccepted
     data['waiting'] = numWaiting
