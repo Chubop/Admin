@@ -205,6 +205,13 @@ function DashCards(props) {
             </Grid>
             <Grid item xs={2}>
                 <DashCard
+                    dashIcon={FilterList}
+                    title={"Conversations"}
+                    value={stats.numConversational}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <DashCard
                     dashIcon={AccessAlarm}
                     title={"Waiting"}
                     value={stats.waiting}
