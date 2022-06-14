@@ -52,10 +52,10 @@ const numToK = (num) => {
 /*
 getChartTitleSubtitle retrieves the small sub-title inside of the 
 ConversionBox by taking the previous number, dividing it by the new number,
-and multiplying it by 1000.
+and multiplying it by 100.
 */
 const getChartTitleSubtitle = (total, sub) => {
-    let percentage = parseFloat(((sub/total) * 1000).toFixed(1)).toLocaleString();
+    let percentage = parseFloat(((sub/total) * 100).toFixed(1)).toLocaleString();
     let ofNumber = numToK(total);
     
     if(isNaN(percentage))
@@ -102,31 +102,27 @@ export function ResumeAIConversionChart (props) {
 
     const [allVisitors, setAllVisitors] = useState(0);
 
-    const { data } = props
+    const { resumeAIStatsLoading: conversionStatLoading, data, statsDays } = props
     const classes = useStyles();
     const ref = useRef(null)
     const [width, setWidth] = useState(window.innerWidth)
     const [visitStatLoading, setVisitStatLoading] = useState(true);
-    const [conversionStatLoading, setConversionStatLoading] = useState(true);
-    const [x, setX] = useState(data);
-
 
     useEffect( () => {
-        if(current_env !== 'production'){
-            if(allVisitors === 0){
-                getVisitors('14daysAgo');
-            }
+        if(allVisitors === 0){
+            let queryParam = String(statsDays) + "daysAgo"
+            getVisitors(queryParam);
         }
     }, []);
 
+    useEffect(() => {
 
-    useEffect( () => {
-       setX(data);            
-       if(x[1].y !== undefined){
-            setConversionStatLoading(false);
-       }
-    }, [data]);
-
+        if(allVisitors !== 0) {
+            let queryParam = String(statsDays) + "daysAgo"
+            getVisitors(queryParam);
+        }
+    }, [statsDays])
+ 
 
     useEffect( () => {
         if(allVisitors !== 0){
@@ -154,10 +150,9 @@ export function ResumeAIConversionChart (props) {
 
         let url = `${API_ROOT}/get_visitors`;
 
-        let accessToken = JSON.parse(localStorage.getItem('accessToken')) // You are missing access token to the api call, otherwise it will fail since I required it to be @jwt_required on the backend
+        let accessToken = JSON.parse(localStorage.getItem('accessToken')) 
         let response = await axios.post( url, body, {            
             headers: {
-            // No need for content type since axios will automatically determine that it's json, though you want you can still specify it here
             "Authorization": `Bearer ${accessToken}`
             },
         })
@@ -183,11 +178,11 @@ export function ResumeAIConversionChart (props) {
     let clicked = data[2].y;
     let applied = data[3].y;
 
-    let visitedConversion = getConversionRate(1/0);
-    let usedAiConversion = getConversionRate(1/0);
-    let clickedConversion = getConversionRate(1/0);
+    let visitedConversion = getConversionRate(usedAi / allVisitors);
+    let usedAiConversion = getConversionRate(clicked / usedAi);
+    let clickedConversion = getConversionRate(applied / clicked);
     // not sure about appliedConversion
-    let appliedConversion = getConversionRate(1/0);
+    let appliedConversion = getConversionRate( clickedConversion / allVisitors);
 
     return (
         <Card ref={ref}>
@@ -273,15 +268,11 @@ export function ResumeAIConversionChart (props) {
                         <ChartTitle title={numToK(usedAi) || 0} subtitle={getChartTitleSubtitle(allVisitors, usedAi)} loading={conversionStatLoading}/>
                     </Grid>
                     <Grid item xs={3}>
-                        {/* <CircularProgress style={{position: 'relative'}}/> */}
                         <ChartTitle title={numToK(clicked)} subtitle={getChartTitleSubtitle(usedAi, clicked)} loading={conversionStatLoading}/>
                     </Grid>
                     <Grid item xs={3}>
                         <ChartTitle title={numToK(applied)} subtitle={getChartTitleSubtitle(clicked, applied)} loading={conversionStatLoading}/>
                     </Grid>
-                    {/* <Grid item xs={3}>
-                        <ChartTitle title={numToK(applied)} subtitle={getChartTitleSubtitle(clicked, applied)}/>
-                    </Grid> */}
                 </Grid>
             </CardContent>
         </Card>

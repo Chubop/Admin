@@ -15,3 +15,10 @@ services:
     stdin_open: true
     ports: 
       - '3001:3001'
+
+    networks:
+      - marlon-net
+
+networks:
+  marlon-net:
+    name: marlon-net

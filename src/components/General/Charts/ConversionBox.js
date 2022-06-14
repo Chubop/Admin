@@ -1,7 +1,6 @@
 import { makeStyles, Typography } from "@material-ui/core";
 import { colors } from '../../../theme/colors';
 import UpCircleArrow from "../../../assets/icons/UpCircleArrow.svg";
-import { theme } from "../../../theme/muiTheme";
 
 
 const useStyles = makeStyles((theme) => ({

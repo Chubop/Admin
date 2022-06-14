@@ -1,5 +1,5 @@
 export const DEBUG = true
-export const DEV_ENV = 'http://localhost:5000/admin'
+export const DEV_ENV = 'http://localhost:5004/admin'
 export const STAGING_ENV = 'https://marlon-staging-irfrsqnwrq-uc.a.run.app/admin'
 export const PRODUCTION_ENV = 'https://marlonmongo-irfrsqnwrq-uc.a.run.app/admin'
 export const current_env = process.env.REACT_APP_ENV
@@ -11,7 +11,7 @@ const ENDPOINTS = {
 
 switch(current_env) {
     case 'development':
-        ENDPOINTS['API_ROOT'] = "http://localhost:5000/admin"
+        ENDPOINTS['API_ROOT'] = "http://localhost:5004/admin"
         ENDPOINTS['ANALYTICS_ROOT'] = "http://localhost:5003"
         break
     case 'staging':

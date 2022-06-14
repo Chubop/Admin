@@ -21,7 +21,7 @@ export function DashBoard() {
 
     // Get all applicants in the beginning to get applicant analytics
     const { stats: applicantStats, error } = useSelector(state => state.applicants)
-    const { stats: resumeAIStats } = useSelector(state => state.resumeAI)
+    const { stats: resumeAIStats, loading: resumeAIStatsLoading } = useSelector(state => state.resumeAI)
     const { botLogs } = useSelector(state => state.botLogs)
     useEffect(() => {
         // Gets stored statsDays preference
@@ -112,6 +112,8 @@ export function DashBoard() {
                                 { x: "Clicked Match", y: resumeAIStats.recentClicks },
                                 { x: "Applied to Match", y: resumeAIStats.recentConversions },
                             ]}
+                            statsDays = { statsDays }
+                            resumeAIStatsLoading = { resumeAIStatsLoading }
                         />
                     </Grid>
                     <Grid item xs={4}>
