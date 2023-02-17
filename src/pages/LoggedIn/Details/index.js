@@ -1,6 +1,0 @@
-export * from './AppDetails'
-export * from './CandidateDetails'
-export * from './JobDetails'
-export * from './HMDetails'
-export * from './ScoringDetails'
-export * from './BotDetails'

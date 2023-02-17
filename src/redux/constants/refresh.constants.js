@@ -1,5 +1,0 @@
-export const refreshConstants = { 
-    REFRESH_REQUEST: "REFRESH_REQUEST",
-    REFRESH_SUCCESS: "REFRESH_SUCCESS",
-    REFRESH_FAILURE: "REFRESH_FAILURE",
-}

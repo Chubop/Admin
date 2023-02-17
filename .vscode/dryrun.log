@@ -1,0 +1,21 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/sam/Documents/Admin'
+clear
+echo ""
+echo "==========================================================="
+ 
+echo ""
+echo "  ** DOCKER COMMANDS **"
+echo ""
+echo "      build      - build containers"
+echo "      start      - run containers"
+echo "      stop       - stop containers gracefully"
+echo "      kill       - stop containers forcefully"
+echo "      restart    - restart containers"
+echo "      status     - check status of running containers"
+echo ""
+echo "  ** DEV COMMANDS **"
+echo "      node     - Run python commands like manage.py"
+echo "==========================================================="
+make: Leaving directory `/Users/sam/Documents/Admin'
+ 
